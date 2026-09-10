@@ -10,7 +10,7 @@
  * A hint changes on every pointer move. Carried in context or in a prop it
  * would be a value with a fresh identity several times a second, reaching
  * every memoized row that subscribes to it — the failure
- * [`set/docs/performance.md`](../../../set/docs/performance.md) is written
+ * [`set/docs/performance.md`](https://github.com/ryangavin/better-session-view/blob/main/set/docs/performance.md) is written
  * about. So the hint never enters the render path at all: a control writes it
  * to a plain attribute once, and one delegated listener reads it back off the
  * element the pointer happens to be over.

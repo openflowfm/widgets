@@ -368,7 +368,7 @@ on one line, and can afford a clause about what the control is *for*.
 in a tree, and the strip reads it back off the DOM from one delegated listener. A hovered
 value in context or in a prop changes identity several times a second and reaches every
 memoized row that subscribes to it — see
-[`set/docs/performance.md`](../../set/docs/performance.md). This is that failure designed
+[`set/docs/performance.md`](https://github.com/ryangavin/better-session-view/blob/main/set/docs/performance.md). This is that failure designed
 out rather than optimised away: only `HintFooter` holds the state, and it has no children.
 
 ## Six conventions worth knowing

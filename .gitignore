@@ -1,0 +1,10 @@
+node_modules/
+dist/
+bench/dist/
+coverage/
+report/
+.ds-sync/
+ds-bundle/
+.DS_Store
+
+*.tgz

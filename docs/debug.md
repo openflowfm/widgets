@@ -5,7 +5,7 @@ and the parts that go in it, so a harness in any of the apps is the same shape a
 suite's chrome instead of a page that grows its own bar, its own group and its own idea of
 a caption.
 
-The first one built on it is mix[flow]'s analysis harness — [`mix/docs/harness.md`](../../mix/docs/harness.md).
+The first one built on it is mix[flow]'s analysis harness — [`mix/docs/harness.md`](https://github.com/ryangavin/better-session-view/blob/main/mix/docs/harness.md).
 
 ## What's in it
 

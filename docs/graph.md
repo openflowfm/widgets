@@ -17,7 +17,7 @@ to end. The second was an opt-in row anatomy, after the first host proved that t
 centred against a body cannot line a port up with the control it governs.
 
 **Its first host is `visuals/`'s circuit editor**, where a node is one operation in a
-fragment shader — see [circuits](../../visuals/docs/circuit.md). Two things written here
+fragment shader — see [circuits](https://github.com/ryangavin/better-session-view/blob/main/visuals/docs/circuit.md). Two things written here
 against no caller turned out to be exactly right, and are worth pointing at because they
 are the parts that would have been tempting to skip: a knob inside a node turns without
 dragging the node (the `defaultPrevented` check, below), and a refused connection costs

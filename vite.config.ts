@@ -23,12 +23,12 @@ export default defineConfig({
   plugins: [react()],
   // See `set/vite.config.ts` — both servers run together, and the default cache
   // directory is the same one for both.
-  cacheDir: path.resolve(here, '../node_modules/.vite/bench'),
+  cacheDir: path.resolve(here, 'node_modules/.vite/bench'),
   server: {
     port: PORT,
     strictPort: true,
     // The bench lives under the module it exercises, so it reaches up one level
     // into `src/`. Vite refuses paths outside its root without this.
-    fs: { allow: [path.resolve(here, '..')] },
+    fs: { allow: [here] },
   },
 });

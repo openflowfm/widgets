@@ -135,7 +135,7 @@ Only the bench CSS positions the floating theme editor or hides workspace descri
 Mix mounts the face through `mix/src/play/useMixerViewModel.ts`, a subscription adapter
 to its app-owned four-deck engine. The engine owns decoding, independent stem scheduling,
 Sync, cue behavior, routing, effects, Link and measurement. The same library stays visible
-in Prep and Play; [mix's topic](../../mix/docs/play-view.md) governs mode switching and loads.
+in Prep and Play; [mix's topic](https://github.com/ryangavin/better-session-view/blob/main/mix/docs/play-view.md) governs mode switching and loads.
 No audio implementation or bench imports cross into these widgets.
 
 ## Verification

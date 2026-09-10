@@ -17,7 +17,7 @@ import './hint.css';
  * nobody. That is the whole design constraint: a pointer crossing a mixer
  * fires several times a second, and a value at that rate anywhere a memoized
  * row can see it re-renders the grid — see
- * [`set/docs/performance.md`](../../../set/docs/performance.md). One listener
+ * [`set/docs/performance.md`](https://github.com/ryangavin/better-session-view/blob/main/set/docs/performance.md). One listener
  * on the document, one `useState` in one leaf, and the rest of the tree never
  * learns that a pointer moved.
  *
