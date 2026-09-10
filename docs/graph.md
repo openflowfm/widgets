@@ -261,7 +261,7 @@ node should be the size of what it holds.
 
 ## Where to work on it
 
-**The Graph room of the widget bench** — `npm run dev:widgets`, then *Graph* down the side.
+**The Graph room of the widget bench** — `npm run dev`, then *Graph* down the side.
 It is not a page of cases like the other rooms, and the reason is that a canvas is the one
 part of this module a screenshot cannot settle. A cord that lands nine times out of ten
 looks exactly like a cord that lands ten times out of ten, and the tenth is the whole of

@@ -5,8 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
-// The bench is a dev harness and is never built — there is no `outDir` on
-// purpose. Nothing here ships, and nothing here knows Live exists.
+// The bench is a dev harness; CI bundles it as a smoke check. Nothing from
+// the bench ships in the package, and nothing here knows Live exists.
 //
 // The port follows set[flow]'s rather than being a second thing to assign, so a
 // worktree that moves its app takes its bench along in one variable. The offset
@@ -21,8 +21,7 @@ const PORT = Number(process.env.OPENFLOW_BENCH_PORT) || SET_PORT + 100;
 export default defineConfig({
   root: path.resolve(here, 'bench'),
   plugins: [react()],
-  // See `set/vite.config.ts` — both servers run together, and the default cache
-  // directory is the same one for both.
+  // Keep this bench cache local to the independent package.
   cacheDir: path.resolve(here, 'node_modules/.vite/bench'),
   server: {
     port: PORT,

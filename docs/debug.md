@@ -50,7 +50,7 @@ wherever it is mounted, which is what the hex literals the old pages carried did
 
 ## Where to see it
 
-The **Debug** section of the widget bench (`npm run dev:widgets`) is a harness with nothing
+The **Debug** section of the widget bench (`npm run dev`) is a harness with nothing
 under it: a made-up signal, beats every half second, a head on the wall clock.
 
 ## Tabs and experiments
