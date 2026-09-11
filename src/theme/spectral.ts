@@ -35,14 +35,14 @@ function rgb({h,s,l}:Tone): number[] {
   return [0,8,4].map(n => { const k=(n+h/30)%12; return 255*(l/100-a*Math.max(-1,Math.min(k-3,9-k,1))); });
 }
 /** Prepare paint once per theme change; analysis supplies energy, never baked colors. */
-export function spectralPainter(style: SpectralStyle, neutral: string, silence: string) {
+export function spectralPainter(style: SpectralStyle, neutral: string, silence: string, curve = .5) {
   const tones = SPECTRAL_BANDS.map(b => rgb(style.colors[b]));
   const floor = [0,1,2].map(c => Math.min(...tones.map(t => t[c])));
   const gray = [1,3,5].map(i => parseInt(neutral.slice(i,i+2),16));
   return (energy: SpectralEnergy): string => {
     const maximum = Math.max(...energy);
     if (maximum < .00001) return silence;
-    const weights = energy.map(e => Math.sqrt(Math.max(0,e)/maximum));
+    const weights = energy.map(e => Math.pow(Math.max(0,e)/maximum,curve));
     const channels = floor.map((base,c) => {
       const ink = Math.min(255,base+tones.reduce((sum,t,b) => sum+weights[b]*(t[c]-base),0));
       return Math.round(gray[c]+(ink-gray[c])*style.strength/100);

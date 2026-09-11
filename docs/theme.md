@@ -142,3 +142,11 @@ between samples; smoothing is a presentation choice, not a new measurement.
 
 The caller owns analysis, style persistence and presets. No audio gain, frequency
 crossovers, production defaults or global theme values are changed by this API.
+
+The optional finish fields `fillOpacity`, `colorCurve`, `edgeTint` and `background`
+control translucency, spectral contrast, a white or frequency-colored outline, and
+canvas backing. Defaults retain opaque fill, the original 0.5 spectral exponent,
+a white edge and transparent backing. `spectralPainter` accepts the same optional
+exponent as a fourth argument; its existing callers retain the original curve.
+These fields never create an inner amplitude contour. Translucent frequency layers
+use disjoint rings, so overlapping fills cannot invent a brighter center.

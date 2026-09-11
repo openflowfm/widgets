@@ -6,8 +6,13 @@ export interface SpectralOutlineStyle {
   layout:'layers'|'blend';
   spectral:SpectralStyle;
   weights:SpectralEnergy;
-  /** White edge opacity; the one-pixel stroke stays inside the silhouette. */
+  /** Edge opacity; the one-pixel stroke stays inside the silhouette. */
   edge:number;
+  /** Optional visual finish; absent values preserve existing production presentation. */
+  fillOpacity?:number;
+  colorCurve?:number;
+  edgeTint?:'white'|'spectral';
+  background?:string;
 }
 export function weightedEnergy(energy:SpectralEnergy,weights:SpectralEnergy):SpectralEnergy {
   return energy.map((e,i)=>Math.max(0,e)*Math.max(0,weights[i])) as unknown as SpectralEnergy;
@@ -28,6 +33,10 @@ export function paintSpectralOutline(g:CanvasRenderingContext2D,edges:Edges,spec
   const shape=pathOf(edges,smooth),middle=height/2;
   const first=Math.max(0,Math.floor(from*spectrum.length)),last=Math.min(spectrum.length,Math.ceil(to*spectrum.length));
   g.save();
+  if(style.background){g.fillStyle=style.background;g.fillRect(0,0,width,height);}
+  const opacity=Math.max(0,Math.min(1,style.fillOpacity??1));
+  const paint=spectralPainter(style.spectral,ask.neutral,ask.silence,style.colorCurve??.5),gradient=g.createLinearGradient(0,0,width,0);
+  for(let i=first;i<last;i++)gradient.addColorStop(Math.max(0,Math.min(1,((i+.5)/spectrum.length-from)/(to-from))),paint(weightedEnergy(spectrum[i],style.weights)));
   // Do not bridge measured silence, even when cubic tangents cross neighboring bins.
   g.beginPath();
   for(let i=first;i<last;i++)if(spectrum[i].some(e=>e>0)){
@@ -35,18 +44,21 @@ export function paintSpectralOutline(g:CanvasRenderingContext2D,edges:Edges,spec
     g.rect(x,0,width/(spectrum.length*(to-from)),height);
   }
   g.clip();g.clip(shape);
+  g.globalAlpha=opacity;
   if(style.layout==='blend'){
-    const paint=spectralPainter(style.spectral,ask.neutral,ask.silence),gradient=g.createLinearGradient(0,0,width,0);
-    for(let i=first;i<last;i++)gradient.addColorStop(Math.max(0,Math.min(1,((i+.5)/spectrum.length-from)/(to-from))),paint(weightedEnergy(spectrum[i],style.weights)));
     g.fillStyle=gradient;g.fillRect(0,0,width,height);
   }else{
     const colors=[style.spectral.colors.low,style.spectral.colors.mid,style.spectral.colors.high];
-    for(let band=2;band>=0;band--){
+    const contours=[0,1,2].map(band=>{
       const scale=(ys:Float32Array,xs:Float32Array)=>Float32Array.from(ys,(y,i)=>middle+(y-middle)*layerRatios(at(xs[i]),style.weights)[band]);
-      const nested=band===2?shape:pathOf({...edges,topY:scale(edges.topY,edges.topX),lowY:scale(edges.lowY,edges.lowX)},smooth);
-      const t=colors[band];g.fillStyle=`hsl(${t.h} ${t.s}% ${t.l}%)`;g.fill(nested);
+      return band===2?shape:pathOf({...edges,topY:scale(edges.topY,edges.topX),lowY:scale(edges.lowY,edges.lowX)},smooth);
+    });
+    for(let band=2;band>=0;band--){
+      // Disjoint bands avoid alpha accumulating into an artificial luminous center.
+      const ring=new Path2D(contours[band]);if(band>0)ring.addPath(contours[band-1]);
+      const t=colors[band];g.fillStyle=`hsl(${t.h} ${t.s}% ${t.l}%)`;g.fill(ring,'evenodd');
     }
-    g.globalAlpha=1-style.spectral.strength/100;g.fillStyle=ask.neutral;g.fill(shape);g.globalAlpha=1;
+    g.globalAlpha=opacity*(1-style.spectral.strength/100);g.fillStyle=ask.neutral;g.fill(shape);g.globalAlpha=1;
   }
-  g.strokeStyle=`rgba(255,255,255,${Math.max(0,Math.min(1,style.edge))})`;g.lineWidth=1;g.stroke(shape);g.restore();
+  g.globalAlpha=Math.max(0,Math.min(1,style.edge));g.strokeStyle=style.edgeTint==='spectral'?gradient:'#ffffff';g.lineWidth=1;g.stroke(shape);g.restore();
 }
