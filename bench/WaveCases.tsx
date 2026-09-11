@@ -1,3 +1,4 @@
+import { DEFAULT_SPECTRAL } from '../src/theme/spectral.ts';
 import { useMemo, useState } from 'react';
 import { Waveform } from '../src/wave/Waveform.tsx';
 import { packedOf, type Peak } from '../src/wave/levels.ts';
@@ -46,6 +47,10 @@ export function WaveCases() {
   const [window_, setWindow] = useState(0);
   const [density, setDensity] = useState(0);
   const packed = useMemo(() => STEMS.map((s) => packedOf(invent(48000, s.seed))), []);
+  const spectrum=useMemo(()=>Array.from({length:packed[0].length/2},(_,i)=>{
+    const amplitude=Math.max(Math.abs(packed[0][i*2]),packed[0][i*2+1]);
+    return [amplitude,amplitude*(.2+.8*Math.sin(i/400)**2),amplitude*(.1+.5*Math.cos(i/100)**2)] as const;
+  }),[packed]);
   const view = WINDOWS[window_];
   const densities = [undefined, 0.25, 0.5, 1, 2];
 
@@ -89,6 +94,13 @@ export function WaveCases() {
           an arrangement, and a bar reads as a bar. The silent run draws as a line, because a
           silhouette whose edges meet encloses nothing and would otherwise vanish.
         </p>
+      </div>
+
+      <div className="case wide">
+        <div className="case-stage case-stack">
+          {(['layers','blend'] as const).map(layout=><Waveform key={layout} peaks={packed[0]} spectrum={spectrum} from={view.from} to={view.to} ink="var(--stem-drums)" height={72} smooth={.35} presentation={{layout,spectral:DEFAULT_SPECTRAL,weights:[1,1,1],edge:.35}} label={`Frequency ${layout}`}/>)}
+        </div>
+        <p className="case-note">Optional frequency presentation: layers and blended spectrum on the same production outline. Silent bands remain empty. The original examples above keep their default output.</p>
       </div>
 
       <div className="case">

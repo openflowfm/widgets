@@ -123,3 +123,22 @@ six-stem randomization, derived treatments and nested scope. Root tests verify c
 resolved values without remounting children or writing body styles. Mix tests cover
 storage validation. Check actual canvases and popup styles in both browser harnesses;
 unit tests alone cannot establish visual cohesion.
+
+## Optional waveform presentation
+
+`wave/Waveform.tsx` accepts `presentation: SpectralOutlineStyle` alongside measured
+`spectrum`. Omit it to retain the existing theme output unchanged. Geometry continues
+to use the same peak ladder, zoom density, `smooth` and `headroom` parameters.
+`wave/spectralOutline.ts` exposes `paintSpectralOutline` for canvas hosts using that
+same geometry. Both entry points use this painter, rather than separate demo renderers.
+
+`layout` chooses nested frequency layers or a blended spectrum. `spectral` supplies
+the existing low/mid/high HSL palette and neutral-to-color strength; `weights` changes
+relative band prominence without changing the outer amplitude. Layers divide height
+by weighted energy shares, not additive band peaks. `edge` controls the opacity of an
+inward-clipped one-pixel highlight. Measured zero-energy intervals stay empty even
+when cubic tangents cross neighboring bins. The shared cubic may round or overshoot
+between samples; smoothing is a presentation choice, not a new measurement.
+
+The caller owns analysis, style persistence and presets. No audio gain, frequency
+crossovers, production defaults or global theme values are changed by this API.

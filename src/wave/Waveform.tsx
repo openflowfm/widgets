@@ -1,3 +1,4 @@
+import { paintSpectralOutline, type SpectralOutlineStyle } from './spectralOutline.ts';
 import { spectralPainter, type SpectralEnergy } from '../theme/spectral.ts';
 import { useTheme } from '../theme/context.ts';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -52,6 +53,8 @@ export interface WaveformProps {
   colors?: readonly string[];
   /** Measured band energy; the scoped theme chooses its spectral paint or deck ink. */
   spectrum?: readonly SpectralEnergy[];
+  /** Opt-in layered or blended frequency presentation. Omitted keeps the theme's existing paint. */
+  presentation?: SpectralOutlineStyle;
   height?: number;
   /** Points per CSS pixel. Omit to let it ride the zoom, which is the point. */
   density?: number;
@@ -92,6 +95,7 @@ export function Waveform({
   ink,
   colors,
   spectrum,
+  presentation,
   height = 96,
   density,
   smooth = 1,
@@ -155,6 +159,10 @@ export function Waveform({
       const edges = fine
         ? samplesFrom(samples!, { ...ask, length })
         : edgesOf(levels, ask);
+      if (presentation && spectrum?.length) {
+        paintSpectralOutline(g, edges, spectrum, { ...ask, neutral:theme.waveformBase, silence:theme.waveformSilence }, presentation);
+        return;
+      }
       g.fillStyle = resolve(el, ink);
       if (paintColors?.length && to > from) {
         const paint = g.createLinearGradient(0, 0, box.width, 0);
@@ -169,7 +177,7 @@ export function Waveform({
       g.fill(pathOf(edges, smooth));
     };
     schedule();
-  }, [levels, from, to, ink, paintColors, height, density, smooth, headroom, samples, schedule, theme]);
+  }, [levels, from, to, ink, paintColors, spectrum, presentation, height, density, smooth, headroom, samples, schedule, theme]);
 
   useEffect(() => {
     const el = canvas.current;
