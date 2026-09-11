@@ -335,3 +335,8 @@ two 10px meters and the two shared gaps. It shrinks with the available center co
 down to 66px (75% of the maximum), without scaling the meters or knobs.
 Deck grid tracks honor that intrinsic minimum and overflow the existing horizontal
 scroll area when needed; the configured deck minimum itself is unchanged. The assembly remains centered in the channel column.
+
+The host Trim parameter is shared by deck and Master controls. Their hints describe
+the mixer range of −24…+12 dB; the host supplies 0 dB as the default/reset value.
+Trim fill explicitly originates at 0 dB even though zero is now two-thirds through
+the travel; the standalone bench uses the same range.

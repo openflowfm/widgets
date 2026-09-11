@@ -212,3 +212,14 @@ it('clears pointer-only knob focus when keyboard interaction resumes without cha
   fireEvent.pointerDown(dial,{button:0,pointerId:2});fireEvent.pointerUp(dial,{pointerId:2});fireEvent.blur(dial);
   expect(dial.hasAttribute('data-pointer-focus')).toBe(false);
 });
+
+it('uses the supplied asymmetric Trim range on every deck and Master with zero as the fill origin',()=>{
+  const props=fixture();props.params.trim={kind:'float',min:-24,max:12,defaultValue:0,unit:'decibel'};
+  const view=render(createElement(MixerView,props));
+  for(const name of ['Deck 1 trim','Deck 2 trim','Deck 3 trim','Deck 4 trim','Master trim']){
+    const knob=view.getByRole('slider',{name});
+    expect(knob.getAttribute('aria-valuemin')).toBe('-24');expect(knob.getAttribute('aria-valuemax')).toBe('12');
+    expect(knob.getAttribute('aria-valuenow')).toBe('0');
+    expect(knob.querySelector('.wdg-knob-fill')).toBeNull();
+  }
+});

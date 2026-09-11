@@ -13,7 +13,7 @@ const SONGS = [
   { title: 'Only the echo', artist: 'Mira Sol', bpm: 124, key: '8B' },
 ];
 const LEVEL: Param = { kind: 'float', min: 0, max: 100, defaultValue: 80, unit: 'percent' };
-const TRIM: Param = { kind: 'float', min: -12, max: 12, defaultValue: 0, unit: 'decibel' };
+const TRIM: Param = { kind: 'float', min: -24, max: 12, defaultValue: 0, unit: 'decibel' };
 const SEND: Param = { ...LEVEL, defaultValue: 0 };
 const EQ: Param = { kind: 'float', min: -24, max: 12, defaultValue: 0, unit: 'decibel' };
 const FILTER: Param = { kind: 'float', min: -100, max: 100, defaultValue: 0, unit: 'int' };

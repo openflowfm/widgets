@@ -72,7 +72,7 @@ export function DeckStrip({ deck: d, index, commands, readFrame, theme, params, 
           {((['left','right'] as const)).map((side,channel) => <div className="play-meter-column" key={side}><FrameMeter label={`Deck ${index + 1} ${side} output`} sample={() => readFrame().decks[d.id]?.stereo?.[channel] ?? 0} /><span>{side === 'left' ? 'L' : 'R'}</span></div>)}</div></div>
           <Separator orientation="vertical" className="play-column-rule"/>
           <KnobStack>
-            <Knob className="play-trim" ink="var(--amber)" name="Trim" label={`Deck ${index + 1} trim`} param={TRIM} value={d.trim} onChange={value => commands.setDeck(d.id, 'trim', value)} hint="Lifts or cuts the deck before everything else, up to 12 dB either way. This is what matches a quiet record to a loud one, not the fader." />
+            <Knob className="play-trim" ink="var(--amber)" name="Trim" label={`Deck ${index + 1} trim`} param={TRIM} origin="center" value={d.trim} onChange={value => commands.setDeck(d.id, 'trim', value)} hint="Lifts or cuts the deck before everything else, from −24 to +12 dB. This is what matches a quiet record to a loud one, not the fader." />
             {['High', 'Mid', 'Low'].map((name, e) => <Knob key={name} name={name} label={`Deck ${index + 1} ${name}`} param={EQ} origin="center" value={d.eq[e]} onChange={value => commands.setDeckEq(d.id, e, value)} hint={`Lifts or cuts this deck's ${name.toLowerCase()} band. It rests at 0 dB, which is the record as it was, and cuts much further than it lifts.`} />)}
           </KnobStack>
         </MixerSection>
