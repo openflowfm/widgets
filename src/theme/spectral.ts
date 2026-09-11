@@ -4,14 +4,34 @@ export const SPECTRAL_NAMES = { low: 'Low frequencies', mid: 'Mid frequencies', 
 export type SpectralBand = keyof typeof SPECTRAL_NAMES;
 export const SPECTRAL_BANDS = Object.keys(SPECTRAL_NAMES) as SpectralBand[];
 export type SpectralEnergy = readonly [number, number, number];
+/** Optional waveform finish; measured input remains mean-square band energy. */
+export interface WaveformTreatment {
+  layout: 'layers' | 'blend';
+  smooth: number;
+  detail: number;
+  headroom: number;
+  fillOpacity: number;
+  colorCurve: number;
+  weights: SpectralEnergy;
+  edge: number;
+  edgeTint: 'white' | 'spectral';
+}
 export interface SpectralStyle {
   mode: 'spectral' | 'deck';
   colors: Record<SpectralBand, Tone>;
   strength: number;
+  waveform?: WaveformTreatment;
 }
+export const PRISM_SPECTRAL: SpectralStyle = {
+  mode:'spectral', strength:100,
+  colors:{low:{h:0,s:100,l:50},mid:{h:120,s:100,l:46},high:{h:240,s:100,l:46}},
+  waveform:{layout:'blend',smooth:.35,detail:2,headroom:.86,fillOpacity:1,colorCurve:2.114115,
+    weights:[.85,1,1.8],edge:.8788055,edgeTint:'white'},
+};
 const tone = (h: number, s: number, l: number): Tone => ({h,s,l});
 export const SPECTRAL_PRESETS: {name:string; style:SpectralStyle}[] = [
   { name:'RGB', style:{mode:'spectral', strength:100, colors:{low:tone(0,155/245*100,265/510*100), mid:tone(120,155/245*100,265/510*100), high:tone(240,155/245*100,265/510*100)}} },
+  { name:'Prism', style:PRISM_SPECTRAL },
   { name:'Warm', style:{mode:'spectral', strength:85, colors:{low:tone(8,62,62), mid:tone(40,52,67), high:tone(65,28,83)}} },
   { name:'Ice', style:{mode:'spectral', strength:85, colors:{low:tone(235,46,58), mid:tone(197,54,66), high:tone(180,24,86)}} },
 ];
@@ -20,7 +40,7 @@ export const isSpectralBand = (role: string): role is SpectralBand => SPECTRAL_B
 export function isSpectralStyle(value: unknown): value is SpectralStyle {
   if (!value || typeof value !== 'object') return false;
   const s = value as SpectralStyle;
-  return (s.mode === 'spectral' || s.mode === 'deck') && Number.isFinite(s.strength) && s.strength >= 0 && s.strength <= 100 && !!s.colors && SPECTRAL_BANDS.every(b => {
+  return (s.mode === 'spectral' || s.mode === 'deck') && Number.isFinite(s.strength) && s.strength >= 0 && s.strength <= 100 && (s.waveform === undefined || isWaveformTreatment(s.waveform)) && !!s.colors && SPECTRAL_BANDS.every(b => {
     const t = s.colors[b];
     return t && Number.isFinite(t.h) && t.h >= 0 && t.h < 360 && Number.isFinite(t.s) && t.s >= 0 && t.s <= 100 && Number.isFinite(t.l) && t.l >= 0 && t.l <= 100;
   });
@@ -49,4 +69,27 @@ export function spectralPainter(style: SpectralStyle, neutral: string, silence: 
     });
     return `rgb(${channels.join(', ')})`;
   };
+}
+
+function isWaveformTreatment(value: unknown): value is WaveformTreatment {
+  if (!value || typeof value !== 'object') return false;
+  const w = value as WaveformTreatment;
+  const within = (v: number, lo: number, hi: number) => Number.isFinite(v) && v >= lo && v <= hi;
+  return (w.layout === 'layers' || w.layout === 'blend') && (w.edgeTint === 'white' || w.edgeTint === 'spectral')
+    && within(w.smooth,0,1) && within(w.detail,.5,2) && within(w.headroom,.4,.95)
+    && within(w.fillOpacity,.1,1) && within(w.colorCurve,.25,2.5) && within(w.edge,0,1)
+    && Array.isArray(w.weights) && w.weights.length === 3 && w.weights.every(v => within(v,.25,3));
+}
+/** Convert cached power to the RMS convention used by optional waveform treatments. */
+export const amplitudeEnergy = (energy: SpectralEnergy): SpectralEnergy =>
+  [Math.sqrt(Math.max(0,energy[0])),Math.sqrt(Math.max(0,energy[1])),Math.sqrt(Math.max(0,energy[2]))];
+/** Theme-aware thumbnail paint. Colors are derived at render time, never cached with analysis. */
+export function waveformPainter(style: SpectralStyle, neutral: string, silence: string) {
+  if (style.mode === 'deck') return (energy: SpectralEnergy) => Math.max(...energy) < .00001 ? silence : neutral;
+  const w = style.waveform;
+  const paint = spectralPainter(style,neutral,silence,w?.colorCurve);
+  return w ? (energy: SpectralEnergy) => {
+    const e = amplitudeEnergy(energy);
+    return paint([e[0]*w.weights[0],e[1]*w.weights[1],e[2]*w.weights[2]]);
+  } : paint;
 }

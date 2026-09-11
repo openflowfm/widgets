@@ -25,7 +25,7 @@ export function ThemeEditor({ theme, onChange }: { theme: Theme; onChange(theme:
   const spectral = theme.spectral ?? DEFAULT_SPECTRAL;
   const selected = isSpectralBand(role) ? spectral.colors[role] : theme.colors[role], variation = theme.variation;
   const roleName = isSpectralBand(role) ? SPECTRAL_NAMES[role] : ROLE_NAMES[role];
-  const spectralPreset = SPECTRAL_PRESETS.findIndex(p => JSON.stringify(p.style) === JSON.stringify(spectral));
+  const spectralPreset = SPECTRAL_PRESETS.findIndex(p => JSON.stringify({...p.style,mode:spectral.mode}) === JSON.stringify(spectral));
   const preset = PRESETS.findIndex(p => JSON.stringify(p.theme) === JSON.stringify(theme));
   const warnings = conflicts(theme);
   const edit = (key: keyof Tone, value: number) => onChange(isSpectralBand(role) ? {...theme, spectral: editSpectral(spectral,role,key,value)} : editRole(theme, role, key, value));
@@ -35,7 +35,7 @@ export function ThemeEditor({ theme, onChange }: { theme: Theme; onChange(theme:
       <div className="wdg-theme-swatches">{ROLES.map((id) => <Toggle key={id} label={`Edit ${ROLE_NAMES[id]} color`} on={role === id} onChange={() => setRole(id)} width={118} ink={color(theme.colors[id])}>{ROLE_NAMES[id]}</Toggle>)}</div>
       <div className="wdg-theme-spectral" role="group" aria-label="Spectral waveform theme">
         <Select name="Waveform style" label="Waveform style" items={['Spectral', 'Deck color']} index={spectral.mode === 'deck' ? 1 : 0} onChange={i => onChange({...theme,spectral:{...spectral,mode:i ? 'deck' : 'spectral'}})} width={240} />
-        <Select name="Spectral palette" label="Spectral palette" items={[...SPECTRAL_PRESETS.map(p => p.name),'Custom']} index={spectralPreset < 0 ? SPECTRAL_PRESETS.length : spectralPreset} onChange={i => {if(SPECTRAL_PRESETS[i]) onChange({...theme,spectral:SPECTRAL_PRESETS[i].style});}} width={240} />
+        <Select name="Spectral palette" label="Spectral palette" items={[...SPECTRAL_PRESETS.map(p => p.name),'Custom']} index={spectralPreset < 0 ? SPECTRAL_PRESETS.length : spectralPreset} onChange={i => {if(SPECTRAL_PRESETS[i]) onChange({...theme,spectral:{...SPECTRAL_PRESETS[i].style,mode:spectral.mode}});}} width={240} />
         <div className="wdg-theme-band-swatches">{SPECTRAL_BANDS.map(b => <Toggle key={b} label={`Edit ${SPECTRAL_NAMES[b]} color`} on={role === b} onChange={() => setRole(b)} width={76} ink={color(spectral.colors[b])}>{b === 'low' ? 'Low' : b === 'mid' ? 'Mid' : 'High'}</Toggle>)}</div>
         <Slider name="Spectral color strength" label="Spectral color strength" param={{kind:'float',min:0,max:100,defaultValue:100,unit:'percent'}} value={spectral.strength} onChange={strength => onChange({...theme,spectral:{...spectral,strength}})} orientation="horizontal" length={240} />
       </div>

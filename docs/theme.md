@@ -150,3 +150,16 @@ a white edge and transparent backing. `spectralPainter` accepts the same optiona
 exponent as a fourth argument; its existing callers retain the original curve.
 These fields never create an inner amplitude contour. Translucent frequency layers
 use disjoint rings, so overlapping fills cannot invent a brighter center.
+
+### Prism waveform treatment
+
+The Spectral palette selector includes opt-in **Prism**. Its serialized `waveform`
+field supplies blended geometry, detail 2, smoothing .35, headroom .86, opaque fill,
+white edge .8788055, curve 2.114115 and RMS weights [.85,1,1.8]. RGB hues use
+100% saturation and lightness [50,46,46]. It has no special background. Existing
+v1 themes and the RGB default are unchanged. Explicit Waveform presentation and
+geometry props still override theme choices. Treatment paint converts cached
+mean-square band energy to RMS before applying weights; analysis is never rerun.
+`waveformPainter` applies the same color treatment to small previews and honors
+Deck mode with neutral paint when a preview has no assigned deck. Theme consumers
+must retain numeric measurements and derive paint when the scoped theme changes.

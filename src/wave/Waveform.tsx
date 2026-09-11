@@ -1,5 +1,5 @@
 import { paintSpectralOutline, type SpectralOutlineStyle } from './spectralOutline.ts';
-import { spectralPainter, type SpectralEnergy } from '../theme/spectral.ts';
+import { spectralPainter, amplitudeEnergy, type SpectralEnergy } from '../theme/spectral.ts';
 import { useTheme } from '../theme/context.ts';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { levelsOf, packedOf, type Peak, type Steps } from './levels.ts';
@@ -98,13 +98,22 @@ export function Waveform({
   presentation,
   height = 96,
   density,
-  smooth = 1,
-  headroom = 0.86,
+  smooth,
+  headroom,
   samples,
   className,
   label,
 }: WaveformProps) {
   const theme = useTheme();
+  const treatment = theme.spectral.mode === 'spectral' ? theme.spectral.waveform : undefined;
+  const themedPresentation = useMemo<SpectralOutlineStyle | undefined>(() => treatment ? {
+    ...treatment, spectral:theme.spectral,
+  } : undefined, [treatment, theme.spectral]);
+  const activePresentation = presentation ?? themedPresentation;
+  const activeSpectrum = useMemo(() => !presentation && treatment && spectrum
+    ? spectrum.map(amplitudeEnergy) : spectrum, [presentation,treatment,spectrum]);
+  const activeSmooth = smooth ?? treatment?.smooth ?? 1;
+  const activeHeadroom = headroom ?? treatment?.headroom ?? .86;
   const spectralColors = useMemo(() => {
     if (!spectrum || theme.spectral.mode === 'deck') return undefined;
     return spectrum.map(spectralPainter(theme.spectral, theme.waveformBase, theme.waveformSilence));
@@ -148,9 +157,9 @@ export function Waveform({
         to,
         width: box.width,
         height: box.height,
-        density: density ?? densityFor(to - from),
-        smooth,
-        headroom,
+        density: density ?? densityFor(to - from) * (treatment?.detail ?? 1),
+        smooth:activeSmooth,
+        headroom:activeHeadroom,
       };
       const length = samples?.[0]?.length ?? 0;
       // Below what the reading can say, the audio itself — the same shape,
@@ -159,8 +168,8 @@ export function Waveform({
       const edges = fine
         ? samplesFrom(samples!, { ...ask, length })
         : edgesOf(levels, ask);
-      if (presentation && spectrum?.length) {
-        paintSpectralOutline(g, edges, spectrum, { ...ask, neutral:theme.waveformBase, silence:theme.waveformSilence }, presentation);
+      if (activePresentation && activeSpectrum?.length) {
+        paintSpectralOutline(g, edges, activeSpectrum, { ...ask, neutral:theme.waveformBase, silence:theme.waveformSilence }, activePresentation);
         return;
       }
       g.fillStyle = resolve(el, ink);
@@ -174,10 +183,10 @@ export function Waveform({
         }
         g.fillStyle = paint;
       }
-      g.fill(pathOf(edges, smooth));
+      g.fill(pathOf(edges, activeSmooth));
     };
     schedule();
-  }, [levels, from, to, ink, paintColors, spectrum, presentation, height, density, smooth, headroom, samples, schedule, theme]);
+  }, [levels, from, to, ink, paintColors, spectrum, presentation, height, density, activeSmooth, activeHeadroom, activePresentation, activeSpectrum, treatment, samples, schedule, theme]);
 
   useEffect(() => {
     const el = canvas.current;
