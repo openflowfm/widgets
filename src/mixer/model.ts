@@ -159,6 +159,7 @@ export interface MixerTheme {
 }
 export interface MixerParams {
   stemLevel?: Param;
+  stemLevelDisplay?: (value: number) => string;
   level: Param; trim: Param; send: Param; eq: Param; filter: Param; tempo: Param; cross: Param;
 }
 export interface MixerViewProps {

@@ -223,3 +223,12 @@ it('uses the supplied asymmetric Trim range on every deck and Master with zero a
     expect(knob.querySelector('.wdg-knob-fill')).toBeNull();
   }
 });
+
+it('uses host stem gain text without changing stored linear values or reset payloads',()=>{
+  const props=fixture();props.params.stemLevel={kind:'float',min:0,max:199.526,defaultValue:100};
+  props.params.stemLevelDisplay=v=>v===0?'−∞ dB':`${(20*Math.log10(v/100)).toFixed(1)} dB`;
+  props.state.decks[0].stems[0].level=100;props.state.decks[0].full=false;
+  const view=render(createElement(MixerView,props));
+  const knob=view.getByRole('slider',{name:`Deck 1 ${props.state.decks[0].stems[0].name} level`});
+  expect(knob.getAttribute('aria-valuenow')).toBe('100');expect(knob.getAttribute('aria-valuetext')).toBe('0.0 dB');
+});

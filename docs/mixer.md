@@ -340,3 +340,7 @@ The host Trim parameter is shared by deck and Master controls. Their hints descr
 the mixer range of −24…+12 dB; the host supplies 0 dB as the default/reset value.
 Trim fill explicitly originates at 0 dB even though zero is now two-thirds through
 the travel; the standalone bench uses the same range.
+
+Optional stable `stemLevelDisplay(value)` lets the host spell linear stored gain in
+dB without changing the stored value or command payload. The stem Param still owns
+range, taper and reset. Both readout and accessible value text use the host spelling.
