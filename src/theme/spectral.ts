@@ -15,6 +15,7 @@ export interface WaveformTreatment {
   weights: SpectralEnergy;
   edge: number;
   edgeTint: 'white' | 'spectral';
+  background?: string;
 }
 export interface SpectralStyle {
   mode: 'spectral' | 'deck';
@@ -28,10 +29,24 @@ export const PRISM_SPECTRAL: SpectralStyle = {
   waveform:{layout:'blend',smooth:.35,detail:2,headroom:.86,fillOpacity:1,colorCurve:2.114115,
     weights:[.85,1,1.8],edge:.8788055,edgeTint:'white'},
 };
+export const AURORA_SPECTRAL: SpectralStyle = {
+  mode:'spectral',strength:100,
+  colors:{low:{h:275,s:100,l:30},mid:{h:95,s:100,l:25},high:{h:185,s:100,l:19}},
+  waveform:{layout:'blend',smooth:.35,detail:2,headroom:.86,fillOpacity:.88,colorCurve:2.3,
+    weights:[.85,1,1.8],edge:.88,edgeTint:'spectral',background:'#090913'},
+};
+export const EMBER_SPECTRAL: SpectralStyle = {
+  mode:'spectral',strength:100,
+  colors:{low:{h:22,s:100,l:27},mid:{h:325,s:100,l:23},high:{h:225,s:100,l:28}},
+  waveform:{layout:'blend',smooth:.35,detail:2,headroom:.86,fillOpacity:.88,colorCurve:2.3,
+    weights:[.85,1,1.8],edge:.9,edgeTint:'spectral',background:'#090913'},
+};
 const tone = (h: number, s: number, l: number): Tone => ({h,s,l});
 export const SPECTRAL_PRESETS: {name:string; style:SpectralStyle}[] = [
   { name:'RGB', style:{mode:'spectral', strength:100, colors:{low:tone(0,155/245*100,265/510*100), mid:tone(120,155/245*100,265/510*100), high:tone(240,155/245*100,265/510*100)}} },
   { name:'Prism', style:PRISM_SPECTRAL },
+  { name:'Aurora', style:AURORA_SPECTRAL },
+  { name:'Ember', style:EMBER_SPECTRAL },
   { name:'Warm', style:{mode:'spectral', strength:85, colors:{low:tone(8,62,62), mid:tone(40,52,67), high:tone(65,28,83)}} },
   { name:'Ice', style:{mode:'spectral', strength:85, colors:{low:tone(235,46,58), mid:tone(197,54,66), high:tone(180,24,86)}} },
 ];
@@ -76,6 +91,7 @@ function isWaveformTreatment(value: unknown): value is WaveformTreatment {
   const w = value as WaveformTreatment;
   const within = (v: number, lo: number, hi: number) => Number.isFinite(v) && v >= lo && v <= hi;
   return (w.layout === 'layers' || w.layout === 'blend') && (w.edgeTint === 'white' || w.edgeTint === 'spectral')
+    && (w.background === undefined || (typeof w.background === 'string' && /^#[0-9a-f]{6}$/i.test(w.background)))
     && within(w.smooth,0,1) && within(w.detail,.5,2) && within(w.headroom,.4,.95)
     && within(w.fillOpacity,.1,1) && within(w.colorCurve,.25,2.5) && within(w.edge,0,1)
     && Array.isArray(w.weights) && w.weights.length === 3 && w.weights.every(v => within(v,.25,3));

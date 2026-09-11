@@ -163,3 +163,9 @@ mean-square band energy to RMS before applying weights; analysis is never rerun.
 `waveformPainter` applies the same color treatment to small previews and honors
 Deck mode with neutral paint when a preview has no assigned deck. Theme consumers
 must retain numeric measurements and derive paint when the scoped theme changes.
+
+The selector also offers **Aurora** (hues 275/95/185, lightness 30/25/19) and
+**Ember** (22/325/225, lightness 27/23/28), both saturation/strength 100, opacity .88,
+curve 2.3, spectral edge (.88 Aurora, .9 Ember) and background #090913. Both retain
+Prism's geometry and RMS weights. These optional treatments preserve the chosen
+Spectral/Deck mode and all saved themes; selection is always explicit.
