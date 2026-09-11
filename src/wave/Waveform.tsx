@@ -58,6 +58,8 @@ export interface WaveformProps {
   height?: number;
   /** Points per CSS pixel. Omit to let it ride the zoom, which is the point. */
   density?: number;
+  /** Visible fraction of a wider scrolling strip; controls detail without cropping the cached canvas. */
+  visibleShare?: number;
   /** 0 draws the polyline; 1 curves through every point. */
   smooth?: number;
   /** How much of the half-height the loudest point may reach. */
@@ -98,6 +100,7 @@ export function Waveform({
   presentation,
   height = 96,
   density,
+  visibleShare,
   smooth,
   headroom,
   samples,
@@ -157,7 +160,7 @@ export function Waveform({
         to,
         width: box.width,
         height: box.height,
-        density: density ?? densityFor(to - from) * (treatment?.detail ?? 1),
+        density: density ?? densityFor(visibleShare ?? to - from) * (treatment?.detail ?? 1),
         smooth:activeSmooth,
         headroom:activeHeadroom,
       };
@@ -186,7 +189,7 @@ export function Waveform({
       g.fill(pathOf(edges, activeSmooth));
     };
     schedule();
-  }, [levels, from, to, ink, paintColors, spectrum, presentation, height, density, activeSmooth, activeHeadroom, activePresentation, activeSpectrum, treatment, samples, schedule, theme]);
+  }, [levels, from, to, ink, paintColors, spectrum, presentation, height, density, visibleShare, activeSmooth, activeHeadroom, activePresentation, activeSpectrum, treatment, samples, schedule, theme]);
 
   useEffect(() => {
     const el = canvas.current;

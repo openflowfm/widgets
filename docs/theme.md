@@ -169,3 +169,9 @@ The selector also offers **Aurora** (hues 275/95/185, lightness 30/25/19) and
 curve 2.3, spectral edge (.88 Aurora, .9 Ember) and background #090913. Both retain
 Prism's geometry and RMS weights. These optional treatments preserve the chosen
 Spectral/Deck mode and all saved themes; selection is always explicit.
+
+A waveform drawn on a scrolling strip can supply `visibleShare` to select geometry
+density from the actual visible fraction. Mixer frames provide their viewport/strip
+ratio; a whole-strip canvas no longer implies a whole-track zoom. Detail still uses
+the existing bounded envelope ladder, and ordinary frame scrolling only translates
+the cached strip; it does not rebuild the waveform or apply smoothing to the audio.

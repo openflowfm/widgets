@@ -87,7 +87,7 @@ export function FrameWaveform({ deck, index, ink, readFrame, theme, commands }: 
       return <div key={lane.id} className="play-wave-source" data-focused={focused} aria-label={`Deck ${index + 1} ${lane.name} waveform`} style={{ '--stem-ink': paint } as CSSProperties}
         onPointerDown={() => { if (!alone) commands.setFocus?.(deck.id, lane.id); }}>
         <div className="play-wave-scroll" ref={node => { strips.current[i] = node; }} style={{ width: `${range.length / range.visible * 100}%` }}>
-          <Waveform peaks={lane.peaks} spectrum={lane.spectrum} ink={paint} height={48} label={`Deck ${index + 1} ${lane.name} on the shared beat grid`} />
+          <Waveform visibleShare={Math.min(1, range.visible / range.length)} peaks={lane.peaks} spectrum={lane.spectrum} ink={paint} height={48} label={`Deck ${index + 1} ${lane.name} on the shared beat grid`} />
           {/* Beats while they are far enough apart to be read as beats; bars alone once they are not, and faintly once a whole song's bars are pixels apart. */}
           <span className="play-wave-grid" data-grid={range.visible <= 48 ? 'beats' : range.visible <= 160 ? 'bars' : 'faint'} style={{ backgroundSize: `${100 / range.length}% 100%, ${400 / range.length}% 100%` }} />
           {lane.cue !== undefined && lane.cue !== lane.stemCue && <span className="play-cue-marker" style={{ left: `${(lane.cue - range.start) / range.length * 100}%`, top: alone ? 32 : undefined }}>{alone && 'DECK CUE'}</span>}
