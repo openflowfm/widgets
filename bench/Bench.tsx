@@ -1,3 +1,4 @@
+import { Pointing } from '../src/controls/Pointing.tsx';
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import { FINE_KEY } from '../src/gesture/platform.ts';
 import { format } from '../src/param/format.ts';
@@ -812,6 +813,7 @@ export function Bench() {
         aside={
           <div className="bench-aside">
             <h1>Widget bench</h1>
+            <Pointing />
             <p>
               Drag any control. Hold <kbd>{FINE_KEY}</kbd> for fine, <kbd>esc</kbd> to put a
               drag back where it started, double-click for the parameter&rsquo;s default,

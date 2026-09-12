@@ -176,3 +176,6 @@ for both pairs. Strength controls how much deck color appears in all waveform fi
 **Reset variation** restores warmth 8, saturation/lightness offsets 0, and strength 65%.
 Changing presets restores their saved variation; rolling role colors preserves it.
 Reset tab resets everything. Bench variation settings remain temporary.
+
+The sidebar includes Pointing for exercising screenshot annotations against every room.
+Its pointer toggles annotation and shows Clear only while enabled; it reserves no keys.

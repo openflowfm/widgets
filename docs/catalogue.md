@@ -531,3 +531,24 @@ number then reads dark on the fill and light off it, splitting at the edge.
 `DeviceParameter`, but nothing about drawing a switch needs a range, a taper or a unit.
 Pushing it through the param model would buy a conversion at every call site and no
 behavior at all.
+
+## Pointing annotations
+
+`controls/Pointing.tsx` is the reusable pointer icon for screenshot conversations;
+`controls/pointing.ts` owns its browser-only DOM engine. Mount one Pointing control in
+an app's settings/debug group. It works in browser harnesses and Electron renderers
+identically, with no preload, transport, protocol, or native-menu dependency.
+The pointer lights while active and exposes `aria-pressed`; **Clear** appears beside it
+only while active and restarts at A. There are no hotkeys. Keyboard users can focus the
+buttons and use Enter/Space; control keys do not bubble into app playback shortcuts.
+The control container is excluded from annotation using `data-pointing-controls`.
+
+Pointer clicks label semantic controls or containing components A…Z, AA… with colored
+outlines. Repeated clicks replace an element's letter. App clicks still run normally;
+keyboard activation and drags over five pixels do not add marks. The overlay uses a
+closed shadow root and no pointer hit area. It announces mode and the latest letter,
+tracks scroll/resize/mutations in one coalesced animation frame, and retains at most
+100 marks. There is no continuous frame loop or React update per annotation; off mode
+has no input/layout listeners. Unmount and turning off clear everything. CSS-only
+position animations may wait for another observed update; canvas contents are one
+surface and iframe interiors are not inspected.
