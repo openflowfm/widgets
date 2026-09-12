@@ -543,9 +543,12 @@ only while active and restarts at A. There are no hotkeys. Keyboard users can fo
 buttons and use Enter/Space; control keys do not bubble into app playback shortcuts.
 The control container is excluded from annotation using `data-pointing-controls`.
 
-Pointer clicks label semantic controls or containing components A…Z, AA… with colored
-outlines. Repeated clicks replace an element's letter. App clicks still run normally;
-keyboard activation and drags over five pixels do not add marks. The overlay uses a
+Completed primary pointer presses label semantic controls or containing components A…Z, AA… with colored
+outlines. Repeated clicks replace an element's letter. Disabled native controls and read-only surfaces can be annotated too: the engine
+observes passive pointerdown/pointerup, never changes disabled state, and never
+synthesizes a click. Enabled app clicks still run normally once. Keyboard activation,
+secondary buttons, canceled gestures, scrolling gestures, and drags over five pixels
+do not add marks. The initiating pointer owns the gesture. The overlay uses a
 closed shadow root and no pointer hit area. It announces mode and the latest letter,
 tracks scroll/resize/mutations in one coalesced animation frame, and retains at most
 100 marks. There is no continuous frame loop or React update per annotation; off mode

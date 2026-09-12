@@ -57,30 +57,42 @@ export function installPointing(doc: Document = document) {
   const schedule = () => { if (!frame) frame = requestAnimationFrame(refresh); };
   const observer = new ResizeObserver(schedule);
   const mutations = new MutationObserver(schedule);
-  let down: { x: number; y: number } | undefined;
+  let down: { id: number; x: number; y: number; target: Element } | undefined;
   let dragged = false;
   const pointerDown = (event: PointerEvent) => {
-    down = { x: event.clientX, y: event.clientY };
+    if (!event.isPrimary || event.button !== 0) return;
+    down = undefined;
+    const path = event.composedPath();
+    if (path.some(item => item instanceof Element && item.hasAttribute('data-pointing-controls'))) return;
+    const target = pointingTarget(path);
+    if (!target) return;
+    down = { id: event.pointerId, x: event.clientX, y: event.clientY, target };
     dragged = false;
   };
   const pointerMove = (event: PointerEvent) => {
-    if (down && Math.hypot(event.clientX - down.x, event.clientY - down.y) > 5) dragged = true;
+    if (down?.id === event.pointerId && Math.hypot(event.clientX - down.x, event.clientY - down.y) > 5) dragged = true;
   };
-  const pointerEnd = () => { down = undefined; };
+  const pointerCancel = (event: PointerEvent) => { if (down?.id === event.pointerId) down = undefined; };
+  const pointerUp = (event: PointerEvent) => {
+    if (!down || down.id !== event.pointerId) return;
+    const start = down;
+    down = undefined;
+    if (event.button !== 0 || dragged || Math.hypot(event.clientX - start.x, event.clientY - start.y) > 5) return;
+    if (start.target.isConnected) annotate(start.target);
+  };
+  const scroll = () => { if (down) dragged = true; schedule(); };
 
   const clear = () => {
+    down = undefined;
     observer.disconnect();
     for (const { box } of marks) box.remove();
     marks.length = 0;
     sequence = 0;
     if (enabled) status.textContent = 'Pointing on · Pointing controls: clear or turn off';
   };
-  const click = (event: MouseEvent) => {
-    // A pointer click only: keyboard activation keeps its existing meaning.
-    if (!event.detail || event.button !== 0 || dragged) return;
-    if (event.composedPath().some(item => item instanceof Element && item.hasAttribute('data-pointing-controls'))) return;
-    const target = pointingTarget(event.composedPath());
-    if (!target) return;
+  // Native disabled buttons still emit Pointer Events, but suppress click. Observe
+  // completion without synthesizing clicks, changing disabled, or taking capture.
+  const annotate = (target: Element) => {
     for (let i = marks.length - 1; i >= 0; i--) {
       if (marks[i].target === target) { marks[i].box.remove(); marks.splice(i, 1); }
     }
@@ -113,10 +125,9 @@ export function installPointing(doc: Document = document) {
       mutations.observe(doc.body, { subtree: true, childList: true, attributes: true, characterData: true });
       doc.addEventListener('pointerdown', pointerDown, { capture: true, passive: true });
       doc.addEventListener('pointermove', pointerMove, { capture: true, passive: true });
-      doc.addEventListener('pointerup', pointerEnd, { capture: true, passive: true });
-      doc.addEventListener('pointercancel', pointerEnd, { capture: true, passive: true });
-      doc.addEventListener('click', click, { capture: true, passive: true });
-      doc.addEventListener('scroll', schedule, { capture: true, passive: true });
+      doc.addEventListener('pointerup', pointerUp, { capture: true, passive: true });
+      doc.addEventListener('pointercancel', pointerCancel, { capture: true, passive: true });
+      doc.addEventListener('scroll', scroll, { capture: true, passive: true });
       window.addEventListener('resize', schedule, { passive: true });
     } else {
       clear();
@@ -124,11 +135,10 @@ export function installPointing(doc: Document = document) {
       down = undefined;
       doc.removeEventListener('pointerdown', pointerDown, true);
       doc.removeEventListener('pointermove', pointerMove, true);
-      doc.removeEventListener('pointerup', pointerEnd, true);
-      doc.removeEventListener('pointercancel', pointerEnd, true);
+      doc.removeEventListener('pointerup', pointerUp, true);
+      doc.removeEventListener('pointercancel', pointerCancel, true);
       host.remove();
-      doc.removeEventListener('click', click, true);
-      doc.removeEventListener('scroll', schedule, true);
+      doc.removeEventListener('scroll', scroll, true);
       window.removeEventListener('resize', schedule);
       if (frame) cancelAnimationFrame(frame);
       frame = 0;
