@@ -18,11 +18,56 @@ export function pointingTarget(path: EventTarget[]): Element | undefined {
   );
 }
 
+/** Recover visible controls skipped by CSS pointer-events, without changing hit testing. */
+export function pointingTargetAt(path: EventTarget[], x: number, y: number): Element | undefined {
+  const fallback = pointingTarget(path);
+  const scope = path.find((item): item is Element => item instanceof Element);
+  if (!scope) return fallback;
+  let best = fallback;
+  let area = Infinity;
+  const candidates = new Set<Element>();
+  if (fallback) candidates.add(fallback);
+  for (const candidate of scope.querySelectorAll(
+    'button,a[href],input,select,textarea,summary,[role],label,[tabindex],[contenteditable="true"],[data-pointing-target],canvas,div,section,article',
+  )) {
+    // A control's internal readout/wrappers are not separate screenshot targets.
+    const control = candidate.closest('button,a[href],input,select,textarea,summary,[data-pointing-target]');
+    candidates.add(control ?? candidate);
+  }
+  for (const candidate of candidates) {
+    if (candidate.namespaceURI !== 'http://www.w3.org/1999/xhtml' ||
+      candidate.closest('[data-pointing-controls],[data-pointing-overlay]')) continue;
+    const rect = candidate.getBoundingClientRect();
+    if (!rect.width || !rect.height || x < rect.left || x >= rect.right || y < rect.top || y >= rect.bottom) continue;
+    if (rect.width * rect.height > area) continue;
+    let visible = true;
+    for (let element: Element | null = candidate; element; element = element.parentElement) {
+      const css = element.ownerDocument.defaultView!.getComputedStyle(element);
+      if (css.display === 'none' || css.visibility === 'hidden' || css.visibility === 'collapse' || css.opacity === '0') {
+        visible = false; break;
+      }
+      // A scrolled/clipped descendant's rectangle can still cover this point.
+      if (element !== candidate) {
+        const bounds = element.getBoundingClientRect();
+        if ((/(hidden|clip|scroll|auto)/.test(css.overflowX) && (x < bounds.left || x >= bounds.right)) ||
+          (/(hidden|clip|scroll|auto)/.test(css.overflowY) && (y < bounds.top || y >= bounds.bottom))) {
+          visible = false; break;
+        }
+      }
+    }
+    if (!visible) continue;
+    const size = rect.width * rect.height;
+    if (size < area || best?.contains(candidate)) { best = candidate; area = size; }
+  }
+  return best;
+}
+
 export function installPointing(doc: Document = document) {
   let enabled = false;
   let sequence = 0;
   let frame = 0;
   const host = doc.createElement('div');
+  host.setAttribute('data-pointing-overlay', '');
   host.style.cssText = 'position:fixed;inset:0;z-index:2147483647;pointer-events:none;';
   const root = host.attachShadow({ mode: 'closed' });
   const style = doc.createElement('style');
@@ -64,7 +109,7 @@ export function installPointing(doc: Document = document) {
     down = undefined;
     const path = event.composedPath();
     if (path.some(item => item instanceof Element && item.hasAttribute('data-pointing-controls'))) return;
-    const target = pointingTarget(path);
+    const target = pointingTargetAt(path, event.clientX, event.clientY);
     if (!target) return;
     down = { id: event.pointerId, x: event.clientX, y: event.clientY, target };
     dragged = false;

@@ -548,7 +548,10 @@ outlines. Repeated clicks replace an element's letter. Disabled native controls 
 observes passive pointerdown/pointerup, never changes disabled state, and never
 synthesizes a click. Enabled app clicks still run normally once. Keyboard activation,
 secondary buttons, canceled gestures, scrolling gestures, and drags over five pixels
-do not add marks. The initiating pointer owns the gesture. The overlay uses a
+do not add marks. The initiating pointer owns the gesture. At pointerdown, geometry within the hit
+ancestor selects the smallest visible control under the coordinates, including children
+skipped by `pointer-events: none`. SVG/text internals, the pointing UI, hidden elements,
+and clipped-out descendants are excluded; no hit-testing styles are changed. The overlay uses a
 closed shadow root and no pointer hit area. It announces mode and the latest letter,
 tracks scroll/resize/mutations in one coalesced animation frame, and retains at most
 100 marks. There is no continuous frame loop or React update per annotation; off mode

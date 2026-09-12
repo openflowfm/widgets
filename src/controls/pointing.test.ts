@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { installPointing, letter, pointingTarget } from './pointing.ts';
+import { installPointing, letter, pointingTarget, pointingTargetAt } from './pointing.ts';
 
 afterEach(() => { document.body.replaceChildren(); vi.restoreAllMocks(); });
 
@@ -14,6 +14,32 @@ describe('pointing references', () => {
     expect(pointingTarget([path, path.parentElement!, document.querySelector('button')!, document.body])).toBe(document.querySelector('button'));
     expect(pointingTarget([document.querySelector('span')!, document.querySelector('section')!])).toBe(document.querySelector('section'));
     expect(pointingTarget([document.body, document.documentElement])).toBeUndefined();
+  });
+  it('finds an individual disabled button skipped by pointer hit testing inside a group', () => {
+    const { mode, shadow } = fixture('<div role="group"><button disabled style="pointer-events:none"><svg><path /></svg></button><button disabled style="pointer-events:none">Right</button></div>');
+    const group = document.querySelector('div')!;
+    const [left, right] = document.querySelectorAll('button');
+    rect(group, 0, 0, 80, 30); rect(left, 0, 0, 30, 30); rect(right, 40, 0, 30, 30);
+    expect(pointingTargetAt([group, document.body], 10, 10)).toBe(left);
+    expect(pointingTargetAt([group, document.body], 50, 10)).toBe(right);
+    expect(pointingTargetAt([group, document.body], 35, 10)).toBe(group);
+    const observe = vi.spyOn(ResizeObserver.prototype, 'observe');
+    mode.toggle();
+    pointer(group, 'pointerdown', { clientX: 10, clientY: 10 });
+    pointer(group, 'pointerup', { clientX: 10, clientY: 10 });
+    expect(observe).toHaveBeenLastCalledWith(left);
+    expect(shadow.querySelector('.letter')!.textContent).toBe('A');
+    expect(left.disabled).toBe(true);
+    expect(left.style.pointerEvents).toBe('none');
+    mode.destroy();
+  });
+  it('excludes invisible targets and pointing controls from geometry selection', () => {
+    document.body.innerHTML = '<div role="group"><button style="visibility:hidden">Hidden</button><button data-pointing-controls>Pointing</button><button>Visible</button></div>';
+    const group = document.querySelector('div')!;
+    rect(group, 0, 0, 100, 100);
+    const [hidden, own, visible] = document.querySelectorAll('button');
+    rect(hidden, 0, 0, 10, 10); rect(own, 0, 0, 15, 15); rect(visible, 0, 0, 30, 30);
+    expect(pointingTargetAt([group, document.body], 5, 5)).toBe(visible);
   });
   it('marks completed pointer gestures on disabled controls without enabling or clicking them', () => {
     const { mode, shadow } = fixture('<button disabled><span>Stop</span></button><div>Read-only surface</div>');
@@ -97,4 +123,8 @@ function pointer(target: Element, type: string, options: PointerEventInit = {}) 
 function gesture(target: Element) {
   pointer(target, 'pointerdown');
   pointer(target, 'pointerup');
+}
+
+function rect(element: Element, x: number, y: number, width: number, height: number) {
+  vi.spyOn(element, 'getBoundingClientRect').mockReturnValue(new DOMRect(x, y, width, height));
 }
