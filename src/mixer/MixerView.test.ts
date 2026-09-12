@@ -232,3 +232,25 @@ it('uses host stem gain text without changing stored linear values or reset payl
   const knob=view.getByRole('slider',{name:`Deck 1 ${props.state.decks[0].stems[0].name} level`});
   expect(knob.getAttribute('aria-valuenow')).toBe('100');expect(knob.getAttribute('aria-valuetext')).toBe('0.0 dB');
 });
+
+it('joins each deck action pair while preserving commands and disabled state', () => {
+  const props=fixture();
+  props.commands.moveLoop=vi.fn();props.commands.resizeLoop=vi.fn();props.commands.beatJump=vi.fn();
+  props.state.decks=props.state.decks.map(d=>({...d,gridAvailable:true,loop:{start:0,end:8,enabled:true}}));
+  const view=render(createElement(MixerView,props));
+  for(let i=1;i<=4;i++){
+    for(const name of [`Deck ${i} move loop`,`Deck ${i} loop length`])
+      expect(view.getByRole('group',{name}).classList.contains('wdg-control-group')).toBe(true);
+    expect(view.getByRole('group',{name:`Deck ${i} beat jump`}).querySelector('.wdg-control-group')).not.toBeNull();
+  }
+  fireEvent.click(view.getByRole('button',{name:'Deck 1 move loop back'}));
+  fireEvent.click(view.getByRole('button',{name:'Deck 1 halve loop'}));
+  fireEvent.click(view.getByRole('button',{name:'Deck 1 jump forward one beat'}));
+  expect(props.commands.moveLoop).toHaveBeenCalledWith('left-outside',-1);
+  expect(props.commands.resizeLoop).toHaveBeenCalledWith('left-outside',.5);
+  expect(props.commands.beatJump).toHaveBeenCalledWith('left-outside',1);
+  props.state={...props.state,decks:props.state.decks.map(d=>({...d,gridAvailable:false}))};
+  view.rerender(createElement(MixerView,props));
+  for(const name of ['Deck 1 move loop back','Deck 1 halve loop','Deck 1 jump forward one beat'])
+    expect((view.getByRole('button',{name}) as HTMLButtonElement).disabled).toBe(true);
+});

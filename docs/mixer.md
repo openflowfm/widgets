@@ -344,3 +344,9 @@ the travel; the standalone bench uses the same range.
 Optional stable `stemLevelDisplay(value)` lets the host spell linear stored gain in
 dB without changing the stored value or command payload. The stem Param still owns
 range, taper and reset. Both readout and accessible value text use the host spelling.
+
+Loop-move arrows, loop halve/double, and beat-jump arrows each use the shared
+`wdg-control-group` button surface. Each pair has one outer outline and an internal
+divider, with separate groups for loop position and length. Existing commands,
+disabled rules and loop-row 24px height remain unchanged. Beat-jump orientation
+still follows its container; the divider follows that orientation too.

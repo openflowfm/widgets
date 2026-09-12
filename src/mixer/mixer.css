@@ -123,7 +123,9 @@
 /* Every loop action has the same width, including the two joined quick-loop faces.
    Paired controls reserve their internal gap before sharing the remaining width. */
 .play-deck-loops > .wdg {flex:1 1 0;}
-.play-loop-move {display:flex;gap:3px;flex:2 1 3px;min-width:0;}
+.play-deck-loops > .play-loop-move {display:flex;gap:0;flex:2 1 3px;min-width:0;height:24px;}
+.play-loop-move.wdg-control-group > .wdg-body {height:100%;}
+.play-loop-move.wdg-control-group > .wdg-body + .wdg-body {border-left:1px solid var(--wdg-edge);}
 .play-quick-loop-group {display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:0;flex:2 1 0;min-width:0;}
 .play-quick-loop-group:not(:has(.play-quick-loop)):not(:has(.play-context-trigger)) {display:none;}
 .play-quick-loop-group:not(:has(.play-quick-loop)),
@@ -162,10 +164,15 @@
 .play-monitor-row .play-fx-global > .play-context-trigger {width:auto;}
 
 .play-beat-jump {container-type:size;}
-.play-beat-jump-pair {display:flex;flex-direction:column;gap:2px;height:100%;}
+.play-beat-jump-pair.wdg-control-group {height:100%;}
+.play-beat-jump-pair.wdg-control-group > .wdg-body {height:auto;min-height:0;}
+.play-beat-jump-pair {display:flex;flex-direction:column;gap:0;height:100%;}
+.play-beat-jump-pair.wdg-control-group > .wdg-body + .wdg-body {border-left:0;border-top:1px solid var(--wdg-edge);}
 .play-jump-abreast {display:none;}
 @container (min-aspect-ratio:1/1) {
   .play-beat-jump-pair {flex-direction:row-reverse;}
+  .play-beat-jump-pair.wdg-control-group > .wdg-body + .wdg-body {border-top:0;}
+  .play-beat-jump-pair.wdg-control-group > .wdg-body:first-child {border-left:1px solid var(--wdg-edge);}
   .play-jump-stacked {display:none;}
   .play-jump-abreast {display:inline;}
 }
