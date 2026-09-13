@@ -61,7 +61,9 @@ export function DeckStrip({ deck: d, index, commands, readFrame, theme, params, 
         </MixerSection>
         <MixerSection className="play-effects">
           <Knob ink="var(--amber)" name="FX A" label={`Deck ${index + 1} effects send A`} param={SEND} value={d.sendA} onChange={value => commands.setDeck(d.id, 'sendA', value)} hint="How much of this deck reaches the shared FX A effect. Taken after the fader, so it falls away as you fade the deck out." />
-          <Separator orientation="vertical" className="play-column-rule"/><Knob ink="var(--amber)" name="Filter" label={`Deck ${index + 1} filter`} param={FILTER} value={d.filter} onChange={value => commands.setDeck(d.id, 'filter', value)} hint="Sweeps a filter across this deck. Left takes the top off, right takes the bottom out, and the middle is untouched." />
+          <Separator orientation="vertical" className="play-column-rule"/><div className="play-filter-pair"><Knob ink="var(--amber)" name="Filter" label={`Deck ${index + 1} filter`} param={FILTER} value={d.filter} onChange={value => commands.setDeck(d.id, 'filter', value)} hint="Sweeps a filter across this deck. Left takes the top off, right takes the bottom out, and the middle is untouched." />
+            {params.filterResonance && <Knob ink="var(--amber)" name="Resonance" label={`Deck ${index + 1} filter resonance`} param={params.filterResonance} value={d.filterResonance ?? 0} onChange={value => commands.setDeck(d.id, 'filterResonance', value)} hint="Emphasizes the filter cutoff on this deck. At center, Filter stays neutral. Resonance can raise peaks; lower Trim if needed." />}
+          </div>
           <Separator orientation="vertical" className="play-column-rule"/><Knob ink="var(--amber)" name="FX B" label={`Deck ${index + 1} effects send B`} param={SEND} value={d.sendB} onChange={value => commands.setDeck(d.id, 'sendB', value)} hint="How much of this deck reaches the shared FX B effect. Taken after the fader, so it falls away as you fade the deck out." />
         </MixerSection>
         <MixerSection className="play-channel">

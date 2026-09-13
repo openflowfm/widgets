@@ -350,3 +350,10 @@ Loop-move arrows, loop halve/double, and beat-jump arrows each use the shared
 divider, with separate groups for loop position and length. Existing commands,
 disabled rules and loop-row 24px height remain unchanged. Beat-jump orientation
 still follows its container; the divider follows that orientation too.
+
+Optional `MixerParams.filterResonance` opts a host into a Resonance knob paired
+with Filter between FX A and FX B. `MixerDeck.filterResonance` defaults to zero
+when absent; edits emit `setDeck(id, "filterResonance", value)`. Existing hosts
+that omit the parameter keep their previous face. The bench uses 0–12 dB with
+a zero reset. The host owns clamping, smoothing and which filter resonates;
+the master has no resonance control.

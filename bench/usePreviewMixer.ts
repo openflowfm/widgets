@@ -26,14 +26,14 @@ const PEAKS = SONGS.map((_, deck) => STEMS.map((__, stem) => Array.from({ length
     (0.2 + 0.8 * Math.abs(Math.sin(i * (0.61 + stem * 0.19) + deck * 2)));
   return { min: -envelope * 0.8, max: envelope };
 })));
-interface DeckState { loop: { start: number | null; end: number | null; enabled: boolean }; positionOffset: number; full: boolean; fullSection: number; fullQueued: number | null; active: number[]; queued: (number | null)[]; levels: number[]; gain: number; trim: number; sendA: number; sendB: number; eq: number[]; filter: number; route: number; cue: boolean }
+interface DeckState { loop: { start: number | null; end: number | null; enabled: boolean }; positionOffset: number; full: boolean; fullSection: number; fullQueued: number | null; active: number[]; queued: (number | null)[]; levels: number[]; gain: number; trim: number; sendA: number; sendB: number; eq: number[]; filter: number; filterResonance: number; route: number; cue: boolean }
 const initialDecks = (): DeckState[] => SONGS.map((_, i) => ({
   loop: { start: null, end: null, enabled: false }, positionOffset: 0, full: false, fullSection: 3, fullQueued: null, active: [3, 3, 3, 3], queued: [null, null, null, null], levels: [85, 78, 66, 82],
-  gain: i < 2 ? 80 : 0, trim: 0, sendA: 0, sendB: 0, eq: [0, 0, 0], filter: 0, route: i % 2 ? 2 : 0, cue: false,
+  gain: i < 2 ? 80 : 0, trim: 0, sendA: 0, sendB: 0, eq: [0, 0, 0], filter: 0, filterResonance: 0, route: i % 2 ? 2 : 0, cue: false,
 }));
 
 
-export const previewParams: MixerParams = { level: LEVEL, trim: TRIM, send: SEND, eq: EQ, filter: FILTER, tempo: TEMPO, cross: CROSS };
+export const previewParams: MixerParams = { level: LEVEL, trim: TRIM, send: SEND, eq: EQ, filter: FILTER, filterResonance: {kind: 'float', min: 0, max: 12, defaultValue: 0, unit: 'decibel'}, tempo: TEMPO, cross: CROSS };
 const deckIds = ['deck-a', 'deck-b', 'deck-c', 'deck-d'];
 const stemIds = ['drums', 'bass', 'other', 'vocals'];
 const sectionIds = ['intro', 'verse', 'build', 'drop', 'break', 'outro'];

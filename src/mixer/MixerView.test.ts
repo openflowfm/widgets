@@ -254,3 +254,17 @@ it('joins each deck action pair while preserving commands and disabled state', (
   for(const name of ['Deck 1 move loop back','Deck 1 halve loop','Deck 1 jump forward one beat'])
     expect((view.getByRole('button',{name}) as HTMLButtonElement).disabled).toBe(true);
 });
+
+it('opts into deck resonance and delegates its reset through setDeck', () => {
+  const props=fixture(),view=render(createElement(MixerView,props));
+  expect(view.queryByLabelText('Deck 1 filter resonance')).toBeNull();
+  props.params={...props.params,filterResonance:{kind:'float',min:0,max:12,defaultValue:0,unit:'decibel'}};
+  props.state={...props.state,decks:props.state.decks.map((d,i)=>i===0?{...d,filterResonance:8}:d)};
+  view.rerender(createElement(MixerView,props));
+  const resonance=view.getByRole('slider',{name:'Deck 1 filter resonance'});
+  expect(resonance.getAttribute('aria-valuenow')).toBe('8');
+  expect(view.getByRole('slider',{name:'Deck 2 filter resonance'}).getAttribute('aria-valuenow')).toBe('0');
+  expect(view.queryByLabelText('Master filter resonance')).toBeNull();
+  fireEvent.doubleClick(resonance);
+  expect(props.commands.setDeck).toHaveBeenCalledWith('left-outside','filterResonance',0);
+});

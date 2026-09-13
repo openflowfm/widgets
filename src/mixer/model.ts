@@ -14,7 +14,7 @@ export interface MixerStem {
   /** Undefined: no pending change. Null: pending stop. */
   queued: string | null | undefined;
 }
-export type DeckControl = 'gain' | 'trim' | 'sendA' | 'sendB' | 'filter' | 'route' | 'cue' | 'full';
+export type DeckControl = 'gain' | 'trim' | 'sendA' | 'sendB' | 'filter' | 'filterResonance' | 'route' | 'cue' | 'full';
 /**
  * One drawn source: the original in full mode, or one stem per lane in stem mode.
  *
@@ -64,6 +64,8 @@ export interface MixerDeck {
   fullSection: string | null;
   fullQueued: string | null | undefined;
   gain: number; trim: number; sendA: number; sendB: number; filter: number;
+  /** Optional resonance in host units; absent reads as zero. */
+  filterResonance?: number;
   eq: readonly number[];
   route: number;
   cue: boolean;
@@ -160,6 +162,8 @@ export interface MixerTheme {
 export interface MixerParams {
   stemLevel?: Param;
   stemLevelDisplay?: (value: number) => string;
+  /** Opts decks into the Resonance control beside Filter. */
+  filterResonance?: Param;
   level: Param; trim: Param; send: Param; eq: Param; filter: Param; tempo: Param; cross: Param;
 }
 export interface MixerViewProps {

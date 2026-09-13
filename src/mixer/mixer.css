@@ -282,3 +282,5 @@
 .play-master-strip .play-actions:has(.play-fx-highpass) { padding-inline:0; }
 .play-fx-params:has(.play-fx-highpass) { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; padding-inline:0; }
 .play-fx-params:has(.play-fx-highpass) .wdg-knob { min-width:0; }
+
+.play-filter-pair { display:flex; align-items:center; justify-content:center; gap:8px; }
