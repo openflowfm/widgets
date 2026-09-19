@@ -7,15 +7,13 @@ import { Row } from './Row.tsx';
 import { Button } from '../controls/Button.tsx';
 import { Knob } from '../controls/Knob.tsx';
 import { Meter } from '../controls/Meter.tsx';
-import { Segmented } from '../controls/Segmented.tsx';
 import { Select } from '../controls/Select.tsx';
 import { Slider } from '../controls/Slider.tsx';
 import { Toggle } from '../controls/Toggle.tsx';
 import { Facts, type Fact } from '../debug/Facts.tsx';
 import { Group, Harness, Shelf, Status, Toolbar } from '../debug/Harness.tsx';
-import { useRemembered } from '../debug/useRemembered.ts';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Case, DRY_WET, FREQ } from '../../stories/parts.tsx';
+import { DRY_WET, FREQ } from '../../stories/parts.tsx';
 import {
   useEntries,
   useReading,
@@ -42,12 +40,13 @@ import {
  * The loop is: work on the canvas, read the account, change something in
  * `chrome/Graph.tsx`, work on it again, and compare the same numbers.
  *
- * The four stories are the four questions in order. **Patch** is free play with
- * the instrument running. **Trials** is the same canvas with the graph's
+ * The stories are the questions in order. **Patch** is free play with the
+ * instrument running. **Trials** is the same canvas with the graph's
  * documented promises listed beside it, ticked off as you make each one
- * happen. **Scale** is the same graph with far too much on it. **Anatomy** is
- * the still half — where a cord ends, and how a face changes shape to line one
- * up.
+ * happen. **Scale** is the same graph with far too much on it, and takes its
+ * node count and its faceplates switch as args. The three **Anatomy** stories
+ * are the still half — where a cord ends, and how a face changes shape to line
+ * one up.
  */
 
 type Kind = 'note' | 'signal';
@@ -673,12 +672,9 @@ const runOf = (count: number): readonly GraphCord[] =>
  * and a fast one with them off is a device-rendering problem, and no amount of
  * work on `Graph.tsx` will touch it.
  */
-function ScaleRoom() {
+function ScaleRoom({ count, faces }: { count: number; faces: boolean }) {
   const trace = useTrace();
   const watch = useWatch(trace);
-  const [size, setSize] = useRemembered('graph-scale', 1);
-  const [faces, setFaces] = useRemembered('graph-scale-faces', true);
-  const count = SIZES[size] ?? SIZES[0];
 
   const [at, setAt] = useState<Record<string, { x: number; y: number }>>(() => block(count));
   useEffect(() => setAt(block(count)), [count]);
@@ -695,19 +691,6 @@ function ScaleRoom() {
       status={<Cost watch={watch} />}
     >
       <Toolbar>
-        <Group caption="Nodes">
-          <Segmented
-            items={SIZES.map(String)}
-            index={size}
-            onChange={setSize}
-            label="How many nodes"
-          />
-        </Group>
-        <Group caption="Faces" title="Off is the ablation: a node with nothing on it but its name.">
-          <Toggle on={faces} onChange={setFaces} label="Draw the faceplates">
-            {faces ? 'drawn' : 'bare'}
-          </Toggle>
-        </Group>
         <Group caption="Account">
           <Button
             onPress={() => {
@@ -872,32 +855,29 @@ function RowFace() {
   );
 }
 
-/** The still half: where a cord ends, with no canvas needed to look at it. */
-function AnatomyRoom() {
+/** The still half, one case a story: the opt-in row face. */
+function LoosePorts() {
   return (
-    <div className="cases">
-      <Case note="The opt-in row face: its picture is outside the frame, its chooser and outlet bands stay put, and every inlet dot shares a line with its label, slider or meter. Empty reserved rows keep the frame the same size when its contents change.">
-        <RowFace />
-      </Case>
-      <Case note="A device with ports and no graph around it. The rails draw; nothing measures them and nothing connects, because the surface is what owns both.">
-        <Device
-          name="Shape"
-          on
-          onToggle={() => {}}
-          inlets={<Port id="loose:in" side="in" label="In" kind="signal" />}
-          outlets={<Port id="loose:out" side="out" label="Out" kind="signal" connected />}
-        >
-          <BareFace />
-        </Device>
-      </Case>
-      <Case note="In a chain, where adjacency is the connection and there is nothing to draw. The same shell, no ports passed, exactly as it was.">
-        <Chain>
-          <Device name="Shape" on onToggle={() => {}}>
-            <BareFace />
-          </Device>
-        </Chain>
-      </Case>
-    </div>
+    <Device
+      name="Shape"
+      on
+      onToggle={() => {}}
+      inlets={<Port id="loose:in" side="in" label="In" kind="signal" />}
+      outlets={<Port id="loose:out" side="out" label="Out" kind="signal" connected />}
+    >
+      <BareFace />
+    </Device>
+  );
+}
+
+/** The same shell in a chain, where adjacency is the connection. */
+function InChain() {
+  return (
+    <Chain>
+      <Device name="Shape" on onToggle={() => {}}>
+        <BareFace />
+      </Device>
+    </Chain>
   );
 }
 
@@ -916,7 +896,29 @@ function BareFace() {
 const meta = {
   title: 'Graph/Canvas',
   component: Graph,
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'The canvas, as an instrument rather than a page of cases. A cord that lands nine times out of ten looks exactly like one that lands ten times out of ten, so these stories carry a running account of what the hand did and what the graph made of it.',
+      },
+    },
+  },
+  // Each story is a room the canvas is mounted inside, so none of the graph's
+  // own props is an arg: a control on one of them would move nothing.
+  argTypes: {
+    children: { control: false },
+    cords: { control: false },
+    onConnect: { control: false },
+    onMove: { control: false },
+    onClearSelection: { control: false },
+    viewRef: { control: false },
+    minZoom: { control: false },
+    maxZoom: { control: false },
+    grid: { control: false },
+    className: { control: false },
+  },
 } satisfies Meta;
 
 export default meta;
@@ -933,16 +935,46 @@ export const Patch = story(
 );
 
 export const Trials = story(
-  'The same canvas with the graph’s own promises listed beside it, ticked off as you make each one happen. Start a round after a change and see whether all eleven still tick.',
+  'The same canvas with the graph\u2019s own promises listed beside it, ticked off as you make each one happen. Start a round after a change and see whether all eleven still tick.',
   TrialRoom,
 );
 
-export const Scale = story(
-  'Six nodes, or two hundred and forty. The switch for the faceplates is the ablation: it says whether a slow canvas is the graph’s fault or the faces’.',
-  ScaleRoom,
+export const Scale: StoryObj<{ count: number; faces: boolean }> = {
+  args: { count: 24, faces: true },
+  argTypes: {
+    count: { control: 'inline-radio', options: SIZES, description: 'How many nodes on the canvas.' },
+    faces: { control: 'boolean', description: 'Off is the ablation: a node with nothing on it but its name.' },
+  },
+  render: ({ count, faces }) => <ScaleRoom count={count} faces={faces} />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Six nodes, or two hundred and forty. The switch for the faceplates is the ablation: it says whether a slow canvas is the graph\u2019s fault or the faces\u2019.',
+      },
+    },
+  },
+};
+
+const anatomy = (name: string, about: string, Room: () => ReactNode): Story => ({
+  ...story(about, Room),
+  name,
+});
+
+export const AnatomyRowFace = anatomy(
+  'Anatomy: row face',
+  'The opt-in row face: its picture is outside the frame, its chooser and outlet bands stay put, and every inlet dot shares a line with its label, slider or meter. Empty reserved rows keep the frame the same size when its contents change.',
+  RowFace,
 );
 
-export const Anatomy = story(
-  'Where a cord ends. The rails a device carries by default, the aligned rows a face opts into, and the same shell in a chain with nothing to draw.',
-  AnatomyRoom,
+export const AnatomyLoosePorts = anatomy(
+  'Anatomy: ports, no canvas',
+  'A device with ports and no graph around it. The rails draw; nothing measures them and nothing connects, because the surface is what owns both.',
+  LoosePorts,
+);
+
+export const AnatomyInChain = anatomy(
+  'Anatomy: in a chain',
+  'In a chain, where adjacency is the connection and there is nothing to draw. The same shell, no ports passed, exactly as it was.',
+  InChain,
 );

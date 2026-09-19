@@ -21,6 +21,9 @@ import './controls.css';
 /** Caption above the control, beside it, or laid over a horizontal track. */
 export type WidgetLayout = 'stacked' | 'inline' | 'inside';
 
+/** Which side of the control the caption and reading sit on, laid inline. */
+export type WidgetSide = 'left' | 'right';
+
 /**
  * The custom properties a control sets on its own instance.
  *
@@ -45,6 +48,11 @@ export interface WidgetProps {
    */
   label?: string;
   layout?: WidgetLayout;
+  /**
+   * Where the text goes when the layout is `inline`: the caption over the
+   * reading, on the left of the control or on its right. Nothing else reads it.
+   */
+  side?: WidgetSide;
   disabled?: boolean;
   className?: string;
   title?: string;
@@ -98,6 +106,7 @@ export function Widget({
   name,
   readout,
   layout = 'stacked',
+  side = 'left',
   disabled = false,
   vars,
   ref,
@@ -115,6 +124,7 @@ export function Widget({
       ref={ref}
       className={`wdg wdg-widget wdg-${kind}${className ? ` ${className}` : ''}`}
       data-layout={layout}
+      {...(layout === 'inline' ? { 'data-side': side } : {})}
       {...hintAttribute(hint)}
       {...(disabled ? { 'data-disabled': '' } : {})}
       style={{ ...reserved, ...inked, ...vars } as CSSProperties}

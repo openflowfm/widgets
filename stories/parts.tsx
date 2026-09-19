@@ -12,44 +12,13 @@ import { enumParam, type Param, type UnitStyle } from '../src/param/param.ts';
  */
 
 /**
- * The card a story sits in, and the sentence under it saying what the story is
- * *for*. Spread into a story's `parameters`: the preview's decorator draws the
- * card, and the docs page prints the sentence as the story's description.
+ * What a story is *for*, as its description on the docs page. Spread into a
+ * story's `parameters`. The canvas shows the widget and nothing else; the
+ * sentence lives in the docs.
  */
-export const note = (text: string, { wide = false } = {}) => ({
-  note: text,
-  wide,
+export const note = (text: string) => ({
   docs: { description: { story: text } },
 });
-
-/** One widget's own value, so every example on the page is genuinely live. */
-export function Held({
-  param,
-  children,
-}: {
-  param: Param;
-  children: (value: number, onChange: (next: number) => void) => ReactNode;
-}) {
-  const [value, setValue] = useState(param.defaultValue);
-  return <>{children(value, setValue)}</>;
-}
-
-export function Case({
-  note,
-  wide,
-  children,
-}: {
-  note: string;
-  wide?: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <div className={`case${wide ? ' wide' : ''}`}>
-      <div className="case-stage">{children}</div>
-      <p className="case-note">{note}</p>
-    </div>
-  );
-}
 
 export const DRY_WET: Param = {
   kind: 'float', min: 0, max: 100, defaultValue: 50, unit: 'percent', shortName: 'Dry/Wet',

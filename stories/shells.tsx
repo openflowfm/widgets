@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Chain } from '../src/chrome/Chain.tsx';
+import { useState, type ReactNode } from 'react';
+import { Chain, type ChainProps } from '../src/chrome/Chain.tsx';
 import { Device } from '../src/chrome/Device.tsx';
 import { Rack } from '../src/chrome/Rack.tsx';
 import { Row } from '../src/chrome/Row.tsx';
@@ -7,13 +7,31 @@ import { Knob } from '../src/controls/Knob.tsx';
 import { NumberField } from '../src/controls/NumberField.tsx';
 import { Segmented } from '../src/controls/Segmented.tsx';
 import { Slider } from '../src/controls/Slider.tsx';
-import { DRY_WET, FILTER, FREQ, GAIN, Held, TIME } from './parts.tsx';
+import type { Param } from '../src/param/param.ts';
+import { DRY_WET, FILTER, FREQ, GAIN, TIME } from './parts.tsx';
 
 /**
  * The shells the chrome stories are built out of: a faceplate worth putting in
  * a shell, a shell, a run of them, a rack. Shared by the Device and Chain
  * stories, which show the same things at different scales.
  */
+
+/**
+ * A control holding its own value, so a story's faceplate is live.
+ *
+ * Stories that *are* a component's props take them as args; a faceplate inside
+ * a shell is scenery, and scenery still has to work when you put a hand on it.
+ */
+export function Held({
+  param,
+  children,
+}: {
+  param: Param;
+  children(value: number, set: (next: number) => void): ReactNode;
+}) {
+  const [value, setValue] = useState(param.defaultValue);
+  return <>{children(value, setValue)}</>;
+}
 
 /** A faceplate worth putting in a shell: real controls, each with its own value. */
 export function Faceplate() {
@@ -27,7 +45,7 @@ export function Faceplate() {
 }
 
 /** The same controls twice: left to themselves, then given a rhythm. */
-export function Mixed({ ruled }: { ruled?: boolean }) {
+export function Mixed({ ruled, gap }: { ruled?: boolean; gap?: number }) {
   const controls = (
     <>
       <Held param={FREQ}>{(v, set) => <Knob param={FREQ} value={v} onChange={set} />}</Held>
@@ -38,7 +56,13 @@ export function Mixed({ ruled }: { ruled?: boolean }) {
       </Held>
     </>
   );
-  return ruled ? <Row>{controls}</Row> : <div className="loose">{controls}</div>;
+  return ruled ? (
+    <Row gap={gap}>{controls}</Row>
+  ) : (
+    <div className="loose" style={gap === undefined ? undefined : { gap }}>
+      {controls}
+    </div>
+  );
 }
 
 export function Shell({
@@ -75,11 +99,11 @@ export function Shell({
 }
 
 /** Three of them, because a chain is the thing we're actually building. */
-export function Run({ dropAt }: { dropAt?: number }) {
+export function Run(props: ChainProps) {
   const [at, setAt] = useState(1);
   const names = ['EQ Eight', 'Auto Filter', 'Saturator'];
   return (
-    <Chain dropAt={dropAt}>
+    <Chain {...props}>
       {names.map((name, i) => (
         <Shell
           key={name}
@@ -97,14 +121,14 @@ export function Run({ dropAt }: { dropAt?: number }) {
 const MACROS = ['Macro 1', 'Macro 2', 'Macro 3', 'Macro 4'];
 
 /** A rack in a chain, holding chains of its own. The recursion is the point. */
-export function Grouped() {
+export function Grouped(props: ChainProps) {
   const [at, setAt] = useState(1);
   const [on, setOn] = useState(true);
   const [folded, setFolded] = useState(false);
   const [device, setDevice] = useState(0);
 
   return (
-    <Chain>
+    <Chain {...props}>
       <Shell name="EQ Eight" collapsed />
       <Rack
         name="Audio Effect Rack"

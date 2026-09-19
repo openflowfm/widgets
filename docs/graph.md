@@ -278,8 +278,10 @@ a port with whether a connection followed.
 |---|---|
 | **Patch** | four nodes, two kinds, free play. The account and the readings run beside it |
 | **Trials** | the promises on this page, listed, ticked off as you make each one happen |
-| **Scale** | six nodes or two hundred and forty, with a switch that draws the faceplates or doesn't |
-| **Anatomy** | the still half: the rails, the aligned rows, and the same shell in a chain |
+| **Scale** | six nodes or two hundred and forty, with a switch that draws the faceplates or doesn't. Both are args |
+| **Anatomy: row face** | the aligned rows a face opts into, with its picture and its reserved bands |
+| **Anatomy: ports, no canvas** | the rails a device carries by default, with nothing measuring them |
+| **Anatomy: in a chain** | the same shell where adjacency is the connection and there is nothing to draw |
 
 The numbers that are about *this module* rather than about the instrument:
 

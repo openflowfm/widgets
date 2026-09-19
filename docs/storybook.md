@@ -59,11 +59,19 @@ The sidebar is grouped by what you came to look at rather than by what the file 
 | **Debug** | the harness module, one widget at a time and then all together |
 | **Param** | the model playground |
 
-Most stories are a card with a note under it saying what the story is *for*, each genuinely
-live and holding its own value. The note is a story parameter — `note('…')` from
-`stories/parts.tsx` — so the same sentence is printed under the card in the canvas and as
-the story's description on its docs page. Controls and chrome carry the `autodocs` tag,
-so each has a docs page with its prop table and every story on it.
+**The canvas holds the widget and nothing else.** What a story is *for* is a sentence, and
+a sentence belongs on the docs page rather than under the thing it describes: `note('…')`
+from `stories/parts.tsx` is a story parameter that sets `docs.description.story`, and each
+file's meta sets `docs.description.component` for the widget as a whole. Controls and
+chrome carry the `autodocs` tag, so each has a docs page with its prop table and every
+story on it.
+
+Where a component's props *are* the story — a device's name and fold, a chain's drop mark,
+a waveform's window — the story is its args, with a control apiece: ranges for numbers,
+select or radio for enums, booleans for flags, and `fn()` from `storybook/test` for
+callbacks. A controlled prop stays live through `useArgs()` from `storybook/preview-api`,
+so a press writes the arg back rather than doing nothing. Composite stories that are a
+whole scene keep a `render`, and still take args for whatever the scene is varying.
 
 **Graph is the exception, and is an instrument rather than a page for a reason.** A knob is
 right or wrong in a screenshot; a canvas is not. A cord that lands nine times out of ten
@@ -81,29 +89,44 @@ reasoned about in
 parts: a knob at every taper, a `Panel`'s aligned lanes, a `Device` shell folded and open.
 
 **The model playground** is the point of the whole harness. Change the unit style, range,
-exponent or step count and watch a knob, a slider and a number field all change together,
-with the raw value and the formatted string printed underneath. It is the fastest way to
+exponent or step count — they are the story's args, so the controls panel is the host —
+and watch a knob, a slider and a number field all change together, with the raw value and
+the formatted string printed underneath. It is the fastest way to
 check a formatter, and it makes the model-first design visible — you are changing the
 parameter, not the widget.
 
-## The host-tokens switch
+## Themes, host tokens, and the Tokens page
 
-`src/tokens.css` defines every colour and type token as `var(--host-token,
-fallback)`, so a widget picks up the app's palette when it's mounted in the app and uses
-its own when it isn't. The metrics below them — height, track, gap — are the widget's own
-and take no host token, because a control's size is the module's decision; a host that
-wants them different sets `--wdg-height`, `--wdg-field-height` and the rest directly.
+Two toolbar items change what a widget looks like from outside it, and a docs page shows
+the result.
 
-The **Host tokens** item in Storybook's toolbar adds and removes the app's palette from the
-page, so both halves of that chain can be seen. It is a toolbar global in
-`.storybook/preview.tsx`: the palette is imported as text and mounted in a `<style>`, because
-a stylesheet Vite has injected cannot be taken out again. A widget that looks right only
-with host tokens present is a widget that will look wrong the first time it's used anywhere
-else.
+**Theme** is `@storybook/addon-themes`, wired in `.storybook/preview.tsx` with
+`withThemeFromJSXProvider`: the picker wraps every story in a `ThemeRoot` carrying one of
+the presets from `src/theme/theme.ts`, and sets the same resolved tokens on the document
+element so the page around the story — the body, a docs table, the portal a menu or modal
+opens into — follows too. The default is the default theme, which is what the apps mount;
+*none* is the palette as shipped, with no theme over it, and is where the shipped amber
+comes from. A story can pin one with `parameters.theme`, and since the vitest runner
+honours globals, a pinned theme is a themed test. **Theme / Editor** mounts the editor
+beside a sample of what it colours, with the document as its arg.
 
-The preview stylesheet also locally overrides the primary accent tokens (`--amber` and its
-hover/muted variants) with silver-blue. This is the fallback when the mixer's theme editor is
-not mounted; the theme editor scopes its override to the mixer composition.
+**Host tokens** is the other question. `src/tokens.css` defines every colour and type token
+as `var(--host-token, fallback)`, so a widget picks up the app's palette when it's mounted in
+the app and uses its own when it isn't. The metrics below them — height, track, gap — are
+the widget's own and take no host token, because a control's size is the module's decision;
+a host that wants them different sets `--wdg-height`, `--wdg-field-height` and the rest
+directly. *Off* sets every palette and type token to `initial` on a wrapper, which makes
+each one guaranteed-invalid inside it and lets the fallbacks show. The token names come
+from the stylesheets themselves (`stories/tokens.ts` reads them off `palette.css`, `type.css`
+and `tokens.css` as text), so the switch cannot drift from what the palette declares. A
+widget that looks right only with host tokens present is a widget that will look wrong the
+first time it's used anywhere else.
+
+**Tokens**, at the top of the sidebar, is `stories/Tokens.mdx`: every preset resolved to
+the strings a `ThemeRoot` sets, the type scale, and a table per layer — palette, type,
+widget. The tables are live: each value is read off the page with `getComputedStyle`, so
+changing the theme or the host-tokens switch changes what they show. That is the page to
+read before adding a token, and the page that says whether a host has actually reached one.
 
 ## What it doesn't do
 
@@ -133,17 +156,17 @@ the `.npmrc` line out with the upgrade.
 
 ## Adding a story
 
-Add it to the widget's `*.stories.tsx`. `Held`, `note`, and the made-up parameters every
-story runs on are in `stories/parts.tsx`; the shells the chrome stories are built of are in
-`stories/shells.tsx`. Use `Held` so the story has its own value, and write the note as what
-the story is *for*, not what the control is — "four steps across the range, Max's own worked
-example" earns its space; "a knob" doesn't. Every new widget needs at least a default story
-and a disabled one.
+Add it to the widget's `*.stories.tsx`. `note` and the made-up parameters every story runs
+on are in `stories/parts.tsx`; the shells the chrome stories are built of, and `Held` for a
+control inside one that has to hold its own value, are in `stories/shells.tsx`. Write the
+note as what the story is *for*, not what the control is — "four steps across the range,
+Max's own worked example" earns its space; "a knob" doesn't. Every new widget needs at
+least a default story and a disabled one.
 
 ```tsx
 export const Stepped: Story = {
   parameters: note("Four steps across the range — Max's own worked example."),
-  render: () => <Held param={STEPPED}>{(v, set) => <Knob param={STEPPED} value={v} onChange={set} />}</Held>,
+  args: { param: STEPPED },
 };
 ```
 

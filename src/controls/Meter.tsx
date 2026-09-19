@@ -46,6 +46,7 @@ export function Meter({
   name,
   label,
   layout,
+  side,
   display,
   showValue = false,
   width,
@@ -63,6 +64,7 @@ export function Meter({
       name={name}
       readout={showValue ? (display ?? String(Math.round(level * 100))) : undefined}
       layout={layout}
+      side={side}
       className={className}
       title={title}
       hint={hint}

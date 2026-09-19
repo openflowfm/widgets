@@ -73,6 +73,7 @@ export function Slider({
   length = 27,
   travel,
   layout,
+  side,
   className,
   title,
   hint,
@@ -126,6 +127,7 @@ export function Slider({
       name={name}
       readout={showValue ? gesture.text : undefined}
       layout={layout}
+      side={side}
       disabled={disabled}
       className={`wdg-slider-${orientation}${className ? ` ${className}` : ''}`}
       title={title}

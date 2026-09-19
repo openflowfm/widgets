@@ -183,10 +183,22 @@
   grid-row: 3;
 }
 
+/*
+ * An inline widget keeps its own two-row grid rather than joining the row's
+ * subgrid, so its caption and reading stack beside the control as they would
+ * anywhere else; the whole thing sits on the row's middle.
+ */
 .wdg-row > .wdg-widget[data-layout='inline'] {
-  display: flex;
+  display: inline-grid;
   grid-row: 1 / -1;
+  grid-template-rows: auto auto;
+  justify-items: unset;
 }
+
+.wdg-row > .wdg-widget[data-layout='inline'] > .wdg-caption { grid-row: 1; }
+.wdg-row > .wdg-widget[data-layout='inline'] > .wdg-caption:has(+ .wdg-body:last-child) { grid-row: 1 / span 2; }
+.wdg-row > .wdg-widget[data-layout='inline'] > .wdg-body { grid-row: 1 / span 2; }
+.wdg-row > .wdg-widget[data-layout='inline'] > .wdg-readout { grid-row: 2; }
 
 .wdg-panel {
   display: grid;

@@ -7,8 +7,8 @@ import type { StorybookConfig } from '@storybook/react-vite';
 // package, and nothing here knows Live exists.
 const config: StorybookConfig = {
   framework: '@storybook/react-vite',
-  stories: ['../src/**/*.stories.tsx'],
-  addons: ['@storybook/addon-docs', '@storybook/addon-vitest'],
+  stories: ['../stories/**/*.mdx', '../src/**/*.stories.tsx'],
+  addons: ['@storybook/addon-docs', '@storybook/addon-themes', '@storybook/addon-vitest'],
   core: { disableTelemetry: true },
   viteFinal: (config) => ({
     ...config,

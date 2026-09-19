@@ -43,6 +43,7 @@ export function Knob({
   showValue = true,
   travel,
   layout,
+  side,
   className,
   title,
   hint,
@@ -74,6 +75,7 @@ export function Knob({
       name={name}
       readout={showValue ? gesture.text : undefined}
       layout={layout}
+      side={side}
       disabled={disabled}
       className={className}
       title={title}

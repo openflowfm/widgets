@@ -8,10 +8,10 @@
 
 declare module '*.css' {}
 
-// Vite's `?inline` suffix hands the compiled stylesheet back as a string rather
-// than injecting it. Storybook mounts the palette this way so the host-tokens
-// switch can take it out again.
-declare module '*.css?inline' {
-  const css: string;
-  export default css;
+// Vite's `?raw` suffix hands a file back as a string. Storybook reads the
+// stylesheets this way to learn which tokens they declare, and asks the page
+// for the live values rather than parsing them.
+declare module '*.css?raw' {
+  const text: string;
+  export default text;
 }

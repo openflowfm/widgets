@@ -78,6 +78,7 @@ export function XYPad({
   label,
   name,
   layout,
+  side,
   className,
   title,
   hint,
@@ -115,6 +116,7 @@ export function XYPad({
       name={name}
       readout={showValue ? `${gx.text} · ${gy.text}` : undefined}
       layout={layout}
+      side={side}
       disabled={disabled}
       className={className}
       title={title}

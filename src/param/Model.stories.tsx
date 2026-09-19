@@ -7,16 +7,24 @@ import { NumberField } from '../controls/NumberField.tsx';
 import { Slider } from '../controls/Slider.tsx';
 import { UNITS } from '../../stories/parts.tsx';
 
+interface ModelArgs {
+  unit: UnitStyle;
+  min: number;
+  max: number;
+  exponent: number;
+  /** Fewer than two is no stepping at all. */
+  steps: number;
+}
+
 /**
  * The point of the whole harness: change the model, not the widget, and watch
  * every control that reads it change with it.
+ *
+ * The model is the args, so the panel that used to be hand-rolled above the
+ * stage is Storybook's controls. What is left on the canvas is the three
+ * widgets and what the parameter says about the value they share.
  */
-function Model() {
-  const [unit, setUnit] = useState<UnitStyle>('percent');
-  const [exponent, setExponent] = useState(1);
-  const [steps, setSteps] = useState(0);
-  const [min, setMin] = useState(0);
-  const [max, setMax] = useState(100);
+function Model({ unit, min, max, exponent, steps }: ModelArgs) {
   const [value, setValue] = useState(50);
 
   const param: Param = {
@@ -31,45 +39,8 @@ function Model() {
     shortName: 'Model',
   };
 
-  const numeric = (
-    label: string,
-    held: number,
-    set: (n: number) => void,
-    step: number,
-    low: number,
-    high: number,
-  ) => (
-    <label className="model-field">
-      <span>{label}</span>
-      <input
-        type="number"
-        value={held}
-        step={step}
-        min={low}
-        max={high}
-        onChange={(e) => set(Number(e.currentTarget.value))}
-      />
-    </label>
-  );
-
   return (
     <div className="model">
-      <div className="model-inputs">
-        <label className="model-field">
-          <span>unit</span>
-          <select value={unit} onChange={(e) => setUnit(e.currentTarget.value as UnitStyle)}>
-            {UNITS.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </label>
-        {numeric('min', min, setMin, 1, -100000, 100000)}
-        {numeric('max', max, setMax, 1, -100000, 100000)}
-        {numeric('exponent', exponent, setExponent, 0.5, 0.1, 8)}
-        {numeric('steps', steps, setSteps, 1, 0, 64)}
-      </div>
       <div className="model-stage">
         <Knob param={param} value={value} onChange={setValue} />
         <Slider param={param} value={value} onChange={setValue} orientation="horizontal" length={140} />
@@ -88,10 +59,26 @@ function Model() {
 const meta = {
   title: 'Param/Model playground',
   component: Model,
-} satisfies Meta;
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'One parameter, three widgets, and the controls panel standing in for the host. Everything a `Param` carries — the unit style, the range, the taper and the step count — is an arg, and the knob, the slider and the number field all read the same one.',
+      },
+    },
+  },
+  args: { unit: 'percent', min: 0, max: 100, exponent: 1, steps: 0 },
+  argTypes: {
+    unit: { control: 'select', options: UNITS },
+    min: { control: { type: 'number', step: 1 } },
+    max: { control: { type: 'number', step: 1 } },
+    exponent: { control: { type: 'range', min: 0.1, max: 8, step: 0.1 } },
+    steps: { control: { type: 'range', min: 0, max: 64, step: 1 } },
+  },
+} satisfies Meta<typeof Model>;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
   parameters: {

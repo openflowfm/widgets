@@ -20,9 +20,55 @@
   gap: var(--wdg-gap);
 }
 
+/*
+ * Inline: the control on one side, its caption over its reading on the other.
+ * Two columns, two rows; the body spans both rows and `data-side` says which
+ * column the text takes. A control with no reading centres its caption.
+ */
 .wdg-widget[data-layout='inline'] {
-  flex-direction: row;
-  gap: var(--wdg-space);
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 0 var(--wdg-space);
+}
+
+.wdg-widget[data-layout='inline'] > .wdg-body {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+}
+
+.wdg-widget[data-layout='inline'] > .wdg-caption,
+.wdg-widget[data-layout='inline'] > .wdg-readout {
+  grid-column: 1;
+  justify-self: start;
+  text-align: left;
+}
+
+.wdg-widget[data-layout='inline'] > .wdg-caption {
+  grid-row: 1;
+  align-self: end;
+}
+
+.wdg-widget[data-layout='inline'] > .wdg-caption:has(+ .wdg-body:last-child) {
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+
+.wdg-widget[data-layout='inline'] > .wdg-readout {
+  grid-row: 2;
+  align-self: start;
+}
+
+.wdg-widget[data-layout='inline'][data-side='right'] > .wdg-body {
+  grid-column: 1;
+}
+
+.wdg-widget[data-layout='inline'][data-side='right'] > .wdg-caption,
+.wdg-widget[data-layout='inline'][data-side='right'] > .wdg-readout {
+  grid-column: 2;
+  justify-self: end;
+  text-align: right;
 }
 
 .wdg-widget[data-layout='inside'] {

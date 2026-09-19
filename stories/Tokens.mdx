@@ -1,0 +1,46 @@
+import { Meta, Typeset } from '@storybook/addon-docs/blocks';
+import { TokenTable, PresetPalettes } from './TokenTable.tsx';
+import { PALETTE_TOKENS, TYPE_TOKENS, WIDGET_TOKENS } from './tokens.ts';
+
+<Meta title="Tokens" />
+
+# Tokens
+
+Three layers, each reading the one below it.
+
+1. **The palette** — `src/palette.css`. The design language itself: surfaces, the text ramp,
+   the accents, the radii, the shadows and the control height. Every app imports it.
+2. **The theme** — `src/theme/`. A serializable document of HSL roles and surfaces that
+   `ThemeRoot` resolves into the same palette tokens on one subtree, so a host can replace
+   the palette without the widgets knowing. The **Theme** picker in the toolbar wraps every
+   story in one of the presets.
+3. **The widget layer** — `src/tokens.css`. Every `--wdg-*` colour and type token is
+   `var(--host-token, fallback)`; the metrics are the widget's own. The **Host tokens**
+   switch in the toolbar takes the palette away so the fallbacks show.
+
+The tables below are live. Change the theme or the host-tokens switch and the values change
+with them, because each one is read off the page rather than off a file.
+
+## Theme presets
+
+What each preset in `src/theme/theme.ts` resolves to. These are the strings a `ThemeRoot`
+sets; the deck and stem inks are what a mixer host reads through `useTheme`.
+
+<PresetPalettes />
+
+## Type
+
+<Typeset fontSizes={['8px', '9px', '10px', '11px', '12px', '14px', '18px']} fontFamily="'Recursive Variable', system-ui, sans-serif" sampleText="Auto Filter · 2.5 kHz · −12.0 dB" />
+
+The sizes are `--text-annot` through `--text-title`; the stacks and tracking are in
+`src/type.css`.
+
+<TokenTable names={TYPE_TOKENS} />
+
+## The palette
+
+<TokenTable names={PALETTE_TOKENS} />
+
+## The widget layer
+
+<TokenTable names={WIDGET_TOKENS} />

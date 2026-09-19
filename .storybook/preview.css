@@ -5,8 +5,8 @@
 
 body {
   margin: 0;
-  background: #0a0a0b;
-  color: #ececed;
+  background: var(--bg);
+  color: var(--fg);
   font-family: var(--sans);
   font-variation-settings: var(--sans-axes);
   -webkit-user-select: none;
@@ -29,32 +29,6 @@ kbd {
   font-size: var(--text-body);
 }
 
-.cases {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
-  gap: 18px;
-}
-
-.case {
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  border: 1px solid #1f1f23;
-  border-radius: var(--radius-md);
-  background: #111113;
-}
-
-.case.wide {
-  grid-column: 1 / -1;
-}
-
-.case-stage {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 108px;
-}
-
 .loose {
   display: flex;
   align-items: flex-start;
@@ -65,13 +39,6 @@ kbd {
   display: flex;
   align-items: stretch;
   gap: 3px;
-}
-
-.case-note {
-  margin: 10px 0 0;
-  color: #5e5e66;
-  font-size: var(--text-body);
-  line-height: 1.45;
 }
 
 .stack {
@@ -89,33 +56,6 @@ kbd {
 .model {
   display: grid;
   gap: 18px;
-}
-
-.model-inputs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.model-field {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #8b8b93;
-  font-size: var(--text-body);
-}
-
-.model-field input,
-.model-field select {
-  width: 88px;
-  padding: 3px 5px;
-  border: 1px solid #2c2c31;
-  border-radius: var(--radius-sm);
-  background: #151517;
-  color: #ececed;
-  font-family: var(--mono);
-font-variation-settings: var(--mono-axes);
-  font-size: var(--text-body);
 }
 
 .model-stage {
@@ -218,20 +158,6 @@ font-variation-settings: var(--mono-axes);
   width: 100%;
 }
 
-.case-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-bottom: 8px;
-  margin-bottom: 4px;
-  border-bottom: 1px solid #1a1a1d;
-}
-
-body {
-  --stem-vocals: #a068f0;
-  --stem-drums: #f0883a;
-  --stem-bass: #6d8bf5;
-}
 
 .case-hint {
   color: var(--wdg-caption);
@@ -439,14 +365,6 @@ body {
   color: var(--wdg-caption);
 }
 
-/* Local proof-of-concept accent; the shared application palette stays unchanged. */
-body { --amber: #b8c6d6; --amber-hover: #d5e0ed; --amber-muted: #758496; }
-
-/* Storybook's own frame: no padding fights the case card, and a story that
-   gives itself a height is allowed to have it. */
-.case-stage > * {
-  max-width: 100%;
-}
 
 .play-theme-tools {
   position: fixed;
@@ -464,4 +382,57 @@ body { --amber: #b8c6d6; --amber-hover: #d5e0ed; --amber-muted: #758496; }
   border: 1px solid var(--bd3);
   background: var(--panel);
   box-shadow: var(--shadow-menu);
+}
+
+/* The token tables on the Tokens docs page. */
+.sb-tokens {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.sb-tokens th,
+.sb-tokens td {
+  padding: 4px 8px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid rgb(128 128 128 / 0.25);
+}
+
+.sb-tokens code {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 11px;
+}
+
+.sb-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+  vertical-align: middle;
+  border: 1px solid rgb(128 128 128 / 0.5);
+  border-radius: 2px;
+}
+
+/* The theme editor story: the editor down the side, its subject filling the rest. */
+.theme-editor-story {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.theme-sample {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.theme-sample-decks {
+  display: flex;
+  gap: 16px;
+  font-size: 22px;
 }

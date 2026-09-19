@@ -1,11 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
 import { DEFAULT_SPECTRAL } from '../theme/spectral.ts';
-import { Waveform } from './Waveform.tsx';
+import { Waveform, type WaveformProps } from './Waveform.tsx';
 import { note } from '../../stories/parts.tsx';
 import { packedOf, type Peak } from './levels.ts';
-import { Button } from '../controls/Button.tsx';
-import { Select } from '../controls/Select.tsx';
+import type { SpectralOutlineStyle } from './spectralOutline.ts';
 
 /**
  * A stand-in for a separated stem, because the harness has no library.
@@ -33,16 +31,9 @@ const invent = (columns: number, seed: number): Peak[] => {
 };
 
 const STEMS = [
-  { id: 'drums', ink: 'var(--stem-drums)', seed: 7 },
-  { id: 'bass', ink: 'var(--stem-bass)', seed: 41 },
-  { id: 'vocals', ink: 'var(--stem-vocals)', seed: 93 },
-];
-
-const WINDOWS: { name: string; from: number; to: number }[] = [
-  { name: 'whole', from: 0, to: 1 },
-  { name: 'a section', from: 0.3, to: 0.55 },
-  { name: 'a few bars', from: 0.34, to: 0.37 },
-  { name: 'one hit', from: 0.352, to: 0.3535 },
+  { id: 'drums', ink: 'var(--stem-drums, #f0883a)', seed: 7 },
+  { id: 'bass', ink: 'var(--stem-bass, #6d8bf5)', seed: 41 },
+  { id: 'vocals', ink: 'var(--stem-vocals, #a068f0)', seed: 93 },
 ];
 
 const PACKED = STEMS.map((s) => packedOf(invent(48000, s.seed)));
@@ -56,85 +47,80 @@ const SPECTRUM = Array.from({ length: PACKED[0].length / 2 }, (_, i) => {
   ] as const;
 });
 
-const DENSITIES = [undefined, 0.25, 0.5, 1, 2];
+/**
+ * The frequency presentation as a word, because a canvas style is not
+ * something a control panel can be asked to type out.
+ */
+const PRESENTATIONS: Record<string, SpectralOutlineStyle | undefined> = {
+  none: undefined,
+  layers: { layout: 'layers', spectral: DEFAULT_SPECTRAL, weights: [1, 1, 1], edge: 0.35 },
+  blend: { layout: 'blend', spectral: DEFAULT_SPECTRAL, weights: [1, 1, 1], edge: 0.35 },
+};
 
-/** The window and density pickers the two wide stories share. */
-function useView() {
-  const [window_, setWindow] = useState(0);
-  const [density, setDensity] = useState(0);
-  const view = WINDOWS[window_];
-  const bar = (
-    <div className="case-bar">
-            <Select
-              label="Window"
-              items={WINDOWS.map((w) => w.name)}
-              index={window_}
-              onChange={setWindow}
-              width={110}
-            />
-            <Select
-              label="Points per pixel"
-              items={['auto', '0.25/px', '0.5/px', '1/px', '2/px']}
-              index={density}
-              onChange={setDensity}
-              width={90}
-            />
-            <Button onPress={() => setWindow(0)}>Whole</Button>
-          </div>
-  );
-  return { view, density: DENSITIES[density], bar };
-}
+type WaveArgs = WaveformProps & { layout: 'none' | 'layers' | 'blend' };
 
-function Lanes() {
-  const { view, density, bar } = useView();
-  return (
-    <div className="case-stack">
-      {bar}
-      {STEMS.map((stem, i) => (
-        <Waveform
-          key={stem.id}
-          peaks={PACKED[i]}
-          from={view.from}
-          to={view.to}
-          ink={stem.ink}
-          height={78}
-          density={density}
-          label={`${stem.id}, ${view.name}`}
-        />
-      ))}
-    </div>
-  );
-}
-
-function Spectral() {
-  const { view, bar } = useView();
-  return (
-    <div className="case-stack">
-      {bar}
-      {(['layers', 'blend'] as const).map((layout) => (
-        <Waveform
-          key={layout}
-          peaks={PACKED[0]}
-          spectrum={SPECTRUM}
-          from={view.from}
-          to={view.to}
-          ink="var(--stem-drums)"
-          height={72}
-          smooth={0.35}
-          presentation={{ layout, spectral: DEFAULT_SPECTRAL, weights: [1, 1, 1], edge: 0.35 }}
-          label={`Frequency ${layout}`}
-        />
-      ))}
-    </div>
-  );
+/** One lane, with the presentation picked by name. */
+function Lane({ layout, ...args }: WaveArgs) {
+  return <Waveform {...args} presentation={PRESENTATIONS[layout]} />;
 }
 
 const meta = {
   title: 'Drawing/Waveform',
   component: Waveform,
   tags: ['autodocs'],
-  args: { peaks: PACKED[0], ink: 'var(--stem-drums)' },
-} satisfies Meta<typeof Waveform>;
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'A stem as one closed silhouette, off a ladder of halvings, at whatever detail the window has earned. The window, the detail, the height, the ink and the optional frequency presentation are all the caller\'s.',
+      },
+    },
+  },
+  args: {
+    peaks: PACKED[0],
+    ink: 'var(--stem-drums, #f0883a)',
+    from: 0,
+    to: 1,
+    height: 78,
+    smooth: 0,
+    headroom: 0.86,
+    layout: 'none',
+    label: 'a lane',
+    // Both mean *let the drawing decide*: the detail rides the window, and the
+    // window is the whole of it unless a scrolling strip says otherwise.
+    density: undefined,
+    visibleShare: undefined,
+  },
+  argTypes: {
+    from: { control: { type: 'range', min: 0, max: 1, step: 0.001 } },
+    to: { control: { type: 'range', min: 0, max: 1, step: 0.001 } },
+    height: { control: { type: 'range', min: 20, max: 200, step: 2 } },
+    smooth: { control: { type: 'range', min: 0, max: 1, step: 0.05 } },
+    headroom: { control: { type: 'range', min: 0.1, max: 1, step: 0.05 } },
+    visibleShare: { control: { type: 'range', min: 0.05, max: 1, step: 0.05 } },
+    density: {
+      control: { type: 'number', min: 0.05, max: 4, step: 0.25 },
+      description: 'Points per CSS pixel. Leave empty to let it ride the zoom, which is the point.',
+    },
+    ink: {
+      control: 'select',
+      options: STEMS.map((s) => s.ink),
+    },
+    layout: {
+      control: 'inline-radio',
+      options: ['none', 'layers', 'blend'],
+      description: 'Story-only name for `presentation`: the optional frequency styles.',
+    },
+    label: { control: 'text' },
+    presentation: { control: false },
+    peaks: { control: false },
+    spectrum: { control: false },
+    colors: { control: false },
+    samples: { control: false },
+    className: { control: false },
+  },
+  render: (args) => <Lane {...args} />,
+} satisfies Meta<WaveArgs>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -142,25 +128,42 @@ type Story = StoryObj<typeof meta>;
 export const ThreeLanes: Story = {
   parameters: note(
     'One shape a lane, off a ladder of halvings. Detail rides the window unless it is pinned: across the whole thing a quarter of a point per pixel reads as the shape of an arrangement, and a bar reads as a bar. The silent run draws as a line, because a silhouette whose edges meet encloses nothing and would otherwise vanish.',
-    { wide: true },
   ),
-  render: () => <Lanes />,
+  render: ({ ink, ...args }) => (
+    <div className="case-stack">
+      {STEMS.map((stem, i) => (
+        <Lane key={stem.id} {...args} peaks={PACKED[i]} ink={i === 0 ? ink : stem.ink} label={stem.id} />
+      ))}
+    </div>
+  ),
 };
 
 export const Frequency: Story = {
   parameters: note(
     'Optional frequency presentation: layers and blended spectrum on the same production outline. Silent bands remain empty. The lanes above keep their default output.',
-    { wide: true },
   ),
-  render: () => <Spectral />,
+  args: {
+    spectrum: SPECTRUM,
+    layout: 'layers',
+    smooth: 0.35,
+    height: 72,
+    label: 'frequency',
+  },
 };
 
 export const Short: Story = {
   parameters: note('Short, and with no window given: the whole thing at 44px.'),
-  args: { peaks: PACKED[0], ink: 'var(--stem-drums)', height: 44, label: 'a short lane' },
+  args: { from: undefined, to: undefined, height: 44, label: 'a short lane' },
 };
 
 export const Silence: Story = {
   parameters: note('Silence on its own. A pixel of line, on the middle, where it happened.'),
-  args: { peaks: PACKED[1], from: 0.42, to: 0.5, ink: 'var(--stem-bass)', height: 44, label: 'a silent run' },
+  args: {
+    peaks: PACKED[1],
+    from: 0.42,
+    to: 0.5,
+    ink: 'var(--stem-bass, #6d8bf5)',
+    height: 44,
+    label: 'a silent run',
+  },
 };
