@@ -16,9 +16,11 @@ jobs:
       - name: Verify version
         run: node --input-type=module -e 'import p from "./package.json" with { type:"json" }; if (process.env.GITHUB_REF_NAME !== `v${p.version}`) process.exit(1)'
       - run: npm ci
+      # The stories project renders every story in headless Chromium.
+      - run: npx playwright install --with-deps chromium
       - run: npm run typecheck
       - run: npm test
-      - run: npx vite build
+      - run: npm run build:storybook
       - run: npm pack
       - run: gh release create "$GITHUB_REF_NAME" ./*.tgz --verify-tag --generate-notes
         env:

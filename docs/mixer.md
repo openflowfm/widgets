@@ -40,7 +40,7 @@ Optional `deckProps(id)` supplies host drag/drop handlers to the strip and wavef
 row. These remain outside the disabled launcher fieldset, so empty/loading/error states
 can accept a replacement. The widgets never interpret a library payload. Unknown track BPM is null.
 `playbackAvailable: false` disables Run, launch quantization and loop capture for a host
-that has no audio controller yet. Missing/undefined retains the previous bench behavior.
+that has no audio controller yet. Missing/undefined retains the previous preview behavior.
 
 ## Deck loop controls
 
@@ -71,7 +71,7 @@ including while hovered, so the icon and CUE label remain readable.
 ## Host transport and effect controls
 
 `externalTransport` omits the master Run/Stop, tempo, launch timing and beat counter;
-the bench retains them by default. The host can use its existing header unchanged.
+the preview retains them by default. The host can use its existing header unchanged.
 Each effect definition may supply controls with stable IDs, names and Params. The face
 renders the selector and its knobs as one subtly shaded control group and emits `setEffectParam(slot, effectId, paramId, value)`.
 `effectValues` is keyed by slot, effect and parameter; absent values use Param defaults.
@@ -95,7 +95,7 @@ The master crossfader uses a 24px track for a taller target.
 `readFrame()` is a stable, synchronous, read-only sampler. It returns absolute beat
 positions and normalized measured output levels keyed by deck ID, plus the master
 level. A real adapter should read the engine/audio clock and cached metering; calling
-it must not schedule or advance playback. The bench hook supplies invented readings.
+it must not schedule or advance playback. The preview hook supplies invented readings.
 
 `FramePlayhead` samples each deck's position on animation frames and updates its own
 DOM marker. `FrameMeter` samples a level and applies presentation-only 35ms attack /
@@ -105,7 +105,7 @@ The renderer can pause, miss frames or move to the background without becoming a
 source. Hosts should keep their readers cheap because several displayed instruments
 sample each frame.
 
-Without a `waveform` range the bench keeps its 32-bar overview from `peaks`. Hosts may
+Without a `waveform` range the preview keeps its 32-bar overview from `peaks`. Hosts may
 provide a source window (`start`, `length`, `visible`) and, in it, one `lane` per source
 they are playing — the original alone, or every stem. Each lane carries its own peaks,
 optional low/mid/high `spectrum` tuples, cue positions and source-relative loop bounds,
@@ -116,19 +116,19 @@ coordinates; widgets do not analyze audio or choose sources. Peaks and all beat/
 conversion remain host-owned. The widget never derives a loop from an audio file or
 assumes that a source's beat equals the global transport beat.
 
-## Bench adapter
+## Preview adapter
 
-`bench/usePreviewMixer.ts` owns fictional tracks, peaks, the frame-integrated preview
+`stories/usePreviewMixer.ts` owns fictional tracks, peaks, the frame-integrated preview
 clock, queues, loop behavior, source changes, crossfade/gain calculations, and synthetic
 meter levels. It adapts its private array positions into public IDs. Its stable reader
-uses a ref to the latest simulated state. `bench/PlayCase.tsx` mounts the hook and passes
+uses a ref to the latest simulated state. `src/mixer/MixerView.stories.tsx` mounts the hook and passes
 its result to the same `MixerView` that a real app will use.
 
 `src/theme/*` owns the shared theme model, resolver and editor; see [theme.md](theme.md).
-The bench reads ThemeRoot’s resolved colors and maps deck positions to host IDs. The
+The story reads ThemeRoot’s resolved colors and maps deck positions to host IDs. The
 reusable face still accepts resolved colors and knows nothing about persistence.
-Only the bench CSS positions the floating theme editor or hides workspace descriptions.
-`src/mixer/mixer.css` contains the consolidated instrument layout, without bench selectors.
+Only the Storybook preview CSS positions the floating theme editor.
+`src/mixer/mixer.css` contains the consolidated instrument layout, without harness selectors.
 
 ## Integrating mix
 
@@ -136,7 +136,7 @@ Mix mounts the face through `mix/src/play/useMixerViewModel.ts`, a subscription 
 to its app-owned four-deck engine. The engine owns decoding, independent stem scheduling,
 Sync, cue behavior, routing, effects, Link and measurement. The same library stays visible
 in Prep and Play; [mix's topic](https://github.com/ryangavin/better-session-view/blob/main/mix/docs/play-view.md) governs mode switching and loads.
-No audio implementation or bench imports cross into these widgets.
+No audio implementation or story imports cross into these widgets.
 
 ## Verification
 
@@ -339,7 +339,7 @@ scroll area when needed; the configured deck minimum itself is unchanged. The as
 The host Trim parameter is shared by deck and Master controls. Their hints describe
 the mixer range of −24…+12 dB; the host supplies 0 dB as the default/reset value.
 Trim fill explicitly originates at 0 dB even though zero is now two-thirds through
-the travel; the standalone bench uses the same range.
+the travel; the standalone preview uses the same range.
 
 Optional stable `stemLevelDisplay(value)` lets the host spell linear stored gain in
 dB without changing the stored value or command payload. The stem Param still owns
@@ -354,6 +354,6 @@ still follows its container; the divider follows that orientation too.
 Optional `MixerParams.filterResonance` opts a host into a Resonance knob paired
 with Filter between FX A and FX B. `MixerDeck.filterResonance` defaults to zero
 when absent; edits emit `setDeck(id, "filterResonance", value)`. Existing hosts
-that omit the parameter keep their previous face. The bench uses 0–12 dB with
+that omit the parameter keep their previous face. The preview uses 0–12 dB with
 a zero reset. The host owns clamping, smoothing and which filter resonates;
 the master has no resonance control.

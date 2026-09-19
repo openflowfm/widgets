@@ -1,22 +1,24 @@
-import { useMemo, useState } from 'react';
-import { Button } from '../src/controls/Button.tsx';
-import { Select } from '../src/controls/Select.tsx';
-import { Toggle } from '../src/controls/Toggle.tsx';
-import { Facts, type Fact } from '../src/debug/Facts.tsx';
-import { Group, Harness, Shelf, Status, Toolbar } from '../src/debug/Harness.tsx';
-import { Legend } from '../src/debug/Legend.tsx';
-import { Plot } from '../src/debug/Plot.tsx';
-import { Rooms } from '../src/debug/Rooms.tsx';
-import { Scope, ScopeRow } from '../src/debug/Scope.tsx';
-import { Transport } from '../src/debug/Transport.tsx';
-import { inkOf, xOf, type View } from '../src/debug/index.ts';
-import { useAxis } from '../src/debug/useAxis.ts';
-import { Workspace } from '../src/debug/Workspace.tsx';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useMemo, useState, type ReactNode } from 'react';
+import { Button } from '../controls/Button.tsx';
+import { Select } from '../controls/Select.tsx';
+import { Toggle } from '../controls/Toggle.tsx';
+import { Facts, type Fact } from './Facts.tsx';
+import { Group, Harness, Shelf, Status, Toolbar } from './Harness.tsx';
+import { Legend } from './Legend.tsx';
+import { Plot } from './Plot.tsx';
+import { Rooms } from './Rooms.tsx';
+import { Scope, ScopeRow } from './Scope.tsx';
+import { Transport } from './Transport.tsx';
+import { inkOf, xOf, type View } from './index.ts';
+import { useAxis } from './useAxis.ts';
+import { Workspace } from './Workspace.tsx';
+import { DebugCase } from '../../stories/DebugCase.tsx';
 
 /**
- * One tab a widget, so the seams are visible.
+ * One story a widget, so the seams are visible.
  *
- * The debug module was on the bench as a single case of everything working
+ * The debug module was on the old bench as a single case of everything working
  * together, which shows that it does and hides what any of it is. A harness is
  * a frame; a scope is rows on a shared axis; a plot is one drawing with a title
  * on it. Those are different widgets with different jobs and they are worth
@@ -30,7 +32,7 @@ import { Workspace } from '../src/debug/Workspace.tsx';
 const wave = (i: number, seed: number) =>
   Math.sin(i / 7 + seed) * 0.55 + Math.sin(i / 2.3 + seed * 2) * 0.3;
 
-function Frame({ children, note }: { children: React.ReactNode; note: string }) {
+function Frame({ children, note }: { children: ReactNode; note: string }) {
   return (
     <div className="case wide">
       <div className="case-stage case-stack">{children}</div>
@@ -40,7 +42,7 @@ function Frame({ children, note }: { children: React.ReactNode; note: string }) 
 }
 
 /** The frame, with nothing in it, so the frame is what you see. */
-export function HarnessCase() {
+function HarnessCase() {
   const [on, setOn] = useState(true);
   return (
     <Frame note="A head with a title, a subject and a status; a toolbar of captioned groups; a shelf for anything that sits under them. It holds no state and draws nothing — everything else on this page is mounted inside one.">
@@ -72,7 +74,7 @@ export function HarnessCase() {
 }
 
 /** Rows that must line up to the pixel, and one zoom over all of them. */
-export function ScopeCase() {
+function ScopeCase() {
   const axis = useAxis({ seconds: 60, initial: { from: 0, to: 20 } });
   const signal = useMemo(() => Array.from({ length: 4096 }, (_, i) => wave(i / 12, 1)), []);
 
@@ -112,7 +114,7 @@ export function ScopeCase() {
 }
 
 /** One drawing with a title bar, which is the graph the scope is not. */
-export function PlotCase() {
+function PlotCase() {
   const [shape, setShape] = useState(0);
   const curve = (x: number) =>
     shape === 0 ? Math.exp(-Math.pow((x - 0.5) * 5, 2)) : shape === 1 ? x : Math.abs(Math.sin(x * 9));
@@ -146,7 +148,7 @@ export function PlotCase() {
 }
 
 /** The ledger a harness opens with. */
-export function FactsCase() {
+function FactsCase() {
   const items: Fact[] = [
     { name: 'tempo', value: '128.02 bpm' },
     { name: 'beats', value: 705 },
@@ -166,7 +168,7 @@ export function FactsCase() {
 }
 
 /** What the marks on a drawing mean. */
-export function LegendCase() {
+function LegendCase() {
   return (
     <Frame note="Six kinds of mark, each in an ink the drawing also uses — usually a var(--…), so a legend follows the palette rather than restating it. It is the only widget here whose whole job is to be read beside something else.">
       <Legend
@@ -184,7 +186,7 @@ export function LegendCase() {
 }
 
 /** Play, stop, and where the head is. */
-export function TransportCase() {
+function TransportCase() {
   const [playing, setPlaying] = useState(false);
   const [at, setAt] = useState(12.3456);
   return (
@@ -200,7 +202,7 @@ export function TransportCase() {
 }
 
 /** The two the page you are reading is made of. */
-export function WorkspaceCase() {
+function WorkspaceCase() {
   const [tab, setTab] = useState('one');
   const [room, setRoom] = useState('a');
   const [inner, setInner] = useState('x');
@@ -241,3 +243,43 @@ export function WorkspaceCase() {
     </>
   );
 }
+
+const meta = {
+  title: 'Debug/Harness',
+  component: Harness,
+  parameters: { layout: 'fullscreen' },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
+
+const story = (Room: () => ReactNode, about: string): Story => ({
+  render: () => <Room />,
+  parameters: { docs: { description: { story: about } } },
+});
+
+export const Frame_ = story(HarnessCase, 'The frame, with nothing in it, so the frame is what you see.');
+Frame_.storyName = 'Harness';
+export const Scope_ = story(ScopeCase, 'Rows that must line up to the pixel, and one zoom over all of them.');
+Scope_.storyName = 'Scope';
+export const Plot_ = story(PlotCase, 'One drawing with a title bar, which is the graph the scope is not.');
+Plot_.storyName = 'Plot';
+export const Facts_ = story(FactsCase, 'The ledger a harness opens with.');
+Facts_.storyName = 'Facts';
+export const Legend_ = story(LegendCase, 'What the marks on a drawing mean.');
+Legend_.storyName = 'Legend';
+export const Transport_ = story(TransportCase, 'Play, stop, and where the head is.');
+Transport_.storyName = 'Transport';
+export const Workspace_ = story(WorkspaceCase, 'The two the old bench page was made of: a workspace of tabs, and rooms of them.');
+Workspace_.storyName = 'Workspace';
+
+export const Together: Story = {
+  render: () => (
+    <Frame note="All of them at once, which is the point of the module and the thing a page of parts stops showing. A made-up signal, beats every half second, a head on the wall clock. Click the time row to seek, drag it to pan, shift-drag for a loop, alt-drag or drag the head to scrub; scroll pans and shift-scroll zooms about the pointer. Everything is drawn in palette inks read off the page, so it follows the host-tokens switch.">
+      <DebugCase />
+    </Frame>
+  ),
+  parameters: {
+    docs: { description: { story: 'Every debug widget at once, around a made-up signal with no app behind it.' } },
+  },
+};

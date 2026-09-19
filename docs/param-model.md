@@ -60,7 +60,7 @@ either a bare symbol or a sprintf-style pattern, exactly as `live.numbox` does.
 control, the engine owns the text: Live's `str_for_value` *is* the string Live is showing,
 and a second conversion maintained here would eventually disagree with it. So every widget
 takes an optional `display` that wins outright, and `format` runs only when there is
-nothing to defer to — the bench, a preview, an engine of our own. This is why
+nothing to defer to — a story, a preview, an engine of our own. This is why
 `set/src/lib/liveParam.ts` deliberately sets no `unit`: the app always has Live's string.
 
 Two smaller decisions inside it:

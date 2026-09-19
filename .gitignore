@@ -1,6 +1,6 @@
 node_modules/
 dist/
-bench/dist/
+storybook-static/
 coverage/
 report/
 .ds-sync/

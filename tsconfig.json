@@ -12,9 +12,10 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "bench/**/*.ts",
-    "bench/**/*.tsx",
-    "vite.config.ts",
+    "stories/**/*.ts",
+    "stories/**/*.tsx",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx",
     "types/assets.d.ts"
   ]
 }

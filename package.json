@@ -6,6 +6,7 @@
   "description": "The controls a DAW is made of: Ableton-shaped widgets and device chrome, in React.",
   "files": [
     "src",
+    "!src/**/*.stories.tsx",
     "dist",
     "docs"
   ],
@@ -27,7 +28,9 @@
   },
   "types": "src/index.ts",
   "scripts": {
-    "dev": "vite --config vite.config.ts",
+    "dev": "storybook dev --exact-port -p \"${OPENFLOW_BENCH_PORT:-$((${OPENFLOW_PORT_BASE:-5173}+100))}\"",
+    "storybook": "npm run dev",
+    "build:storybook": "storybook build --quiet -o storybook-static",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -51,17 +54,24 @@
     "@fontsource-variable/recursive": "5.3.0"
   },
   "devDependencies": {
+    "@storybook/addon-docs": "^10.6.0",
+    "@storybook/addon-vitest": "^10.6.0",
+    "@storybook/react-vite": "^10.6.0",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^26.4.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
-    "@vitest/coverage-v8": "5.0.0",
+    "@vitest/browser": "^5.0.1",
+    "@vitest/browser-playwright": "^5.0.1",
+    "@vitest/coverage-v8": "^5.0.1",
     "happy-dom": "^20.14.0",
+    "playwright": "^1.63.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "storybook": "^10.6.0",
     "typescript": "^7.0.2",
     "vite": "^8.2.2",
-    "vitest": "5.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "vitest": "^5.0.1"
   }
 }

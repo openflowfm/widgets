@@ -340,8 +340,8 @@ curve is one device's idea and this module knows about none of them.
 6. Style your element in [`shared.css`](../src/controls/shared.css) — the face, the type,
    the fill, the states — and write only its own geometry in `controls.css`. A control that
    draws its own border has already drifted.
-7. Add a case to [the bench](bench.md) — including the disabled one. It's the only test
-   these get.
+7. Add a stories file beside it — see [storybook](storybook.md) — including the disabled
+   story. It's the only test these get.
 
 ## What explains a control
 

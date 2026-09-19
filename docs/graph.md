@@ -40,7 +40,7 @@ The first three are the gesture's bargain one layer up: a control emits a value 
 host writes it to Live, and here a drag emits a position and a connection emits a pair of
 ids. A node dragged across the canvas **does not move** until the host hands new `x` and
 `y` back, and a cord dragged between two ports **is not drawn** until it comes back in
-`cords`. That is what makes a refusal free — the bench refuses one on every mismatched
+`cords`. That is what makes a refusal free — the Patch story refuses one on every mismatched
 kind, and nothing has to be undone.
 
 Sides are the exception because they aren't a question about meaning. An outlet connects
@@ -261,27 +261,27 @@ node should be the size of what it holds.
 
 ## Where to work on it
 
-**The Graph room of the widget bench** — `npm run dev`, then *Graph* down the side.
-It is not a page of cases like the other rooms, and the reason is that a canvas is the one
+**The Graph stories** — `npm run dev`, then *Graph* in the sidebar; the source is
+`src/chrome/Graph.stories.tsx`. They are not a page of cases like the other stories, and the reason is that a canvas is the one
 part of this module a screenshot cannot settle. A cord that lands nine times out of ten
 looks exactly like a cord that lands ten times out of ten, and the tenth is the whole of
 the usability.
 
-So the room is an instrument. `bench/trace.ts` watches the canvas from outside — it reads
+So the stories carry an instrument. `stories/trace.ts` watches the canvas from outside — it reads
 the DOM, and asks this module for no API it does not already have — and keeps an account
 of what the hand did against what the graph made of it. The half worth having is **the half
 the host never hears about**: `onConnect` fires when a cord lands and says nothing at all
 when one is let go over empty canvas, so the drop is counted by pairing each pointer-down on
 a port with whether a connection followed.
 
-| tab | for |
+| story | for |
 |---|---|
 | **Patch** | four nodes, two kinds, free play. The account and the readings run beside it |
 | **Trials** | the promises on this page, listed, ticked off as you make each one happen |
 | **Scale** | six nodes or two hundred and forty, with a switch that draws the faceplates or doesn't |
 | **Anatomy** | the still half: the rails, the aligned rows, and the same shell in a chain |
 
-The numbers that are about *this module* rather than about the bench:
+The numbers that are about *this module* rather than about the instrument:
 
 - **aim** — of every cord picked up, the share that reached a port. It is the number that
   moves if the seven pixels of landing room in `targetAt` change, or if a port is drawn
@@ -306,7 +306,7 @@ a cord from the inlet end, the keyboard's two Enters, Escape dropping one in fli
   yet. Hit-testing a bezier is real work and it should wait for a caller who knows what
   selecting one is supposed to do. The first host works around it without needing anything
   from here: an inlet that has a cord grows a small `×` beside its port, in the host's own
-  `inlets` slot, and the host drops the cord from its own state. **The bench's Patch does the
+  `inlets` slot, and the host drops the cord from its own state. **The Patch story does the
   same**, deliberately, so the workaround is something to put a hand on rather than a
   sentence here. If it turns out to be fine, that is an answer; if it turns out to be
   awkward, that is the argument for hit-testing a bezier.

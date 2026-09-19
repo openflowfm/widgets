@@ -1,21 +1,21 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Chain } from '../src/chrome/Chain.tsx';
-import { Device, DevicePortRow } from '../src/chrome/Device.tsx';
-import { Graph, GraphNode, type GraphCord, type GraphView } from '../src/chrome/Graph.tsx';
-import { Port } from '../src/chrome/Port.tsx';
-import { Row } from '../src/chrome/Row.tsx';
-import { Button } from '../src/controls/Button.tsx';
-import { Knob } from '../src/controls/Knob.tsx';
-import { Meter } from '../src/controls/Meter.tsx';
-import { Segmented } from '../src/controls/Segmented.tsx';
-import { Select } from '../src/controls/Select.tsx';
-import { Slider } from '../src/controls/Slider.tsx';
-import { Toggle } from '../src/controls/Toggle.tsx';
-import { Facts, type Fact } from '../src/debug/Facts.tsx';
-import { Group, Harness, Shelf, Status, Toolbar } from '../src/debug/Harness.tsx';
-import { useRemembered } from '../src/debug/useRemembered.ts';
-import type { Experiment } from '../src/debug/Workspace.tsx';
-import { Case, DRY_WET, FREQ } from './parts.tsx';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Chain } from './Chain.tsx';
+import { Device, DevicePortRow } from './Device.tsx';
+import { Graph, GraphNode, type GraphCord, type GraphView } from './Graph.tsx';
+import { Port } from './Port.tsx';
+import { Row } from './Row.tsx';
+import { Button } from '../controls/Button.tsx';
+import { Knob } from '../controls/Knob.tsx';
+import { Meter } from '../controls/Meter.tsx';
+import { Segmented } from '../controls/Segmented.tsx';
+import { Select } from '../controls/Select.tsx';
+import { Slider } from '../controls/Slider.tsx';
+import { Toggle } from '../controls/Toggle.tsx';
+import { Facts, type Fact } from '../debug/Facts.tsx';
+import { Group, Harness, Shelf, Status, Toolbar } from '../debug/Harness.tsx';
+import { useRemembered } from '../debug/useRemembered.ts';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Case, DRY_WET, FREQ } from '../../stories/parts.tsx';
 import {
   useEntries,
   useReading,
@@ -24,10 +24,10 @@ import {
   type Reading,
   type Trace,
   type Watch,
-} from './trace.ts';
+} from '../../stories/trace.ts';
 
 /**
- * The graph, in a room of its own.
+ * The graph, in a section of its own.
  *
  * Every other room on this bench answers "does it look right", and a
  * screenshot settles it. A canvas is the one part of the module a screenshot
@@ -37,12 +37,12 @@ import {
  * instead of four.
  *
  * So this is not a page of cases. It is a canvas with an instrument on it —
- * [`trace.ts`](./trace.ts) — that keeps an account of what the hand did and
+ * [`trace.ts`](../../stories/trace.ts) — that keeps an account of what the hand did and
  * what the graph made of it, and prints the half the host never hears about.
  * The loop is: work on the canvas, read the account, change something in
  * `chrome/Graph.tsx`, work on it again, and compare the same numbers.
  *
- * The four tabs are the four questions in order. **Patch** is free play with
+ * The four stories are the four questions in order. **Patch** is free play with
  * the instrument running. **Trials** is the same canvas with the graph's
  * documented promises listed beside it, ticked off as you make each one
  * happen. **Scale** is the same graph with far too much on it. **Anatomy** is
@@ -435,7 +435,7 @@ function Verdict({ watch, asked }: { watch: Watch; asked: number }) {
   );
 }
 
-export function PatchRoom() {
+function PatchRoom() {
   const trace = useTrace();
   const watch = useWatch(trace);
   const patch = usePatch(watch, trace);
@@ -574,7 +574,7 @@ const TRIALS: readonly Trial[] = [
  * question being asked. What is being asked is whether the gesture worked
  * once, so the answer is kept until the round is reset.
  */
-function Trials({ watch }: { watch: Watch }) {
+function Checklist({ watch }: { watch: Watch }) {
   const reading = useReading(watch, 200);
   const [met, setMet] = useState<readonly string[]>([]);
 
@@ -606,7 +606,7 @@ function Trials({ watch }: { watch: Watch }) {
   );
 }
 
-export function TrialRoom() {
+function TrialRoom() {
   const trace = useTrace();
   const watch = useWatch(trace);
   const patch = usePatch(watch, trace);
@@ -634,7 +634,7 @@ export function TrialRoom() {
       </Toolbar>
       <div className="graph-trials-case">
         <Canvas patch={patch} watch={watch} tall />
-        <Trials key={round} watch={watch} />
+        <Checklist key={round} watch={watch} />
       </div>
       <Shelf>
         <Account trace={trace} />
@@ -673,7 +673,7 @@ const runOf = (count: number): readonly GraphCord[] =>
  * and a fast one with them off is a device-rendering problem, and no amount of
  * work on `Graph.tsx` will touch it.
  */
-export function ScaleRoom() {
+function ScaleRoom() {
   const trace = useTrace();
   const watch = useWatch(trace);
   const [size, setSize] = useRemembered('graph-scale', 1);
@@ -873,7 +873,7 @@ function RowFace() {
 }
 
 /** The still half: where a cord ends, with no canvas needed to look at it. */
-export function AnatomyRoom() {
+function AnatomyRoom() {
   return (
     <div className="cases">
       <Case note="The opt-in row face: its picture is outside the frame, its chooser and outlet bands stay put, and every inlet dot shares a line with its label, slider or meter. Empty reserved rows keep the frame the same size when its contents change.">
@@ -913,36 +913,36 @@ function BareFace() {
   );
 }
 
-const tab = (
-  id: string,
-  title: string,
-  description: string,
-  component: Experiment<null>['component'],
-): Experiment<null> => ({ id, title, description, component });
+const meta = {
+  title: 'Graph/Canvas',
+  component: Graph,
+  parameters: { layout: 'fullscreen' },
+} satisfies Meta;
 
-export const GRAPH_TABS: readonly Experiment<null>[] = [
-  tab(
-    'patch',
-    'Patch',
-    'The canvas with an instrument on it. Everything the graph reports is counted, and so is the half it cannot report — a cord let go over nothing tells the host nothing at all.',
-    PatchRoom,
-  ),
-  tab(
-    'trials',
-    'Trials',
-    'The same canvas with the graph’s own promises listed beside it, ticked off as you make each one happen. Start a round after a change and see whether all eleven still tick.',
-    TrialRoom,
-  ),
-  tab(
-    'scale',
-    'Scale',
-    'Six nodes, or two hundred and forty. The switch for the faceplates is the ablation: it says whether a slow canvas is the graph’s fault or the faces’.',
-    ScaleRoom,
-  ),
-  tab(
-    'anatomy',
-    'Anatomy',
-    'Where a cord ends. The rails a device carries by default, the aligned rows a face opts into, and the same shell in a chain with nothing to draw.',
-    AnatomyRoom,
-  ),
-];
+export default meta;
+type Story = StoryObj;
+
+const story = (about: string, Room: () => ReactNode): Story => ({
+  render: () => <Room />,
+  parameters: { docs: { description: { story: about } } },
+});
+
+export const Patch = story(
+  'The canvas with an instrument on it. Everything the graph reports is counted, and so is the half it cannot report — a cord let go over nothing tells the host nothing at all.',
+  PatchRoom,
+);
+
+export const Trials = story(
+  'The same canvas with the graph’s own promises listed beside it, ticked off as you make each one happen. Start a round after a change and see whether all eleven still tick.',
+  TrialRoom,
+);
+
+export const Scale = story(
+  'Six nodes, or two hundred and forty. The switch for the faceplates is the ablation: it says whether a slow canvas is the graph’s fault or the faces’.',
+  ScaleRoom,
+);
+
+export const Anatomy = story(
+  'Where a cord ends. The rails a device carries by default, the aligned rows a face opts into, and the same shell in a chain with nothing to draw.',
+  AnatomyRoom,
+);

@@ -7,3 +7,11 @@
 // which would also declare an `import.meta.env` this repo never reads.
 
 declare module '*.css' {}
+
+// Vite's `?inline` suffix hands the compiled stylesheet back as a string rather
+// than injecting it. Storybook mounts the palette this way so the host-tokens
+// switch can take it out again.
+declare module '*.css?inline' {
+  const css: string;
+  export default css;
+}

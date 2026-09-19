@@ -33,7 +33,7 @@ The module knows nothing about what it frames. A row is a label, a height and a 
 that gets a `View` — the window in seconds and the box in pixels — and the caller draws
 whatever it has: a stem, the onsets heard in it, a beat map. Audio, the beat maths, the IPC
 and the report types stay in the app and are handed in as props and callbacks. `src/debug`
-imports `src/` and nothing else, the same rule the bench keeps.
+imports `src/` and nothing else, the same rule the stories keep.
 
 ## The gestures a scope has
 
@@ -50,8 +50,9 @@ wherever it is mounted, which is what the hex literals the old pages carried did
 
 ## Where to see it
 
-The **Debug** section of the widget bench (`npm run dev`) is a harness with nothing
-under it: a made-up signal, beats every half second, a head on the wall clock.
+The **Debug** stories (`npm run dev`, in `src/debug/Debug.stories.tsx`) show one widget
+at a time and then, in *Together*, a harness with nothing under it: a made-up signal, beats
+every half second, a head on the wall clock.
 
 ## Tabs and experiments
 

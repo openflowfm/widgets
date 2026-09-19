@@ -19,32 +19,6 @@ select {
   user-select: text;
 }
 
-.bench.hosted {
-}
-
-header {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  padding: 20px 24px 12px;
-  border-bottom: 1px solid #262629;
-  background: #0e0e10;
-}
-
-h1 {
-  margin: 0;
-  font-size: var(--text-heading);
-  letter-spacing: var(--track-slight);
-}
-
-header p {
-  max-width: 68ch;
-  margin: 6px 0 12px;
-  color: #8b8b93;
-  font-size: var(--text-lead);
-  line-height: 1.55;
-}
-
 kbd {
   padding: 1px 4px;
   border: 1px solid #2c2c31;
@@ -53,51 +27,6 @@ kbd {
   color: #b7b7be;
   font-variation-settings: var(--mono-axes);
   font-size: var(--text-body);
-}
-
-nav {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-}
-
-nav a,
-nav button {
-  padding: 3px 8px;
-  border: 1px solid #2c2c31;
-  border-radius: var(--radius-sm);
-  background: #151517;
-  color: #b7b7be;
-  font-family: inherit;
-  font-size: var(--text-body);
-  text-decoration: none;
-  cursor: pointer;
-}
-
-nav a:hover,
-nav button:hover {
-  border-color: #4a4a52;
-  color: #ececed;
-}
-
-main {
-  padding: 8px 24px 64px;
-}
-
-section {
-  padding: 18px 20px 28px;
-}
-
-h2 {
-  margin: 0 0 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #1f1f23;
-  color: #b7b7be;
-  font-size: var(--text-body);
-  font-variation-settings: var(--mono-axes);
-  letter-spacing: var(--track-caps);
-  text-transform: uppercase;
 }
 
 .cases {
@@ -298,51 +227,16 @@ font-variation-settings: var(--mono-axes);
   border-bottom: 1px solid #1a1a1d;
 }
 
-.bench {
+body {
   --stem-vocals: #a068f0;
   --stem-drums: #f0883a;
   --stem-bass: #6d8bf5;
-}
-
-.bench-aside {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--wdg-edge);
-}
-
-.bench-aside h1 {
-  margin: 0;
-  color: var(--wdg-text-strong);
-  font-size: var(--text-lead);
-  letter-spacing: var(--track-slight);
-}
-
-.bench-aside p {
-  margin: 0;
-  color: var(--wdg-caption);
-  font-size: var(--text-label);
-  line-height: 1.5;
-}
-
-.bench-aside button {
-  align-self: flex-start;
-  padding: 3px 7px;
-  border: 1px solid var(--wdg-edge);
-  border-radius: var(--radius, 2px);
-  background: none;
-  color: var(--wdg-caption);
-  font: inherit;
-  font-size: var(--text-label);
-  cursor: pointer;
 }
 
 .case-hint {
   color: var(--wdg-caption);
   font-size: var(--text-label);
 }
-
 
 .patch.tall {
   height: 460px;
@@ -545,11 +439,29 @@ font-variation-settings: var(--mono-axes);
   color: var(--wdg-caption);
 }
 
-.bench-sidebar-toggle { position: fixed; top: 9px; left: 153px; z-index: 5; }
-.bench-collapsed .bench-sidebar-toggle { left: 6px; }
-.bench-collapsed > .wdg-rooms { grid-template-columns: minmax(0, 1fr); }
-.bench-collapsed > .wdg-rooms > .wdg-rooms-side { display: none; }
-.bench-collapsed .wdg-workspace-nav { padding-left: 38px; }
-
 /* Local proof-of-concept accent; the shared application palette stays unchanged. */
 body { --amber: #b8c6d6; --amber-hover: #d5e0ed; --amber-muted: #758496; }
+
+/* Storybook's own frame: no padding fights the case card, and a story that
+   gives itself a height is allowed to have it. */
+.case-stage > * {
+  max-width: 100%;
+}
+
+.play-theme-tools {
+  position: fixed;
+  top: 9px;
+  left: 12px;
+  z-index: 10;
+}
+
+.play-theme-panel {
+  position: absolute;
+  top: 28px;
+  left: 0;
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  border: 1px solid var(--bd3);
+  background: var(--panel);
+  box-shadow: var(--shadow-menu);
+}

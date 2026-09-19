@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { renderHook, act, cleanup } from '@testing-library/react';
 import { beforeEach, afterEach, expect, it, vi } from 'vitest';
-import { usePreviewMixer } from '../../bench/usePreviewMixer.ts';
+import { usePreviewMixer } from '../../stories/usePreviewMixer.ts';
 let nextFrame: FrameRequestCallback | undefined;
 let now: number;
 beforeEach(() => {

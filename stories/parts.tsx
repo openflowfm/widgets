@@ -2,13 +2,25 @@ import { useState, type ReactNode } from 'react';
 import { enumParam, type Param, type UnitStyle } from '../src/param/param.ts';
 
 /**
- * The pieces every case on the bench is made of, and the parameters they run on.
+ * The pieces every story is made of, and the parameters they run on.
  *
- * They live here rather than in `Bench.tsx` because the page is no longer one
- * file: a room whose cases are involved enough to want their own module still
- * wants the same card around them and the same made-up parameters inside them,
- * and a second copy of either would be a second thing to keep true.
+ * Stories sit beside the widget they show, under `src/`; this lives apart from
+ * them because every story wants the same made-up parameters inside it and the
+ * same card around it, and a second copy of either would be a second thing to
+ * keep true. Nothing here ships: the stories under `src/` and this directory are both
+ * left out of the package.
  */
+
+/**
+ * The card a story sits in, and the sentence under it saying what the story is
+ * *for*. Spread into a story's `parameters`: the preview's decorator draws the
+ * card, and the docs page prints the sentence as the story's description.
+ */
+export const note = (text: string, { wide = false } = {}) => ({
+  note: text,
+  wide,
+  docs: { description: { story: text } },
+});
 
 /** One widget's own value, so every example on the page is genuinely live. */
 export function Held({

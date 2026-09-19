@@ -20,11 +20,11 @@ with no React, this is React with no domain.
 | [the parameter model](docs/param-model.md) | what a control *is*, ranges, tapers, steps, how a value is spelled | `src/param/param.ts`, `format.ts` |
 | [the gesture](docs/gesture.md) | dragging, the fine modifier, keys, write rate, the local-value hold | `src/gesture/*` |
 | [the catalogue](docs/catalogue.md) | **adding a widget** — what exists, what's next, and what Max for Live does and doesn't tell you | `src/controls/*` |
-| [the graph](docs/graph.md) | the node canvas, ports, cords, who owns a position — and the room the bench measures it in | `src/chrome/Graph.tsx`, `Port.tsx`, `graphContext.ts`, `bench/trace.ts` |
+| [the graph](docs/graph.md) | the node canvas, ports, cords, who owns a position — and the instrument the stories measure it with | `src/chrome/Graph.tsx`, `Port.tsx`, `graphContext.ts`, `stories/trace.ts` |
 | [notation displays](docs/notation.md) | tablature, a piano roll, their timelines, or the app/widget boundary | `src/notation/*` |
 | [themes and color roles](docs/theme.md) | palettes, role rules, presets, scoped tokens and theme editing | `src/theme/*` |
-| [the mixer face](docs/mixer.md) | controlled four-deck presentation and its host adapter | `src/mixer/*`, `bench/usePreviewMixer.ts` |
-| [the bench](docs/bench.md) | the dev harness, or adding a case or a room to it | `bench/*`, `vite.config.ts` |
+| [the mixer face](docs/mixer.md) | controlled four-deck presentation and its host adapter | `src/mixer/*`, `stories/usePreviewMixer.ts` |
+| [storybook](docs/storybook.md) | the dev harness, or adding a story to it | `.storybook/*`, `src/**/*.stories.tsx`, `stories/*` |
 | [the debug module](docs/debug.md) | building a debugging page in an app: the frame, a time axis, plots, a transport | `src/debug/*` |
 
 ## The shape of it
@@ -78,20 +78,23 @@ src/
   tokens.css        the widget tokens: colour and type from the palette, metrics ours
   index.ts          the barrel and the package entry — pulls in every stylesheet,
                     so prefer deep imports
-bench/              the harness. Dev-only; never built, never shipped
-  parts.tsx         the card every case sits in, and the parameters they run on
-  GraphCases.tsx    the Graph room: a canvas with an instrument on it, not a page of cases
-  trace.ts          that instrument — what the hand did, against what the graph made of it
+  **/*.stories.tsx  Storybook, beside the widget each story shows. Never shipped
+.storybook/         the harness config: the palette, the case card, the host-tokens switch
+stories/            what the stories share. Dev-only; never built, never shipped
+  parts.tsx         the card every story sits in, and the parameters they run on
+  shells.tsx        a faceplate, a device shell, a run, a rack — what the chrome stories are built of
+  trace.ts          the graph instrument — what the hand did, against what the graph made of it
+  usePreviewMixer.ts  the silent four-deck simulation the mixer story runs on
 ```
 
-## Running the bench
+## Running Storybook
 
 ```sh
 npm ci
 npm run dev              # http://localhost:5273
 ```
 
-The bench is independent of the app repository and never connects to Live. Its
+Storybook is independent of the app repository and never connects to Live. Its
 port remains configurable with `OPENFLOW_BENCH_PORT` or `OPENFLOW_PORT_BASE + 100`.
 
 ## Importing it
@@ -123,7 +126,7 @@ the app that uses it, and no `dist/` to go stale while you work.
 packing. Git consumers use the TypeScript source directly and need a bundler such
 as Vite that handles TS/TSX and CSS. No install-time build is required.
 
-CI runs typechecking, tests with coverage, declarations and bench bundling. Tags
+CI runs typechecking, tests with coverage, declarations and a Storybook build. Tags
 matching the package version produce a GitHub release with a package tarball;
 Widgets versions and releases are independent of the apps.
 
@@ -154,8 +157,9 @@ needs something one of those has, it needs a prop instead.
 
 ## Verifying a change
 
-`npm run typecheck` covers source and bench; `npm test` runs the widget suites. The gesture and the menu are covered too, under happy-dom — but only where
+`npm run typecheck` covers source and stories; `npm test` runs the widget suites and
+renders every story in headless Chromium. The gesture and the menu are covered too, under happy-dom — but only where
 there is an exact answer: what a lost capture does, what escape puts back, what a drag
 measures against under a transform, which member a repeated letter walks to. **How a
-gesture feels is still the bench's** — the reach, the taper, whether the fine modifier is
-worth the finger — so a change to a control should still say which room it was checked in.
+gesture feels is still Storybook's** — the reach, the taper, whether the fine modifier is
+worth the finger — so a change to a control should still say which story it was checked in.

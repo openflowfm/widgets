@@ -15,10 +15,12 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      # The stories project renders every story in headless Chromium.
+      - run: npx playwright install --with-deps chromium
       - run: npm run typecheck
       - run: npm run test:coverage
       - run: npm run build
-      - run: npx vite build
+      - run: npm run build:storybook
       - run: npm pack
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
