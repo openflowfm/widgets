@@ -30,7 +30,7 @@ type TransportArgs = Pick<TransportProps, 'playing' | 'disabled' | 'fine' | 'lat
 };
 
 const meta = {
-  title: 'Chrome/Transport',
+  title: 'Music/Transport',
   component: Transport as unknown as ComponentType<TransportArgs>,
   tags: ['autodocs'],
   parameters: {

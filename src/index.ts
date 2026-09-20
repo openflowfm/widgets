@@ -80,7 +80,7 @@ export {
 export { Port, type PortProps } from './chrome/Port.tsx';
 export { Rack, type RackProps } from './chrome/Rack.tsx';
 export { Row, type RowProps } from './chrome/Row.tsx';
-export { Transport, clockText, positionText, type TransportProps, type TransportLoop, type TransportTempo, type TransportNormalSpeed, type TransportPosition } from './chrome/Transport.tsx';
+export { Transport, clockText, positionText, type TransportProps, type TransportLoop, type TransportTempo, type TransportNormalSpeed, type TransportPosition } from './music/Transport.tsx';
 export { Panel, PanelColumn, type PanelProps, type PanelColumnProps } from './chrome/Panel.tsx';
 
 export {

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Meter } from '../controls/Meter.tsx';
-import { Waveform } from '../wave/Waveform.tsx';
+import { Waveform } from '../music/Waveform.tsx';
 import type { CSSProperties } from 'react';
 import type { MixerCommands, MixerDeck, MixerFrame, MixerTheme } from './model.ts';
 /** Animate only the meter, keeping the launcher and controls off the frame render path. */

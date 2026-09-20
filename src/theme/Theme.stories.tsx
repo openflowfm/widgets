@@ -15,8 +15,8 @@ import { NumberField } from '../controls/NumberField.tsx';
 import { XYPad } from '../controls/XYPad.tsx';
 import { Label } from '../controls/Label.tsx';
 import { Row } from '../chrome/Row.tsx';
-import { Waveform } from '../wave/Waveform.tsx';
-import { packedOf, type Peak } from '../wave/levels.ts';
+import { Waveform } from '../music/Waveform.tsx';
+import { packedOf, type Peak } from '../music/levels.ts';
 import { Held, Run } from '../../stories/shells.tsx';
 import { DRY_WET, FILTER, FREQ, GAIN, PAN, SHAPE, TIME } from '../../stories/parts.tsx';
 

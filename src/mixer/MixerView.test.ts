@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MixerView } from './MixerView.tsx';
 import type { MixerViewProps, MixerFrame } from './model.ts';
 import type { Param } from '../param/param.ts';
-vi.mock('../wave/Waveform.tsx', () => ({ Waveform: () => null }));
+vi.mock('../music/Waveform.tsx', () => ({ Waveform: () => null }));
 let frames: FrameRequestCallback[];
 beforeEach(() => {
   frames = [];

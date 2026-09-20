@@ -130,10 +130,10 @@ unit tests alone cannot establish visual cohesion.
 
 ## Optional waveform presentation
 
-`wave/Waveform.tsx` accepts `presentation: SpectralOutlineStyle` alongside measured
+`music/Waveform.tsx` accepts `presentation: SpectralOutlineStyle` alongside measured
 `spectrum`. Omit it to retain the existing theme output unchanged. Geometry continues
 to use the same peak ladder, zoom density, `smooth` and `headroom` parameters.
-`wave/spectralOutline.ts` exposes `paintSpectralOutline` for canvas hosts using that
+`music/spectralOutline.ts` exposes `paintSpectralOutline` for canvas hosts using that
 same geometry. Both entry points use this painter, rather than separate demo renderers.
 
 `layout` chooses nested frequency layers or a blended spectrum. `spectral` supplies

@@ -65,7 +65,7 @@ function Lane({ layout, frequency, spectrum, ...args }: WaveArgs) {
 }
 
 const meta = {
-  title: 'Drawing/Waveform',
+  title: 'Music/Waveform',
   component: Waveform,
   tags: ['autodocs'],
   parameters: {

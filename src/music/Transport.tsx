@@ -4,7 +4,7 @@ import { ButtonFace } from '../controls/ButtonFace.tsx';
 import { NumberField } from '../controls/NumberField.tsx';
 import { Toggle } from '../controls/Toggle.tsx';
 import type { Param } from '../param/param.ts';
-import './chrome.css';
+import './transport.css';
 
 /**
  * Playback, the tempo it runs at, and where the head is: the group a header
@@ -18,7 +18,9 @@ import './chrome.css';
  * normal-speed button and the beat counter.
  *
  * This is the transport mix[flow]'s header grew; it was extracted here once a
- * second app and the analysis harness both needed the same row.
+ * second app and the analysis harness both needed the same row. It sits with
+ * the waveform rather than the chrome because it is a thing you play music
+ * with, not a thing a window is built out of.
  */
 
 const play = (

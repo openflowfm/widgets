@@ -15,7 +15,7 @@
     "./controls/*": "./src/controls/*",
     "./chrome/*": "./src/chrome/*",
     "./notation/*": "./src/notation/*",
-    "./wave/*": "./src/wave/*",
+    "./music/*": "./src/music/*",
     "./param/*": "./src/param/*",
     "./gesture/*": "./src/gesture/*",
     "./palette.css": "./src/palette.css",

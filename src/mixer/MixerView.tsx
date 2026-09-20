@@ -1,5 +1,5 @@
 import { Fragment, type CSSProperties } from 'react';
-import { Waveform } from '../wave/Waveform.tsx';
+import { Waveform } from '../music/Waveform.tsx';
 import './mixer.css';
 import { DeckStrip } from './DeckStrip.tsx';
 import { MasterStrip } from './MasterStrip.tsx';

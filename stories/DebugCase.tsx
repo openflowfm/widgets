@@ -8,7 +8,7 @@ import { Group, Harness, Shelf, Status, Toolbar } from '../src/debug/Harness.tsx
 import { Legend } from '../src/debug/Legend.tsx';
 import { Plot } from '../src/debug/Plot.tsx';
 import { Scope, ScopeRow } from '../src/debug/Scope.tsx';
-import { Transport } from '../src/chrome/Transport.tsx';
+import { Transport } from '../src/music/Transport.tsx';
 import { useAxis } from '../src/debug/useAxis.ts';
 import { useRemembered } from '../src/debug/useRemembered.ts';
 

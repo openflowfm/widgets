@@ -83,7 +83,13 @@ Not yet: `live.text` (a labelled toggle — `Toggle` with children is most of it
 `live.gain~` (a slider with a meter beside it, now that both halves exist), `live.arrows`,
 `live.drop`.
 
-**`Waveform`** lives in `src/wave/Waveform.tsx` and serves the track editor and mixer.
+**`src/music/` is what you play music with**, as against what a device or a window is
+built out of: the transport and the waveform. [`Transport`](../src/music/Transport.tsx) is
+Live's control bar — play, stop, loop, the tempo as a field or a reading, normal speed, and
+the beat counter that switches to the clock — with no audio in it and everything past play
+optional, so the analysis harness and a DJ mixer's header mount the same one.
+
+**`Waveform`** lives in `src/music/Waveform.tsx` and serves the track editor and mixer.
 It draws host-supplied peaks as a smooth silhouette with a cached resolution ladder.
 Optional `colors` evenly cover the same time extent as those peaks, allowing a host to
 supply paint without bringing audio analysis into widgets. Optional `spectrum` instead
@@ -142,7 +148,6 @@ faceplate of perfect knobs doesn't look like Ableton without it.
 | [`Port`](../src/chrome/Port.tsx) | neither | where a cord ends. `Device` grew two slots for them |
 | [`Modal`](../src/chrome/Modal.tsx) | neither — an editor's, not a device's | a `<dialog>`: the top layer, the scrim, the focus trap and escape |
 | [`Popup`](../src/chrome/Popup.tsx) | neither | a panel hung off a control: the top layer, the flip, and the three ways it goes away |
-| [`Transport`](../src/chrome/Transport.tsx) | Live's control bar | play, stop, loop, the tempo, the beat counter and the clock; no audio in it |
 | [`HintFooter`](../src/chrome/HintFooter.tsx) | Live's Info View | the strip along the bottom that says what you are pointing at. See [what explains a control](#what-explains-a-control) |
 
 `Modal` is in this tier for the reason `Button` is in the last one: it belongs to the
