@@ -21,7 +21,7 @@ with no React, this is React with no domain.
 | [the gesture](docs/gesture.md) | dragging, the fine modifier, keys, write rate, the local-value hold | `src/gesture/*` |
 | [the catalogue](docs/catalogue.md) | **adding a widget** — what exists, what's next, and what Max for Live does and doesn't tell you | `src/controls/*` |
 | [the graph](docs/graph.md) | the node canvas, ports, cords, who owns a position — and the instrument the stories measure it with | `src/chrome/Graph.tsx`, `Port.tsx`, `graphContext.ts`, `stories/trace.ts` |
-| [notation displays](docs/notation.md) | tablature, a piano roll, their timelines, or the app/widget boundary | `src/notation/*` |
+| [notation displays](docs/notation.md) | tablature, a piano roll, their timelines, or the app/widget boundary | `src/music/*` |
 | [themes and color roles](docs/theme.md) | palettes, role rules, presets, scoped tokens and theme editing | `src/theme/*` |
 | [the mixer face](docs/mixer.md) | controlled four-deck presentation and its host adapter | `src/mixer/*`, `stories/usePreviewMixer.ts` |
 | [storybook](docs/storybook.md) | the dev harness, or adding a story to it | `.storybook/*`, `src/**/*.stories.tsx`, `stories/*` |
@@ -42,7 +42,6 @@ src/
     Widget.tsx      the frame every control sits in: caption, control, reading
     Knob.tsx        live.dial
     Slider.tsx      live.slider
-    Meter.tsx       live.meter~, read-only
     NumberField.tsx live.numbox
     Toggle.tsx      live.toggle, and live.button when momentary
     Segmented.tsx   live.tab
@@ -68,7 +67,11 @@ src/
     Row.tsx         controls on one line, in three bands, through a subgrid
     Panel.tsx       aligned vertical parameter lanes, through a shared row grid
     chrome.css      their styling, on the same shared parts
-  notation/
+  music/            what you play music with, as against what a device or a window is built of
+    Transport.tsx   play, stop, loop, the tempo, the beat counter and the clock; no audio in it
+    Meter.tsx       live.meter~, read-only
+    Waveform.tsx    a stem as one silhouette, off a ladder of halvings, at the detail the window earned
+    levels.ts       that ladder; outline.ts and spectralOutline.ts draw it, plain or by band
     Tablature.tsx   string lines, plain fret figures and quiet duration hairlines
     PianoRoll.tsx   keyboard rows, note blocks, musical ruling and a movable playhead
     notation.css    shared notation geometry; hosts supply musical meaning

@@ -5,7 +5,7 @@ import { ThemeRoot } from './ThemeRoot.tsx';
 import { PRESETS, ROLES, ROLE_NAMES, DARK_SURFACES, DEFAULT_THEME, color, conflicts, editRole, type Theme, type Tone, type ColorRole, type DeckVariation } from './theme.ts';
 import { SPECTRAL_PRESETS, SPECTRAL_BANDS, SPECTRAL_NAMES, DEFAULT_SPECTRAL, type SpectralBand } from './spectral.ts';
 import { Knob } from '../controls/Knob.tsx';
-import { Meter } from '../controls/Meter.tsx';
+import { Meter } from '../music/Meter.tsx';
 import { Slider } from '../controls/Slider.tsx';
 import { Toggle } from '../controls/Toggle.tsx';
 import { Button } from '../controls/Button.tsx';

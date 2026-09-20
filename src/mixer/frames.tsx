@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Meter } from '../controls/Meter.tsx';
+import { Meter } from '../music/Meter.tsx';
 import { Waveform } from '../music/Waveform.tsx';
 import type { CSSProperties } from 'react';
 import type { MixerCommands, MixerDeck, MixerFrame, MixerTheme } from './model.ts';

@@ -1,5 +1,5 @@
-import { Widget, type WidgetProps } from './Widget.tsx';
-import './controls.css';
+import { Widget, type WidgetProps } from '../controls/Widget.tsx';
+import '../controls/controls.css';
 
 /**
  * `live.meter~`: a level, read-only.

@@ -6,7 +6,7 @@ import { Port } from './Port.tsx';
 import { Row } from './Row.tsx';
 import { Button } from '../controls/Button.tsx';
 import { Knob } from '../controls/Knob.tsx';
-import { Meter } from '../controls/Meter.tsx';
+import { Meter } from '../music/Meter.tsx';
 import { Select } from '../controls/Select.tsx';
 import { Slider } from '../controls/Slider.tsx';
 import { Toggle } from '../controls/Toggle.tsx';

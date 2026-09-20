@@ -38,7 +38,7 @@ Built.
 | [`Label`](../src/controls/Label.tsx) | `live.comment` | carries the type rhythm for a whole panel |
 | `Divider` | `live.line` | in `Label.tsx` — same family, three lines |
 | [`XYPad`](../src/controls/XYPad.tsx) | `live.pictslider` | two parameters on one plane, with a slot for a device's own artwork |
-| [`Meter`](../src/controls/Meter.tsx) | `live.meter~` | a level, read-only. Optional peak hold |
+| [`Meter`](../src/music/Meter.tsx) | `live.meter~` | a level, read-only. Optional peak hold |
 | [`Button`](../src/controls/Button.tsx) | none | an action that is not a parameter |
 
 [`ButtonFace`](../src/controls/ButtonFace.tsx) is the shared native-button surface used
@@ -84,7 +84,7 @@ Not yet: `live.text` (a labelled toggle — `Toggle` with children is most of it
 `live.drop`.
 
 **`src/music/` is what you play music with**, as against what a device or a window is
-built out of: the transport and the waveform. [`Transport`](../src/music/Transport.tsx) is
+built out of: the transport, the meter, the waveform, and the notation views. [`Transport`](../src/music/Transport.tsx) is
 Live's control bar — play, stop, loop, the tempo as a field or a reading, normal speed, and
 the beat counter that switches to the clock — with no audio in it and everything past play
 optional, so the analysis harness and a DJ mixer's header mount the same one.

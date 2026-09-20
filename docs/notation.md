@@ -1,6 +1,6 @@
 # Notation displays
 
-`src/notation/Tablature.tsx`, `PianoRoll.tsx`, and `notation.css`.
+`src/music/Tablature.tsx`, `PianoRoll.tsx`, and `notation.css`.
 
 These are displays, not music-domain adapters. A host decides what a note means and hands
 the widget the answer it can draw:

@@ -14,7 +14,6 @@
     ".": "./src/index.ts",
     "./controls/*": "./src/controls/*",
     "./chrome/*": "./src/chrome/*",
-    "./notation/*": "./src/notation/*",
     "./music/*": "./src/music/*",
     "./param/*": "./src/param/*",
     "./gesture/*": "./src/gesture/*",

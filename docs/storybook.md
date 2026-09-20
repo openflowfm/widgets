@@ -56,8 +56,7 @@ The sidebar is grouped by what you came to look at rather than by what the file 
 | **Controls** | things you put a hand on — a story per state of each control |
 | **Chrome** | what a window is built out of: text, rows, device shells, chains, the modal |
 | **Graph** | the canvas, and whether it behaves — an instrument, not a page of cases |
-| **Music** | what you play music with: the transport, and the waveform over a length of time |
-| **Mixer** | a complete four-deck composition on a silent simulation |
+| **Music** | what you play music with: the transport, the meter, the waveform, and the four-deck mixer on a silent simulation |
 | **Debug** | the harness module: a component per story file, with a prop table each, and then all together |
 | **Param** | the model playground |
 
@@ -184,7 +183,7 @@ is `storySort` in `.storybook/preview.tsx`; a new group goes on that list or lan
 
 ## Mixer: a complete composition
 
-The **Mixer** story mounts `src/mixer/MixerView.stories.tsx`, a thin wrapper around the
+The **Music / Four-deck mixer** story mounts `src/mixer/MixerView.stories.tsx`, a thin wrapper around the
 reusable `src/mixer/MixerView.tsx` and `stories/usePreviewMixer.ts`. The view's contract and
 integration boundary are documented in [mixer.md](mixer.md). The same controlled face
 can be driven by a future mix adapter without importing the simulation into the app.

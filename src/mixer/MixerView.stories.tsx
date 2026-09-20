@@ -26,7 +26,7 @@ function Preview({ externalTransport }: { externalTransport: boolean }) {
 }
 
 const meta = {
-  title: 'Mixer/Four-deck mixer',
+  title: 'Music/Four-deck mixer',
   component: MixerView,
   tags: ['autodocs'],
   parameters: {

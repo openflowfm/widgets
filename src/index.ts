@@ -43,7 +43,7 @@ export {
 } from './controls/Widget.tsx';
 export { Knob, type KnobProps } from './controls/Knob.tsx';
 export { Slider, type SliderProps } from './controls/Slider.tsx';
-export { Meter, type MeterProps } from './controls/Meter.tsx';
+export { Meter, type MeterProps } from './music/Meter.tsx';
 export { NumberField, type NumberFieldProps } from './controls/NumberField.tsx';
 export { Toggle, type ToggleProps } from './controls/Toggle.tsx';
 export { Button, type ButtonProps } from './controls/Button.tsx';
@@ -90,12 +90,12 @@ export {
   type TablatureNote,
   type TablatureProps,
   type TablatureString,
-} from './notation/Tablature.tsx';
+} from './music/Tablature.tsx';
 export {
   PianoRoll,
   type PianoRollKey,
   type PianoRollNote,
   type PianoRollProps,
-} from './notation/PianoRoll.tsx';
+} from './music/PianoRoll.tsx';
 
 export * from './debug/index.ts';

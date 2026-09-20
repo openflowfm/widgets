@@ -3,7 +3,7 @@ import { Meter } from './Meter.tsx';
 import { note } from '../../stories/parts.tsx';
 
 const meta = {
-  title: 'Controls/Meter',
+  title: 'Music/Meter',
   component: Meter,
   tags: ['autodocs'],
   parameters: {
