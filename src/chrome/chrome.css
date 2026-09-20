@@ -50,7 +50,7 @@
 }
 
 .wdg-device[data-selected] .wdg-device-name {
-  color: var(--wdg-marker);
+  color: var(--wdg-text-strong);
 }
 
 .wdg-device-fold,
@@ -68,7 +68,7 @@
 
 .wdg-device-fold:hover,
 .wdg-device-swap:hover {
-  color: var(--wdg-marker);
+  color: var(--wdg-text-strong);
 }
 
 .wdg-device-fold svg,
@@ -349,12 +349,12 @@
 }
 
 .wdg-rack-chains button:hover:not([aria-checked='true']) {
-  color: var(--wdg-marker);
+  color: var(--wdg-text-strong);
 }
 
 .wdg-rack-chains button[aria-checked='true'] {
   background: var(--wdg-plate-selected);
-  color: var(--wdg-marker);
+  color: var(--wdg-text-strong);
 }
 
 .wdg-rack-chains button:focus-visible {

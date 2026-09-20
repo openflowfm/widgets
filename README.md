@@ -91,11 +91,11 @@ stories/            what the stories share. Dev-only; never built, never shipped
 
 ```sh
 npm ci
-npm run dev              # http://localhost:5273
+npm run dev              # http://localhost:5273 by default; a busy port moves up
 ```
 
 Storybook is independent of the app repository and never connects to Live. Its
-port remains configurable with `OPENFLOW_BENCH_PORT` or `OPENFLOW_PORT_BASE + 100`.
+port remains configurable with `PORT`, `OPENFLOW_BENCH_PORT` or `OPENFLOW_PORT_BASE + 100`.
 
 ## Importing it
 

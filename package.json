@@ -28,7 +28,7 @@
   },
   "types": "src/index.ts",
   "scripts": {
-    "dev": "storybook dev --exact-port -p \"${OPENFLOW_BENCH_PORT:-$((${OPENFLOW_PORT_BASE:-5173}+100))}\"",
+    "dev": "storybook dev -p \"${PORT:-${OPENFLOW_BENCH_PORT:-$((${OPENFLOW_PORT_BASE:-5173}+100))}}\"",
     "storybook": "npm run dev",
     "build:storybook": "storybook build --quiet -o storybook-static",
     "typecheck": "tsc -p tsconfig.json",

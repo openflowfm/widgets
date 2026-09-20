@@ -25,7 +25,7 @@ describe('theme documents and role rules', () => {
     expect(next.colors.drums.h).toBe(50);
     expect(next.colors.bass).toBe(DEFAULT_THEME.colors.bass);
     expect(DEFAULT_THEME.colors.drums.h).toBe(195);
-    expect(editRole(next, 'primary', 's', 80).colors.primary.s).toBe(12);
+    expect(editRole(next, 'primary', 's', 180).colors.primary.s).toBe(100);
     expect(editRole(next, 'signal', 'h', 280).colors.signal.h).toBe(160);
     expect(editRole(next, 'drums', 'l', NaN)).toBe(next);
   });

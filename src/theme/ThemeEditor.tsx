@@ -42,7 +42,7 @@ export function ThemeEditor({ theme, onChange }: { theme: Theme; onChange(theme:
       <div className="wdg-theme-sample" style={{ background: color(selected) } as CSSProperties} />
       <div className="wdg-theme-values">{(['h', 's', 'l'] as const).map((key, i) => <NumberField key={key} name={['Hue', 'Saturation', 'Lightness'][i]} label={`${roleName} ${['hue', 'saturation', 'lightness'][i]}`} param={key === 'h' ? HUE : PERCENT} width={76} value={selected[key]} onChange={value => edit(key, value)} showFill={false} />)}</div>
       <div className="wdg-theme-rolls">{(['h', 's', 'l'] as const).map((key, i) => <Button key={key} width={76} label={`Randomize ${roleName} ${['hue', 'saturation', 'lightness'][i]}`} onPress={() => roll(key)}>{['Roll hue', 'Roll sat', 'Roll light'][i]}</Button>)}</div>
-      <p>Drag or type values. Primary stays nearly neutral; signal stays green. Tune B/D relative to A/C below. Positive warmth shifts toward orange; negative shifts away.</p>
+      <p>Drag or type values. Signal stays green; primary is whatever you make it. Tune B/D relative to A/C below. Positive warmth shifts toward orange; negative shifts away.</p>
       <p>FX and trim use primary. Spectral colors describe frequencies, independently of stem identity. Deck color mode uses the deck tint; letters always carry deck identity.</p>
       <div className="wdg-theme-variation">
         {variationControls.map(({ key, name, param }) => <Slider key={key} name={name} label={name} param={param} value={variation[key]} onChange={value => onChange({ ...theme, variation: { ...variation, [key]: value } })} orientation="horizontal" length={240} />)}

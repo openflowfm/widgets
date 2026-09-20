@@ -24,9 +24,13 @@ randomizing role colors retains surfaces and variation. Current favorite preserv
 chosen eight original role colors exactly, with guitar and piano added for six-source
 hosts. These additional roles do not change any of the existing four-stem colors.
 
-- `primary` is selection and ordinary control change, nearly neutral (at most 12%
-  saturation through the editor). It supplies faders, trim, EQ and effects. Effects
-  have no separate hue identity. `signal` is measured output and stays green, 120–160°.
+- `primary` is selection and ordinary control change: every fill, the on state of a
+  toggle, the chosen segment. It supplies faders, trim, EQ and effects, which have no
+  separate hue identity. The presets keep it nearly neutral, and a roll keeps it there,
+  but that is a choice the document makes, not a rule: any hue and saturation is valid.
+  Markers — a knob's pointer, a slider's thumb, a pad's handle, a device's power dot —
+  are the text colour, not a role of their own. `signal` is measured output and stays
+  green, 120–160°.
 - Six stem identities are drums, bass, other, vocals, guitar and piano. Active fills
   use their role directly; labels use `identityLabel`, 45% ink blended with the caption
   tone. This is a quieter version of the color, not plain gray.

@@ -385,7 +385,7 @@
 .wdg-toggle-body:hover:not(:disabled):not([data-on]),
 .wdg-segmented-body button:hover:not(:disabled):not([aria-checked='true']),
 .wdg-button-body:hover:not(:disabled) {
-  color: var(--wdg-marker);
+  color: var(--wdg-text-strong);
 }
 
 .wdg-device-power[data-on],

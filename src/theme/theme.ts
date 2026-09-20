@@ -54,7 +54,7 @@ const clamp = (n: number, min = 0, max = 100) => Math.max(min, Math.min(max, n))
 const hue = (h: number) => ((h % 360) + 360) % 360;
 export function editRole(theme: Theme, role: ColorRole, key: keyof Tone, value: number): Theme {
   if (!Number.isFinite(value)) return theme;
-  const n = key === 'h' ? (role === 'signal' ? clamp(value, 120, 160) : hue(value)) : clamp(value, 0, role === 'primary' && key === 's' ? 12 : 100);
+  const n = key === 'h' ? (role === 'signal' ? clamp(value, 120, 160) : hue(value)) : clamp(value, 0, 100);
   return { ...theme, colors: { ...theme.colors, [role]: { ...theme.colors[role], [key]: n } } };
 }
 const distance = (a: number, b: number) => Math.min(Math.abs(hue(a) - hue(b)), 360 - Math.abs(hue(a) - hue(b)));
@@ -97,7 +97,7 @@ export function isTheme(value: unknown): value is Theme {
   const t = value as Theme;
   return t.version === 1 && (t.spectral === undefined || isSpectralStyle(t.spectral)) && !!t.colors && ROLES.every(r => {
     const c = t.colors[r];
-    return c && Number.isFinite(c.h) && c.h >= 0 && c.h < 360 && Number.isFinite(c.s) && c.s >= 0 && c.s <= (r === 'primary' ? 12 : 100) && Number.isFinite(c.l) && c.l >= 0 && c.l <= 100 && (r !== 'signal' || c.h >= 120 && c.h <= 160);
+    return c && Number.isFinite(c.h) && c.h >= 0 && c.h < 360 && Number.isFinite(c.s) && c.s >= 0 && c.s <= 100 && Number.isFinite(c.l) && c.l >= 0 && c.l <= 100 && (r !== 'signal' || c.h >= 120 && c.h <= 160);
   }) && !!t.surfaces && Object.keys(DARK_SURFACES).every(k => {
     // A document written before a surface existed keeps its other choices; resolve fills the gap.
     const v = t.surfaces[k as keyof typeof DARK_SURFACES];

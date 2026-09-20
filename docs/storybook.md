@@ -6,7 +6,7 @@ lives in `stories/`. Nothing from either ships in the package.
 
 ```sh
 npm ci
-npm run dev              # http://localhost:5273
+npm run dev              # http://localhost:5273 by default; a busy port moves up
 npm run build:storybook  # the static site CI builds as a smoke check
 ```
 
@@ -15,13 +15,15 @@ npm run build:storybook  # the static site CI builds as a smoke check
 The port counts from the same base every dev server here does — `OPENFLOW_PORT_BASE`
 moves both, and `OPENFLOW_BENCH_PORT` overrides it outright. **The offset is 100, not 1**,
 because worktree ports get picked adjacently: with +1, a worktree on 5174 would put its
-Storybook on the UI of the worktree on 5175. `--exact-port` is on, so a genuine collision
-fails loudly rather than drifting.
+Storybook on the UI of the worktree on 5175. The port is a preference, not a claim: a
+launcher that assigns one sets `PORT` and wins over both, and when the preferred port is
+already taken Storybook offers the next free one, so several worktrees or people on one
+machine each get their own. `.claude/launch.json` turns `autoPort` on for the same reason.
 
 | | default | |
 |---|---|---|
 | set[flow] | 5173 | `OPENFLOW_PORT_BASE` (the base itself) |
-| widget storybook | UI + 100 | `OPENFLOW_BENCH_PORT` |
+| widget storybook | UI + 100 | `PORT`, then `OPENFLOW_BENCH_PORT` |
 | device bench | UI + 200 | `OPENFLOW_DEVICE_BENCH_PORT` |
 
 The device bench is [`set/bench/`](https://github.com/ryangavin/better-session-view/blob/main/set/docs/device-faces.md#the-device-bench) and holds
@@ -107,8 +109,8 @@ element so the page around the story — the body, a docs table, the portal a me
 opens into — follows too. The default is the default theme, which is what the apps mount;
 *none* is the palette as shipped, with no theme over it, and is where the shipped amber
 comes from. A story can pin one with `parameters.theme`, and since the vitest runner
-honours globals, a pinned theme is a themed test. **Theme / Editor** mounts the editor
-beside a sample of what it colours, with the document as its arg.
+honours globals, a pinned theme is a themed test. **Theme / Editor** is the theme document
+as controls — see below.
 
 **Host tokens** is the other question. `src/tokens.css` defines every colour and type token
 as `var(--host-token, fallback)`, so a widget picks up the app's palette when it's mounted in
@@ -198,28 +200,29 @@ Pause holds pending choices. Stop clears selections, queues, loops and position.
 mark a global preview loop, and Exit/Reloop release or re-engage it. Full selects the
 first active stem section for the original-track preview and preserves stem selections
 for returning. These are fixture policies, not behavior implemented by MixerView.
-Remounting the story restores the initial composition and theme. No audio is produced.
+Remounting the story restores the initial composition. No audio is produced.
 
-## Mixer theme roles
+## Mixer theme
 
-The mixer story mounts a shared `ThemeRoot` and controlled `ThemeEditor` from
-`src/theme/`. The [theme topic](theme.md) owns the role model, palette rules, presets,
-randomization and derived label/deck colors. The story owns only its floating Theme button
-and temporary state. The editor is the same component used in mix's app-wide Theme modal.
+The mixer story has no theme controls of its own: the toolbar Theme picker colours it,
+the same as every other story, and `useTheme()` hands the face the resolved colours. The
+[theme topic](theme.md) owns the role model, palette rules, presets and derived colours;
+a theme is edited on the **Theme / Editor** story.
 
-Current favorite preserves the chosen palette. Presets include all role colors, surfaces
-and deck variation; selecting a preset restores that whole document. Randomize and
-individual H/S/L rolls retain variation. Leaving the story discards theme edits along with
-the preview. No theme state is written to body or browser storage by widgets.
+## Theme / Editor
 
-The editor also has **Roll hue**, **Roll sat**, and **Roll light** for the selected
-role. Each changes only that component. Hue rolls seek a separated hue family; primary
-stays nearly neutral and signal stays green. Saturation and lightness rolls use restrained
-ranges; manual fields remain available for wider experimentation.
+`src/theme/Theme.stories.tsx` is a `Theme` document flattened into the controls panel: a
+colour picker per role and per surface, a range per deck-variation offset, and the
+spectral style's mode, strength and band colours, each under a category of its own.
+**Preset** restores every one of them at once, and the spectral preset restores its
+category. Role colours go through `editRole`, so its one rule — green signal — holds whatever
+the picker says, and the conflicts `theme.ts` reports show under
+the sample. The sample is everything the theme colours: every control, a chain of
+shells, a waveform per stem, the deck letters and waveform tints, and the spectral
+bands. The document the panel currently describes is under a disclosure at the bottom,
+ready to be pasted into `theme.ts` as a new preset.
 
-Four live sliders control deck variation: **B/D warmth offset** (negative cooler,
-positive warmer), **B/D saturation offset**, **B/D lightness offset**, and **Waveform
-color strength**. The first three change B/D relative to the A/C base colors, together
-for both pairs. Strength controls how much deck color appears in all waveform fills.
-**Reset variation** restores warmth 8, saturation/lightness offsets 0, and strength 65%.
-Changing presets restores their saved variation; rolling role colors preserves it.
+The story does not use `ThemeEditor.tsx`. That component is what mix mounts in its
+app-wide Theme modal and is documented in [theme.md](theme.md); Storybook's own controls
+are the editor here, since the document is only data.
+
