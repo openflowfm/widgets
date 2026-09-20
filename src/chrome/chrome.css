@@ -724,7 +724,7 @@
 
 /* The transport: playback, tempo and the reading, as one control group. */
 .wdg-transport .wdg-transport-playing {
-  color: var(--wdg-signal, var(--success, #7bd88f));
+  color: var(--success, var(--green, #5fbfa8));
 }
 
 .wdg-transport .wdg-transport-looping-part {
