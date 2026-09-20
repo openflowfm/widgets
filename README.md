@@ -22,6 +22,7 @@ with no React, this is React with no domain.
 | [the catalogue](docs/catalogue.md) | **adding a widget** — what exists, what's next, and what Max for Live does and doesn't tell you | `src/controls/*` |
 | [the graph](docs/graph.md) | the node canvas, ports, cords, who owns a position — and the instrument the stories measure it with | `src/chrome/Graph.tsx`, `Port.tsx`, `graphContext.ts`, `stories/trace.ts` |
 | [notation displays](docs/notation.md) | tablature, a piano roll, their timelines, or the app/widget boundary | `src/music/*` |
+| [the palette](docs/palette.md) | the design language: colour tokens, the text ramp, the one typeface and its two cuts, size and shadow tokens | `src/palette.css`, `src/type.css`, `src/tokens.css` |
 | [themes and color roles](docs/theme.md) | palettes, role rules, presets, scoped tokens and theme editing | `src/theme/*` |
 | [the mixer face](docs/mixer.md) | controlled four-deck presentation and its host adapter | `src/mixer/*`, `stories/usePreviewMixer.ts` |
 | [storybook](docs/storybook.md) | the dev harness, or adding a story to it | `.storybook/*`, `src/**/*.stories.tsx`, `stories/*` |
