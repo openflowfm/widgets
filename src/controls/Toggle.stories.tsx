@@ -21,7 +21,7 @@ const live = (args: ComponentProps<typeof Toggle>) => {
         updateArgs({ on });
       }}
     >
-      {args.children ?? (args.on ? 'On' : 'Off')}
+      {args.children || (args.on ? 'On' : 'Off')}
     </Toggle>
   );
 };
@@ -47,10 +47,7 @@ const meta = {
     width: 0,
     name: 'Active',
     label: 'Active',
-    title: '',
-    hint: '',
-    children: 'On',
-    ink: '',
+    children: '',
   },
   argTypes: {
     on: { control: 'boolean' },
@@ -65,7 +62,7 @@ const meta = {
     label: { control: 'text' },
     title: { control: 'text' },
     hint: { control: 'text' },
-    children: { control: 'text' },
+    children: { control: 'text', description: 'Empty reads On or Off from the state.' },
     ink: { control: 'color' },
     className: { control: false },
   },

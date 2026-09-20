@@ -57,11 +57,11 @@ const PRESENTATIONS: Record<string, SpectralOutlineStyle | undefined> = {
   blend: { layout: 'blend', spectral: DEFAULT_SPECTRAL, weights: [1, 1, 1], edge: 0.35 },
 };
 
-type WaveArgs = WaveformProps & { layout: 'none' | 'layers' | 'blend' };
+type WaveArgs = WaveformProps & { layout: 'none' | 'layers' | 'blend'; frequency: boolean };
 
-/** One lane, with the presentation picked by name. */
-function Lane({ layout, ...args }: WaveArgs) {
-  return <Waveform {...args} presentation={PRESENTATIONS[layout]} />;
+/** One lane, with the presentation picked by name and the spectrum switched on or off. */
+function Lane({ layout, frequency, spectrum, ...args }: WaveArgs) {
+  return <Waveform {...args} spectrum={frequency ? spectrum ?? SPECTRUM : undefined} presentation={PRESENTATIONS[layout]} />;
 }
 
 const meta = {
@@ -82,9 +82,8 @@ const meta = {
     from: 0,
     to: 1,
     height: 78,
-    smooth: 0,
-    headroom: 0.86,
     layout: 'none',
+    frequency: false,
     label: 'a lane',
     // Both mean *let the drawing decide*: the detail rides the window, and the
     // window is the whole of it unless a scrolling strip says otherwise.
@@ -95,8 +94,8 @@ const meta = {
     from: { control: { type: 'range', min: 0, max: 1, step: 0.001 } },
     to: { control: { type: 'range', min: 0, max: 1, step: 0.001 } },
     height: { control: { type: 'range', min: 20, max: 200, step: 2 } },
-    smooth: { control: { type: 'range', min: 0, max: 1, step: 0.05 } },
-    headroom: { control: { type: 'range', min: 0.1, max: 1, step: 0.05 } },
+    smooth: { control: { type: 'range', min: 0, max: 1, step: 0.05 }, description: 'Left unset, the theme’s treatment decides, or a polyline.' },
+    headroom: { control: { type: 'range', min: 0.1, max: 1, step: 0.05 }, description: 'Left unset, the theme’s treatment decides, or 0.86.' },
     visibleShare: { control: { type: 'range', min: 0.05, max: 1, step: 0.05 } },
     density: {
       control: { type: 'number', min: 0.05, max: 4, step: 0.25 },
@@ -112,6 +111,7 @@ const meta = {
       description: 'Story-only name for `presentation`: the optional frequency styles.',
     },
     label: { control: 'text' },
+    frequency: { control: 'boolean', description: 'Story-only: hand the lane a made-up spectrum, so the theme’s spectral paint and the layouts have bands to draw.' },
     presentation: { control: false },
     peaks: { control: false },
     spectrum: { control: false },
@@ -143,7 +143,7 @@ export const Frequency: Story = {
     'Optional frequency presentation: layers and blended spectrum on the same production outline. Silent bands remain empty. The lanes above keep their default output.',
   ),
   args: {
-    spectrum: SPECTRUM,
+    frequency: true,
     layout: 'layers',
     smooth: 0.35,
     height: 72,

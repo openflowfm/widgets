@@ -22,9 +22,6 @@ const meta = {
     disabled: false,
     width: 0,
     name: '',
-    label: '',
-    title: '',
-    hint: '',
   },
   argTypes: {
     children: { control: 'text' },

@@ -28,6 +28,7 @@ function Preview({ externalTransport }: { externalTransport: boolean }) {
 const meta = {
   title: 'Mixer/Four-deck mixer',
   component: MixerView,
+  tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
     docs: {

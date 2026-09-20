@@ -50,9 +50,11 @@ wherever it is mounted, which is what the hex literals the old pages carried did
 
 ## Where to see it
 
-The **Debug** stories (`npm run dev`, in `src/debug/Debug.stories.tsx`) show one widget
-at a time and then, in *Together*, a harness with nothing under it: a made-up signal, beats
-every half second, a head on the wall clock.
+The **Debug** group in Storybook (`npm run dev`) has a story file beside each widget —
+`Harness`, `Scope`, `Plot`, `Facts`, `Legend`, `Transport`, `Workspace` and `Rooms`, each
+with its prop table and a control per prop — and then, in *Together*, a harness with nothing
+under it: a made-up signal, beats every half second, a head on the wall clock. What the
+stories share, the column and the made-up wave, is `stories/debug.tsx`.
 
 ## Tabs and experiments
 

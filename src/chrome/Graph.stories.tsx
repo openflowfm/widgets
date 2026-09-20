@@ -896,6 +896,7 @@ function BareFace() {
 const meta = {
   title: 'Graph/Canvas',
   component: Graph,
+  tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -919,7 +920,7 @@ const meta = {
     grid: { control: false },
     className: { control: false },
   },
-} satisfies Meta;
+} satisfies Meta<typeof Graph>;
 
 export default meta;
 type Story = StoryObj;

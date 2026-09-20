@@ -37,6 +37,10 @@ const live = (args: ComponentProps<typeof Slider>) => {
         args.onChange(value);
         updateArgs({ value });
       }}
+      onDepth={(depth) => {
+        args.onDepth?.(depth);
+        updateArgs({ depth });
+      }}
     />
   );
 };
@@ -60,19 +64,13 @@ const meta = {
     orientation: 'vertical',
     layout: 'stacked',
     side: 'left',
-    origin: 'min',
     fill: true,
     showValue: true,
     disabled: false,
     length: 27,
-    travel: 27,
-    live: 0,
-    depth: 0,
+    onDepth: fn(),
     name: 'Gain',
     label: 'Gain',
-    title: '',
-    hint: '',
-    ink: '',
   },
   argTypes: {
     param: { control: 'select', options: Object.keys(PARAMS), mapping: PARAMS },
@@ -80,22 +78,22 @@ const meta = {
     orientation: { control: 'radio', options: ['vertical', 'horizontal'] },
     layout: { control: 'radio', options: ['stacked', 'inline', 'inside'] },
     side: { control: 'radio', options: ['left', 'right'] },
-    origin: { control: 'radio', options: ['min', 'center'] },
+    origin: { control: 'radio', options: ['min', 'center'], description: 'Left unset, read off the range: a bipolar parameter fills from the middle.' },
     fill: { control: 'boolean' },
     showValue: { control: 'boolean' },
     disabled: { control: 'boolean' },
     length: { control: { type: 'range', min: 20, max: 240, step: 1 } },
-    travel: { control: { type: 'range', min: 20, max: 600, step: 1 } },
-    live: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
-    depth: { control: { type: 'range', min: -1, max: 1, step: 0.01 } },
+    travel: { control: { type: 'range', min: 20, max: 600, step: 1 }, description: 'Pixels of drag across the whole range. Left unset, the length — or the hook’s 200 for an inside slider.' },
+    live: { control: { type: 'range', min: 0, max: 1, step: 0.01 }, description: 'Left unset, no wake is drawn.' },
+    depth: { control: { type: 'range', min: -1, max: 1, step: 0.01 }, description: 'Left unset, no span is drawn. Shift-drag the slider to move it.' },
     name: { control: 'text' },
     label: { control: 'text' },
     title: { control: 'text' },
     hint: { control: 'text' },
     ink: { control: 'color' },
     display: { control: false },
-    onRelease: { control: false },
-    onDepth: { control: false },
+    onRelease: { control: false, table: { category: 'Events' } },
+    onDepth: { control: false, table: { category: 'Events' } },
     className: { control: false },
   },
   render: (args) => live(args),
@@ -120,7 +118,6 @@ export const Crossfader: Story = {
     param: param('CROSSFADE'),
     value: 0,
     name: 'Crossfade',
-    origin: 'center',
     orientation: 'horizontal',
     length: 120,
     travel: 120,
@@ -139,4 +136,14 @@ export const HorizontalInline: Story = {
     length: 120,
     travel: 120,
   },
+};
+
+export const Modulated: Story = {
+  parameters: note('A wake behind the thumb, and a modulation span the caller can hand back: shift-drag moves the depth rather than the value.'),
+  args: { param: param('GAIN'), value: -6, live: 0.6, depth: 0.4 },
+};
+
+export const Disabled: Story = {
+  parameters: note('Disabled.'),
+  args: { param: param('GAIN'), value: 0, disabled: true },
 };

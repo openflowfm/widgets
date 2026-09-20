@@ -54,8 +54,6 @@ const meta = {
     disabled: false,
     name: 'Filter',
     label: 'Filter',
-    title: '',
-    hint: '',
   },
   argTypes: {
     items: { control: 'select', options: Object.keys(ITEMS), mapping: ITEMS },

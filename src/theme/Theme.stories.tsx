@@ -114,6 +114,11 @@ const invent = (columns: number, seed: number): Peak[] => {
 const STEMS = ['drums', 'bass', 'other', 'vocals', 'guitar', 'piano'] as const;
 const PACKED = STEMS.map((_, i) => packedOf(invent(12000, 7 + i * 31)));
 const DECKS = ['a', 'b', 'c', 'd'] as const;
+/* Made-up band energy over the drums, so the spectral paint has something to say. */
+const SPECTRUM = Array.from({ length: PACKED[0].length / 2 }, (_, i) => {
+  const amplitude = Math.max(Math.abs(PACKED[0][i * 2]), PACKED[0][i * 2 + 1]);
+  return [amplitude, amplitude * (0.2 + 0.8 * Math.sin(i / 400) ** 2), amplitude * (0.1 + 0.5 * Math.cos(i / 100) ** 2)] as const;
+});
 
 /** Everything the theme colours, at once. */
 function Sample({ theme }: { theme: Theme }) {
@@ -164,6 +169,20 @@ function Sample({ theme }: { theme: Theme }) {
         ))}
       </section>
       <section>
+        <Label heading>Deck waveforms</Label>
+        {/* What the mixer draws: the deck's waveform ink, and the measured spectrum painted
+            through the theme's spectral style — or the deck ink alone in deck mode. */}
+        {DECKS.map((deck, i) => (
+          <Waveform key={deck} peaks={PACKED[i % STEMS.length]} spectrum={SPECTRUM} ink={`var(--deck-${deck}-waveform)`} height={48} label={`Deck ${deck.toUpperCase()} waveform`} />
+        ))}
+      </section>
+      <section>
+        <Label heading>Frequency presentations</Label>
+        {/* The optional treatments on one outline: layered bands, and the bands blended. */}
+        <Waveform peaks={PACKED[0]} spectrum={SPECTRUM} ink="var(--deck-a-waveform)" height={72} smooth={0.35} label="Layered bands" presentation={{ layout: 'layers', spectral: theme.spectral ?? DEFAULT_SPECTRAL, weights: [1, 1, 1], edge: 0.35 }} />
+        <Waveform peaks={PACKED[0]} spectrum={SPECTRUM} ink="var(--deck-a-waveform)" height={72} smooth={0.35} label="Blended bands" presentation={{ layout: 'blend', spectral: theme.spectral ?? DEFAULT_SPECTRAL, weights: [1, 1, 1], edge: 0.35 }} />
+      </section>
+      <section>
         <Label heading>Decks and bands</Label>
         <div className="theme-sample-decks">
           {DECKS.map((deck) => (
@@ -188,6 +207,8 @@ function Sample({ theme }: { theme: Theme }) {
 
 const meta: Meta<ThemeArgs> = {
   title: 'Theme/Editor',
+  // The args are a document, not a component's props, so there is no prop table.
+  tags: ['autodocs'],
   parameters: {
     layout: 'padded',
     docs: {
@@ -199,14 +220,14 @@ const meta: Meta<ThemeArgs> = {
   },
   args: { preset: PRESETS[0].name, spectralPreset: SPECTRAL_PRESETS[0].name, ...flatten(DEFAULT_THEME) },
   argTypes: {
-    preset: { control: 'select', options: PRESETS.map((one) => one.name), table: { category: 'Preset' } },
+    preset: { control: 'select', options: PRESETS.map((one) => one.name), table: { category: 'Preset' }, description: 'Picking one resets every other control to it.' },
     ...Object.fromEntries(ROLES.map((role) => [role, { control: 'color', name: ROLE_NAMES[role], table: { category: 'Roles' } }])),
     ...Object.fromEntries(VARIATION.map(({ key, min, max }) => [key, { control: { type: 'range', min, max, step: 1 }, table: { category: 'Deck variation' } }])),
-    spectralPreset: { control: 'select', options: SPECTRAL_PRESETS.map((one) => one.name), name: 'preset', table: { category: 'Spectral' } },
-    spectralMode: { control: 'inline-radio', options: ['spectral', 'deck'], name: 'mode', table: { category: 'Spectral' } },
-    spectralStrength: { control: { type: 'range', min: 0, max: 100, step: 1 }, name: 'strength', table: { category: 'Spectral' } },
+    spectralPreset: { control: 'select', options: SPECTRAL_PRESETS.map((one) => one.name), name: 'preset', table: { category: 'Spectral' }, description: 'Picking one resets the rest of this category to it.' },
+    spectralMode: { control: 'inline-radio', options: ['spectral', 'deck'], name: 'mode', table: { category: 'Spectral' }, description: 'Spectral paints a waveform by its measured bands; deck paints it in the deck’s ink alone.' },
+    spectralStrength: { control: { type: 'range', min: 0, max: 100, step: 1 }, name: 'strength', table: { category: 'Spectral' }, description: 'How far from the neutral waveform base the band colours go.' },
     ...Object.fromEntries(SPECTRAL_BANDS.map((band) => [`spectral_${band}`, { control: 'color', name: SPECTRAL_NAMES[band], table: { category: 'Spectral' } }])),
-    ...Object.fromEntries(SURFACES.map((key) => [key, { control: 'color', table: { category: 'Surfaces' } }])),
+    ...Object.fromEntries(SURFACES.map((key) => [key, { control: 'color', name: key.replace(/([A-Z])/g, ' $1').toLowerCase(), table: { category: 'Surfaces' } }])),
   },
   render: (typed) => {
     const [, update] = useArgs<ThemeArgs>();

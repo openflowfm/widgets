@@ -59,6 +59,7 @@ function Model({ unit, min, max, exponent, steps }: ModelArgs) {
 const meta = {
   title: 'Param/Model playground',
   component: Model,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

@@ -24,10 +24,6 @@ const meta = {
     width: 6,
     length: 48,
     name: '',
-    label: '',
-    title: '',
-    hint: '',
-    ink: '',
   },
   argTypes: {
     value: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },

@@ -58,7 +58,7 @@ The sidebar is grouped by what you came to look at rather than by what the file 
 | **Graph** | the canvas, and whether it behaves — an instrument, not a page of cases |
 | **Drawing** | over a length of time: the waveform |
 | **Mixer** | a complete four-deck composition on a silent simulation |
-| **Debug** | the harness module, one widget at a time and then all together |
+| **Debug** | the harness module: a component per story file, with a prop table each, and then all together |
 | **Param** | the model playground |
 
 **The canvas holds the widget and nothing else.** What a story is *for* is a sentence, and
@@ -218,8 +218,9 @@ spectral style's mode, strength and band colours, each under a category of its o
 category. Role colours go through `editRole`, so its one rule — green signal — holds whatever
 the picker says, and the conflicts `theme.ts` reports show under
 the sample. The sample is everything the theme colours: every control, a chain of
-shells, a waveform per stem, the deck letters and waveform tints, and the spectral
-bands. The document the panel currently describes is under a disclosure at the bottom,
+shells, a waveform per stem, a deck waveform per deck with a measured spectrum painted
+through the spectral style — what the mixer draws — the layered and blended frequency
+presentations, the deck letters and waveform tints, and the spectral bands. The document the panel currently describes is under a disclosure at the bottom,
 ready to be pasted into `theme.ts` as a new preset.
 
 The story does not use `ThemeEditor.tsx`. That component is what mix mounts in its

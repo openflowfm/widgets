@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { useArgs } from 'storybook/preview-api';
+import { fn } from 'storybook/test';
 import { XYPad, type PadAxis, type XYPadProps } from './XYPad.tsx';
 import {
   CROSSFADE,
@@ -31,26 +32,32 @@ const AXES = {
   STEPPED: at(STEPPED),
 };
 
-/** The panel holds a parameter's *name*; `mapping` turns it back into the axis. */
-const axis = (key: keyof typeof AXES) => key as unknown as PadAxis;
+type AxisName = keyof typeof AXES;
+/** The panel holds each axis as a parameter's *name* and a value; the render assembles the `PadAxis`. */
+type PadArgs = Omit<XYPadProps, 'x' | 'y'> & { xParam: AxisName; xValue: number; yParam: AxisName; yValue: number };
 
 /**
  * One render for the file: each axis writes its own value back into the args,
  * so the plane is live and the panel follows the drag. `useArgs` belongs to the
  * story function itself, which is why this is called rather than mounted.
  */
-const live = (args: XYPadProps, children?: ReactNode) => {
+const live = ({ xParam, xValue, yParam, yValue, ...args }: PadArgs, children?: ReactNode) => {
   const [, updateArgs] = useArgs();
+  const onChange = fn();
   return (
     <XYPad
       {...args}
-      x={{ ...args.x, onChange: (value) => updateArgs({ x: { ...args.x, value } }) }}
-      y={{ ...args.y, onChange: (value) => updateArgs({ y: { ...args.y, value } }) }}
+      x={{ param: AXES[xParam].param, value: xValue, onChange: (value) => { onChange(value); updateArgs({ xValue: value }); } }}
+      y={{ param: AXES[yParam].param, value: yValue, onChange: (value) => { onChange(value); updateArgs({ yValue: value }); } }}
     >
       {children}
     </XYPad>
   );
 };
+
+/** An axis at its parameter's default, as a story's args hold it. */
+const xAxis = (key: AxisName) => ({ xParam: key, xValue: AXES[key].param.defaultValue });
+const yAxis = (key: AxisName) => ({ yParam: key, yValue: AXES[key].param.defaultValue });
 
 /** Something for the plane to draw over, standing in for a device's own curve. */
 function PadGrid() {
@@ -68,7 +75,8 @@ function PadGrid() {
 
 const meta = {
   title: 'Controls/XY pad',
-  component: XYPad,
+  // The axes are assembled from name-and-value args, so the props table is the pad's without them.
+  component: XYPad as unknown as ComponentType<PadArgs>,
   tags: ['autodocs'],
   parameters: {
     docs: {
@@ -79,8 +87,8 @@ const meta = {
     },
   },
   args: {
-    x: axis('FREQ'),
-    y: axis('GAIN'),
+    ...xAxis('FREQ'),
+    ...yAxis('GAIN'),
     width: 120,
     height: 120,
     showValue: true,
@@ -90,15 +98,14 @@ const meta = {
     side: 'left',
     name: '',
     label: 'Frequency and gain',
-    title: '',
-    hint: '',
-    ink: '',
   },
   argTypes: {
-    x: { control: 'select', options: Object.keys(AXES), mapping: AXES },
-    y: { control: 'select', options: Object.keys(AXES), mapping: AXES },
-    width: { control: { type: 'range', min: 60, max: 400, step: 2 } },
-    height: { control: { type: 'range', min: 60, max: 400, step: 2 } },
+    xParam: { control: 'select', options: Object.keys(AXES), name: 'x.param', description: 'Switching it leaves the value where it was.' },
+    xValue: { control: { type: 'number' }, name: 'x.value' },
+    yParam: { control: 'select', options: Object.keys(AXES), name: 'y.param', description: 'Switching it leaves the value where it was.' },
+    yValue: { control: { type: 'number' }, name: 'y.value' },
+    width: { control: { type: 'range', min: 60, max: 400, step: 2 }, description: 'In px.' },
+    height: { control: { type: 'range', min: 60, max: 400, step: 2 }, description: 'In px.' },
     showValue: { control: 'boolean' },
     anchor: { control: 'radio', options: ['pointer', 'value'] },
     disabled: { control: 'boolean' },
@@ -113,7 +120,7 @@ const meta = {
     className: { control: false },
   },
   render: (args) => live(args),
-} satisfies Meta<typeof XYPad>;
+} satisfies Meta<PadArgs>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -122,7 +129,7 @@ export const TwoParameters: Story = {
   parameters: note(
     "Two parameters on one pointer. Press anywhere and the handle comes to you, then stays with the pointer — a plane is the one control that doesn't grab where its value already is. The fine modifier and double-click to reset work as they do on a knob, and each axis takes the arrows on its own tab stop.",
   ),
-  args: { x: axis('FREQ'), y: axis('GAIN'), label: 'Frequency and gain' },
+  args: { ...xAxis('FREQ'), ...yAxis('GAIN'), label: 'Frequency and gain' },
 };
 
 export const OverArtwork: Story = {
@@ -130,8 +137,8 @@ export const OverArtwork: Story = {
     "Wider than it is tall, with artwork behind it — the slot a device's response curve goes in. The plane owns the geometry and the gesture and knows nothing about what's drawn under it.",
   ),
   args: {
-    x: axis('FREQ'),
-    y: axis('GAIN'),
+    ...xAxis('FREQ'),
+    ...yAxis('GAIN'),
     width: 260,
     height: 110,
     label: 'Frequency and gain over a grid',
@@ -143,10 +150,10 @@ export const TaperedAxis: Story = {
   parameters: note(
     "A tapered axis reads as position: the frequency's exponent puts a third of the plane under the first 200 Hz, exactly as it puts a third of a knob's travel there.",
   ),
-  args: { x: axis('FREQ'), y: axis('PAN'), label: 'Frequency and pan' },
+  args: { ...xAxis('FREQ'), ...yAxis('PAN'), label: 'Frequency and pan' },
 };
 
 export const Disabled: Story = {
   parameters: note('Disabled.'),
-  args: { x: axis('FREQ'), y: axis('GAIN'), label: 'Frequency and gain', disabled: true },
+  args: { ...xAxis('FREQ'), ...yAxis('GAIN'), label: 'Frequency and gain', disabled: true },
 };

@@ -61,7 +61,6 @@ const meta = {
     onFold: fn(),
     onSelect: fn(),
     onHotSwap: fn(),
-    title: '',
     children: <Faceplate />,
   },
   argTypes: {
