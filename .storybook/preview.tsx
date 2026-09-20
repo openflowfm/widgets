@@ -83,7 +83,7 @@ const preview: Preview = {
     backgrounds: { disable: true },
     options: {
       storySort: {
-        order: ['Tokens', 'Theme', 'Controls', 'Chrome', 'Graph', 'Drawing', 'Mixer', 'Debug', ['Harness', 'Scope', 'Plot', 'Facts', 'Legend', 'Transport', 'Workspace', 'Rooms', 'Together'], 'Param'],
+        order: ['Tokens', 'Theme', 'Controls', 'Chrome', 'Graph', 'Drawing', 'Mixer', 'Debug', ['Harness', 'Scope', 'Plot', 'Facts', 'Legend', 'Workspace', 'Rooms', 'Together'], 'Param'],
       },
     },
   },

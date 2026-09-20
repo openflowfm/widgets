@@ -8,7 +8,7 @@ import { Group, Harness, Shelf, Status, Toolbar } from '../src/debug/Harness.tsx
 import { Legend } from '../src/debug/Legend.tsx';
 import { Plot } from '../src/debug/Plot.tsx';
 import { Scope, ScopeRow } from '../src/debug/Scope.tsx';
-import { Transport } from '../src/debug/Transport.tsx';
+import { Transport } from '../src/chrome/Transport.tsx';
 import { useAxis } from '../src/debug/useAxis.ts';
 import { useRemembered } from '../src/debug/useRemembered.ts';
 
@@ -126,7 +126,7 @@ export function DebugCase() {
       >
         <Toolbar>
           <Group caption="listen">
-            <Transport playing={playing} onToggle={() => setPlaying((on) => !on)} at={playing ? head : axis.cursor} latency={0.012} />
+            <Transport playing={playing} onPlay={setPlaying} position={{ seconds: playing ? head : axis.cursor }} fine latency={0.012} />
             <Toggle on={click} onChange={setClick} width={40}>
               click
             </Toggle>

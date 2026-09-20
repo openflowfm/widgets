@@ -721,3 +721,38 @@
   flex: none;
   gap: var(--wdg-space);
 }
+
+/* The transport: playback, tempo and the reading, as one control group. */
+.wdg-transport .wdg-transport-playing {
+  color: var(--wdg-signal, var(--success, #7bd88f));
+}
+
+.wdg-transport .wdg-transport-looping-part {
+  color: var(--wdg-fill);
+}
+
+.wdg-transport-clock {
+  min-width: 62px;
+  padding: 0 8px;
+  justify-content: flex-end;
+  font-variation-settings: var(--wdg-mono-axes);
+  font-size: var(--text-body);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--track-label);
+  color: var(--wdg-text);
+  white-space: nowrap;
+}
+
+.wdg-transport .wdg-transport-position {
+  width: 94px;
+  flex: none;
+  justify-content: center;
+  font-family: var(--mono);
+}
+
+.wdg-transport-latency {
+  padding: 0 8px;
+  font-size: var(--text-label);
+  color: var(--wdg-caption);
+  white-space: nowrap;
+}

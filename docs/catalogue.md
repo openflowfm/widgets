@@ -142,6 +142,7 @@ faceplate of perfect knobs doesn't look like Ableton without it.
 | [`Port`](../src/chrome/Port.tsx) | neither | where a cord ends. `Device` grew two slots for them |
 | [`Modal`](../src/chrome/Modal.tsx) | neither — an editor's, not a device's | a `<dialog>`: the top layer, the scrim, the focus trap and escape |
 | [`Popup`](../src/chrome/Popup.tsx) | neither | a panel hung off a control: the top layer, the flip, and the three ways it goes away |
+| [`Transport`](../src/chrome/Transport.tsx) | Live's control bar | play, stop, loop, the tempo, the beat counter and the clock; no audio in it |
 | [`HintFooter`](../src/chrome/HintFooter.tsx) | Live's Info View | the strip along the bottom that says what you are pointing at. See [what explains a control](#what-explains-a-control) |
 
 `Modal` is in this tier for the reason `Button` is in the last one: it belongs to the

@@ -19,7 +19,6 @@ The first one built on it is mix[flow]'s analysis harness — [`mix/docs/harness
 | `Plot` | a titled canvas with a caption under it, drawn by callback, with the pointer's x |
 | `Scope`, `ScopeRow` | labelled rows of canvases on one time axis, with the head, the loop and the pointer drawn over all of them |
 | `useAxis` | the window, the head and the loop of a scope, and the moves a person makes on them |
-| `Transport` | play, stop, the clock, the latency; no audio in it |
 | `useCanvas` | a canvas that fits its box at device pixels and redraws when its callback changes |
 | `useRemembered` | a choice kept between refreshes, guarded |
 | `ink`, `inkOf` | a palette token as the page resolves it, for a canvas |
@@ -51,7 +50,7 @@ wherever it is mounted, which is what the hex literals the old pages carried did
 ## Where to see it
 
 The **Debug** group in Storybook (`npm run dev`) has a story file beside each widget —
-`Harness`, `Scope`, `Plot`, `Facts`, `Legend`, `Transport`, `Workspace` and `Rooms`, each
+`Harness`, `Scope`, `Plot`, `Facts`, `Legend`, `Workspace` and `Rooms`, each
 with its prop table and a control per prop — and then, in *Together*, a harness with nothing
 under it: a made-up signal, beats every half second, a head on the wall clock. What the
 stories share, the column and the made-up wave, is `stories/debug.tsx`.

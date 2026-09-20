@@ -7,7 +7,6 @@ export { Scope, ScopeRow, type ScopeProps, type ScopeRowProps, type ScopePointer
 export { Plot, type PlotProps } from './Plot.tsx';
 export { Facts, type Fact, type FactsProps } from './Facts.tsx';
 export { Legend, type LegendItem, type LegendProps } from './Legend.tsx';
-export { Transport, type TransportProps } from './Transport.tsx';
 export { Harness, Toolbar, Group, Status, Shelf, type HarnessProps, type GroupProps, type StatusProps } from './Harness.tsx';
 export { Workspace, type Experiment, type WorkspaceProps } from './Workspace.tsx';
 export { Rooms, type Room, type RoomsProps } from './Rooms.tsx';
