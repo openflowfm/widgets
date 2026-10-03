@@ -169,9 +169,10 @@ Do these in order, before merging the first Version packages PR:
    the `@openflow` scope is yours.
 2. **First publish by hand, under `next`.** Trusted publishers can only be configured on a
    package that already exists. From a clean checkout of `main`:
-   `npm ci && npm login && npm publish --access public --tag next --provenance=false`
+   `npm ci && npm login && npm publish --access public --tag next`
    This publishes the current pre-release (`0.1.0-rc.4`) under the `next` tag, so it never
-   becomes `latest`. (`--provenance=false` because provenance needs CI.)
+   becomes `latest`. It carries no provenance: the release workflow turns provenance on
+   (`NPM_CONFIG_PROVENANCE`) for every publish after this one.
 3. **Trusted publisher.** On npmjs.com, package `@openflow/widgets` > Settings > Trusted
    publishing > GitHub Actions: organisation `openflowfm`, repository `widgets`, workflow
    `release.yml`, no environment. Optionally then set "Require two-factor authentication

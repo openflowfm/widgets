@@ -37,8 +37,12 @@ jobs:
       # With pending changesets: opens or updates the "Version packages" PR.
       # With none (that PR just merged): publishes whatever version is not yet
       # on npm. No NPM_TOKEN: npm authenticates through the trusted publisher.
+      # Provenance is set here, not in package.json publishConfig, because
+      # publishConfig can override CLI flags and a hand publish can't sign.
       - id: changesets
         uses: changesets/action@v2
+        env:
+          NPM_CONFIG_PROVENANCE: 'true'
         with:
           publish-script: npm run release
           commit-message: Version packages

@@ -109,8 +109,7 @@
     "./package.json": "./package.json"
   },
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "scripts": {
     "dev": "storybook dev -p \"${PORT:-${OPENFLOW_BENCH_PORT:-$((${OPENFLOW_PORT_BASE:-5173}+100))}}\"",
