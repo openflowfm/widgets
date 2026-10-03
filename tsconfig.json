@@ -16,6 +16,7 @@
     "stories/**/*.tsx",
     ".storybook/**/*.ts",
     ".storybook/**/*.tsx",
+    "scripts/**/*.ts",
     "types/assets.d.ts"
   ]
 }

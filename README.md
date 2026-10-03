@@ -1,5 +1,7 @@
 # @openflow/widgets
 
+Pre-1.0: unstable and in active development; expect breaking changes.
+
 The controls a DAW is made of, built and iterated on outside the app they end up in.
 
 This module exists because the device chain is coming, and after it a DAW of our own. A
@@ -103,14 +105,14 @@ port remains configurable with `PORT`, `OPENFLOW_BENCH_PORT` or `OPENFLOW_PORT_B
 
 ## Importing it
 
-Install `@openflow/widgets` from a full Git commit for reproducible consumption:
-
 ```sh
-npm install 'github:openflowfm/widgets#<full-commit-sha>'
+npm install @openflow/widgets
 ```
 
 React and ReactDOM 19 are peers supplied by the host. Recursive is bundled locally
-through this package's font dependency. Existing deep imports remain the API:
+through this package's font dependency. Any bundler that handles CSS imports (Vite,
+webpack, Rollup, esbuild, Parcel) works; nothing in the package needs compiling. Deep
+imports are the API:
 
 ```ts
 import { Knob } from '@openflow/widgets/controls/Knob.tsx';
@@ -121,18 +123,67 @@ import '@openflow/widgets/palette.css';
 Only the palette needs importing by hand: every control pulls `controls.css` in, and that
 pulls `shared.css` and `tokens.css` behind it.
 
-**The specifier carries the real TypeScript extension**, because that is the file that is
-actually there — `exports` maps straight onto `src/`, and nothing is compiled in between.
-Vite and `tsc` both consume the source, so there is no build step between this module and
-the app that uses it, and no `dist/` to go stale while you work.
+**The specifier carries the source file's TypeScript extension**, the name the file has in
+this repository and in its docs. The published package is compiled: `npm run build` runs
+`tsc` into `dist/` (JavaScript, `.d.ts` and source maps, with relative imports rewritten to
+`.js`) and copies the stylesheets beside it, and the `exports` map sends
+`controls/Knob.tsx` to `dist/controls/Knob.js` with its types in `dist/controls/Knob.d.ts`.
+The source ships too, for the source maps. Two old paths still resolve:
+`notation/*` (now `music/*`) and `controls/pointing.ts` (now `controls/pointingEngine.ts`,
+renamed because compiled it would clash with `Pointing.js` on a case-insensitive disk).
 
-`npm run build` emits declarations into `dist/`; `npm pack` builds them before
-packing. Git consumers use the TypeScript source directly and need a bundler such
-as Vite that handles TS/TSX and CSS. No install-time build is required.
+Depend on a published version rather than a Git commit
+(`github:openflowfm/widgets#<sha>`): a Git install has to build `dist/` on the
+consumer's machine, which is what the npm package exists to avoid.
 
-CI runs typechecking, tests with coverage, declarations and a Storybook build. Tags
-matching the package version produce a GitHub release with a package tarball;
-Widgets versions and releases are independent of the apps.
+## Releasing
+
+Pre-1.0 versioning: **below 1.0, a breaking change takes a minor bump (0.1.x → 0.2.0)
+and a feature or a fix takes a patch bump (0.1.0 → 0.1.1).** There are no prereleases
+during 0.x. 1.0.0 is the first release meant for people outside the suite.
+
+Releases are automated with [Changesets](https://changesets.dev) and
+`.github/workflows/release.yml`. Widgets versions are independent of the apps.
+
+1. In any PR that changes what consumers get, run `npx changeset`, pick the bump by the
+   policy above (patch, or minor for a breaking change) and describe the change. Commit
+   the generated file in `.changeset/`.
+2. When that PR merges, the release workflow runs the typecheck, the tests (the unit
+   suites and every story in headless Chromium), the build, the package consumer check
+   and the Storybook build, then opens (or updates) a **Version packages** PR that bumps
+   `package.json` and writes `CHANGELOG.md`.
+3. Merging the Version packages PR runs the same checks and publishes to npm with
+   provenance, using npm trusted publishing (OIDC, no `NPM_TOKEN`), creates the GitHub
+   release, then sends a `repository_dispatch` (`event_type: renovate`) to
+   `openflowfm/renovate` so consumers get their update PRs straight away.
+
+PRs opened by the workflow's `GITHUB_TOKEN` don't trigger CI; the Version packages PR only
+touches the version and changelog, and the release workflow re-runs every check before
+publishing.
+
+### One-time setup (owner, by hand)
+
+Do these in order, before merging the first Version packages PR:
+
+1. **npm org.** Create the `openflow` organisation on npmjs.com if it doesn't exist, so
+   the `@openflow` scope is yours.
+2. **First publish by hand, under `next`.** Trusted publishers can only be configured on a
+   package that already exists. From a clean checkout of `main`:
+   `npm ci && npm login && npm publish --access public --tag next --provenance=false`
+   This publishes the current pre-release (`0.1.0-rc.4`) under the `next` tag, so it never
+   becomes `latest`. (`--provenance=false` because provenance needs CI.)
+3. **Trusted publisher.** On npmjs.com, package `@openflow/widgets` > Settings > Trusted
+   publishing > GitHub Actions: organisation `openflowfm`, repository `widgets`, workflow
+   `release.yml`, no environment. Optionally then set "Require two-factor authentication
+   and disallow tokens".
+4. **Actions PR permission.** In the repo's Settings > Actions > General, enable "Allow
+   GitHub Actions to create and approve pull requests" (the Version packages PR needs it).
+5. **Renovate dispatch secret.** Add a repository secret `RENOVATE_DISPATCH_TOKEN`: a
+   fine-grained token with Contents read/write on `openflowfm/renovate` (what
+   `repository_dispatch` requires). Without it the notify step is skipped and Renovate
+   picks the release up on its schedule.
+
+Then merge the Version packages PR: the workflow publishes `0.1.0` as `latest`.
 
 ## Who uses it
 
@@ -167,3 +218,7 @@ there is an exact answer: what a lost capture does, what escape puts back, what 
 measures against under a transform, which member a repeated letter walks to. **How a
 gesture feels is still Storybook's** — the reach, the taper, whether the fine modifier is
 worth the finger — so a change to a control should still say which story it was checked in.
+
+`npm run build` then `npm run test:package` check the package a consumer gets: every
+import style the apps use resolves through the exports map to a file in `dist/`, the
+declarations typecheck with `skipLibCheck` off, and no two shipped files differ only by case.

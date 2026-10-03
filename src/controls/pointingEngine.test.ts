@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { installPointing, letter, pointingTarget, pointingTargetAt } from './pointing.ts';
+import { installPointing, letter, pointingTarget, pointingTargetAt } from './pointingEngine.ts';
 
 afterEach(() => { document.body.replaceChildren(); vi.restoreAllMocks(); });
 

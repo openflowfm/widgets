@@ -3,9 +3,12 @@
   "compilerOptions": {
     "noEmit": false,
     "declaration": true,
-    "emitDeclarationOnly": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "rewriteRelativeImportExtensions": true,
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "types": []
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "types/assets.d.ts"],
   "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.stories.tsx"]
