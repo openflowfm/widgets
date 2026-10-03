@@ -34,6 +34,7 @@ const specifiers = [
   '@openflow/widgets/music/Waveform.tsx',
   '@openflow/widgets/music/outline.ts',
   '@openflow/widgets/notation/PianoRoll.tsx',
+  '@openflow/widgets/notation/levels.ts',
   '@openflow/widgets/notation/notation.css',
   '@openflow/widgets/param/param.ts',
   '@openflow/widgets/theme/ThemeRoot.tsx',

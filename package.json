@@ -88,6 +88,10 @@
       "types": "./dist/music/*.d.ts",
       "default": "./dist/music/*.js"
     },
+    "./notation/*.ts": {
+      "types": "./dist/music/*.d.ts",
+      "default": "./dist/music/*.js"
+    },
     "./notation/*.css": "./dist/music/*.css",
     "./param/*.tsx": {
       "types": "./dist/param/*.d.ts",
