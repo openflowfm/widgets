@@ -1,31 +1,120 @@
 {
   "name": "@openflow/widgets",
   "version": "0.1.0-rc.4",
-  "private": true,
   "type": "module",
   "description": "The controls a DAW is made of: Ableton-shaped widgets and device chrome, in React.",
   "files": [
-    "src",
-    "!src/**/*.stories.tsx",
     "dist",
+    "src",
+    "!src/**/*.test.ts",
+    "!src/**/*.test.tsx",
+    "!src/**/*.stories.tsx",
     "docs"
   ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./controls/*": "./src/controls/*",
-    "./chrome/*": "./src/chrome/*",
-    "./music/*": "./src/music/*",
-    "./param/*": "./src/param/*",
-    "./gesture/*": "./src/gesture/*",
-    "./palette.css": "./src/palette.css",
-    "./tokens.css": "./src/tokens.css",
-    "./type.css": "./src/type.css",
-    "./debug": "./src/debug/index.ts",
-    "./debug/*": "./src/debug/*",
-    "./mixer/*": "./src/mixer/*",
-    "./theme/*": "./src/theme/*"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./palette.css": "./dist/palette.css",
+    "./tokens.css": "./dist/tokens.css",
+    "./type.css": "./dist/type.css",
+    "./chrome/*.tsx": {
+      "types": "./dist/chrome/*.d.ts",
+      "default": "./dist/chrome/*.js"
+    },
+    "./chrome/*.ts": {
+      "types": "./dist/chrome/*.d.ts",
+      "default": "./dist/chrome/*.js"
+    },
+    "./chrome/*.css": "./dist/chrome/*.css",
+    "./controls/pointing.ts": {
+      "types": "./dist/controls/pointingEngine.d.ts",
+      "default": "./dist/controls/pointingEngine.js"
+    },
+    "./controls/*.tsx": {
+      "types": "./dist/controls/*.d.ts",
+      "default": "./dist/controls/*.js"
+    },
+    "./controls/*.ts": {
+      "types": "./dist/controls/*.d.ts",
+      "default": "./dist/controls/*.js"
+    },
+    "./controls/*.css": "./dist/controls/*.css",
+    "./debug": {
+      "types": "./dist/debug/index.d.ts",
+      "default": "./dist/debug/index.js"
+    },
+    "./debug/*.tsx": {
+      "types": "./dist/debug/*.d.ts",
+      "default": "./dist/debug/*.js"
+    },
+    "./debug/*.ts": {
+      "types": "./dist/debug/*.d.ts",
+      "default": "./dist/debug/*.js"
+    },
+    "./debug/*.css": "./dist/debug/*.css",
+    "./gesture/*.tsx": {
+      "types": "./dist/gesture/*.d.ts",
+      "default": "./dist/gesture/*.js"
+    },
+    "./gesture/*.ts": {
+      "types": "./dist/gesture/*.d.ts",
+      "default": "./dist/gesture/*.js"
+    },
+    "./mixer/*.tsx": {
+      "types": "./dist/mixer/*.d.ts",
+      "default": "./dist/mixer/*.js"
+    },
+    "./mixer/*.ts": {
+      "types": "./dist/mixer/*.d.ts",
+      "default": "./dist/mixer/*.js"
+    },
+    "./mixer/*.css": "./dist/mixer/*.css",
+    "./music/*.tsx": {
+      "types": "./dist/music/*.d.ts",
+      "default": "./dist/music/*.js"
+    },
+    "./music/*.ts": {
+      "types": "./dist/music/*.d.ts",
+      "default": "./dist/music/*.js"
+    },
+    "./music/*.css": "./dist/music/*.css",
+    "./notation/*.tsx": {
+      "types": "./dist/music/*.d.ts",
+      "default": "./dist/music/*.js"
+    },
+    "./notation/*.ts": {
+      "types": "./dist/music/*.d.ts",
+      "default": "./dist/music/*.js"
+    },
+    "./notation/*.css": "./dist/music/*.css",
+    "./param/*.tsx": {
+      "types": "./dist/param/*.d.ts",
+      "default": "./dist/param/*.js"
+    },
+    "./param/*.ts": {
+      "types": "./dist/param/*.d.ts",
+      "default": "./dist/param/*.js"
+    },
+    "./theme/*.tsx": {
+      "types": "./dist/theme/*.d.ts",
+      "default": "./dist/theme/*.js"
+    },
+    "./theme/*.ts": {
+      "types": "./dist/theme/*.d.ts",
+      "default": "./dist/theme/*.js"
+    },
+    "./theme/*.css": "./dist/theme/*.css",
+    "./package.json": "./package.json"
   },
-  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "storybook dev -p \"${PORT:-${OPENFLOW_BENCH_PORT:-$((${OPENFLOW_PORT_BASE:-5173}+100))}}\"",
     "storybook": "npm run dev",
@@ -33,18 +122,18 @@
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "build:types": "tsc -p tsconfig.build.json",
-    "build": "npm run build:types",
-    "prepack": "npm run build:types"
+    "test:package": "tsc -p test/tsconfig.json && node --test \"test/*.test.ts\"",
+    "build": "node -e \"fs.rmSync('dist', { recursive: true, force: true })\" && tsc -p tsconfig.build.json && node scripts/finish-dist.ts",
+    "prepack": "npm run build",
+    "release": "changeset publish"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/openflowfm/widgets.git"
   },
-  "engines": {
-    "node": ">=26"
-  },
+  "homepage": "https://github.com/openflowfm/widgets#readme",
+  "bugs": "https://github.com/openflowfm/widgets/issues",
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -53,6 +142,7 @@
     "@fontsource-variable/recursive": "5.3.0"
   },
   "devDependencies": {
+    "@changesets/cli": "^3.0.3",
     "@storybook/addon-docs": "^10.6.0",
     "@storybook/addon-themes": "^10.6.0",
     "@storybook/addon-vitest": "^10.6.0",

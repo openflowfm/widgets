@@ -20,6 +20,8 @@ jobs:
       - run: npm run typecheck
       - run: npm run test:coverage
       - run: npm run build
+      # The built package, resolved through its exports map as a consumer would.
+      - run: npm run test:package
       - run: npm run build:storybook
       - run: npm pack
       - uses: actions/upload-artifact@v7

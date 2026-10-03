@@ -541,7 +541,9 @@ behavior at all.
 ## Pointing annotations
 
 `controls/Pointing.tsx` is the reusable pointer icon for screenshot conversations;
-`controls/pointing.ts` owns its browser-only DOM engine. Mount one Pointing control in
+`controls/pointingEngine.ts` owns its browser-only DOM engine (it was `pointing.ts`;
+renamed because compiled to `.js` it would differ from `Pointing.js` only by case, and
+the old specifier `@openflow/widgets/controls/pointing.ts` still resolves to it). Mount one Pointing control in
 an app's settings/debug group. It works in browser harnesses and Electron renderers
 identically, with no preload, transport, protocol, or native-menu dependency.
 The pointer lights while active and exposes `aria-pressed`; **Clear** appears beside it

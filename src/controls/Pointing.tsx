@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ButtonFace } from './ButtonFace.tsx';
-import { installPointing } from './pointing.ts';
+import { installPointing } from './pointingEngine.ts';
 
 /** Mount once in the application's settings/debug group, in browsers and desktop windows alike. */
 export function Pointing({ className = '' }: { className?: string }) {

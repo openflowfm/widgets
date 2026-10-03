@@ -1,0 +1,17 @@
+{
+  // Type-level consumer check against the built package (`npm run build` first).
+  // An ordinary React + bundler app: Bundler resolution through the exports map
+  // (self-reference), no `*.css` module declaration, and `skipLibCheck` off so the
+  // shipped `.d.ts` files are checked as well as resolved.
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "skipLibCheck": false,
+    "noEmit": true
+  },
+  "include": ["consumer.tsx", "package.test.ts"]
+}
