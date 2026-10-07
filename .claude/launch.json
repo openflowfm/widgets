@@ -4,11 +4,7 @@
     {
       "name": "storybook",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "storybook"
-      ],
-      "port": 5273,
+      "runtimeArgs": ["run", "dev"],
       "autoPort": true
     }
   ]
