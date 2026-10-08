@@ -45,7 +45,10 @@ export interface GraphCord {
   from: string;
   /** An inlet's `Port` id. */
   to: string;
-  /** Surfaced as `data-kind` so a host can colour its own vocabulary. */
+  /**
+   * Surfaced as `data-kind`, and stroked with `--wdg-cord-<kind>` where a host
+   * sets that token, so a host can colour its own vocabulary.
+   */
   kind?: string;
 }
 
@@ -124,6 +127,15 @@ const IGNORES_ARROWS = 'input, [role="slider"], [role="radio"], .wdg-port';
 
 /** The end a cord still needs, given the end it already has. */
 const opposite = (side: PortSide): PortSide => (side === 'out' ? 'in' : 'out');
+
+/**
+ * A cord's colour by kind, as a token the host names: `kind: 'audio'` strokes
+ * with `--wdg-cord-audio` where a host set it, and `--wdg-cord` where it didn't.
+ * Characters a custom property name can't hold become `-`.
+ */
+export function cordInk(kind: string): string {
+  return `var(--wdg-cord-${kind.replace(/[^\w-]/g, '-')}, var(--wdg-cord))`;
+}
 
 function cordPath(a: Spot, b: Spot): string {
   const reach = Math.max(30, Math.abs(b.x - a.x) * 0.5);
@@ -470,7 +482,12 @@ export function Graph({
               key={`${cord.from} ${cord.to}`}
               className="wdg-graph-cord"
               d={d}
-              {...(cord.kind === undefined ? {} : { 'data-kind': cord.kind })}
+              {...(cord.kind === undefined
+                ? {}
+                : {
+                    'data-kind': cord.kind,
+                    style: { '--wdg-cord-ink': cordInk(cord.kind) } as CSSProperties,
+                  })}
             />
           ))}
           {loose && <path className="wdg-graph-cord" data-pending="" d={loose} />}

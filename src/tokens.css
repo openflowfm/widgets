@@ -13,7 +13,9 @@
   --wdg-well: var(--panel, #111113);
   --wdg-alarm: var(--alarm, #ff8b8b);
   --wdg-port-edge: var(--bd3, #2c2c31);
-  --wdg-port-ink: var(--focus, #4a4a52);
+  /* A connected port's fill. It takes the device accent when a host sets one
+     (see below), so a node's ports match its head bar. */
+  --wdg-port-ink: var(--wdg-device-accent, var(--focus, #4a4a52));
   --wdg-cord: var(--focus, #4a4a52);
   --wdg-graph-dot: var(--sel, #1c1c20);
   --wdg-plate: var(--surface-cell, #18181b);
@@ -62,3 +64,25 @@
       (var(--wdg-device-rows) - 1) * var(--wdg-space)
   );
 }
+
+/*
+ * Per-node tokens. These are deliberately NOT declared on `.wdg` above: a
+ * `Device` is itself a `.wdg`, so a default declared here would reset whatever a
+ * host set on the node around it. The widgets read them with a fallback instead,
+ * and the fallback is today's look. A host sets them on any ancestor: the graph,
+ * a node wrapper, or the device's own `className`.
+ *
+ *   --wdg-device-width   a device's width when unfolded. Default: auto (its content).
+ *   --wdg-device-accent  a bar of --wdg-mark-width on the head's leading edge, and
+ *                        the ink of its connected ports. Default: none.
+ *   --wdg-device-edge    the device border in every state, selected included
+ *                        (e.g. var(--alarm) for a node with a problem).
+ *                        Default: --wdg-edge, --wdg-edge-live when selected.
+ *   --wdg-node-zoom      CSS zoom on the face inside each GraphNode, for a host
+ *                        that fits faces to a pane. Default: 1.
+ *   --wdg-cord-<kind>    the stroke of every GraphCord whose `kind` is <kind>
+ *                        (e.g. --wdg-cord-audio). Default: --wdg-cord.
+ *
+ * Set inline by `Graph` itself on each cord with a kind: --wdg-cord-ink. Not for
+ * hosts; set --wdg-cord-<kind> instead.
+ */

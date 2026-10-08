@@ -4,12 +4,17 @@
   display: inline-flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid var(--wdg-edge);
+  border: 1px solid var(--wdg-device-edge, var(--wdg-edge));
   border-radius: var(--wdg-plate-radius);
   background: var(--wdg-plate);
   color: var(--wdg-text);
   font-family: var(--wdg-sans);
   font-variation-settings: var(--wdg-sans-axes);
+}
+
+/* Zero specificity, so any width a host already gives a device by class wins. */
+:where(.wdg-device:not([data-folded])) {
+  width: var(--wdg-device-width, auto);
 }
 
 .wdg-device-screen {
@@ -23,7 +28,7 @@
 }
 
 .wdg-device[data-selected] {
-  border-color: var(--wdg-edge-live);
+  border-color: var(--wdg-device-edge, var(--wdg-edge-live));
 }
 
 .wdg-device-head {
@@ -34,6 +39,7 @@
   padding: 0 4px;
   border-bottom: 1px solid var(--wdg-edge);
   background: var(--wdg-plate-head);
+  box-shadow: inset var(--wdg-mark-width) 0 0 var(--wdg-device-accent, transparent);
   outline: none;
 }
 
@@ -600,9 +606,10 @@
   pointer-events: none;
 }
 
+/* `--wdg-cord-ink` is set inline per cord from its kind (see `cordInk` in Graph). */
 .wdg-graph-cord {
   fill: none;
-  stroke: var(--wdg-cord);
+  stroke: var(--wdg-cord-ink, var(--wdg-cord));
   stroke-width: 1.5;
   vector-effect: non-scaling-stroke;
 }
@@ -616,6 +623,11 @@
   position: absolute;
   touch-action: none;
   user-select: none;
+}
+
+/* Zero specificity, so a host's own zoom on a face still wins. */
+:where(.wdg-graph-node > *) {
+  zoom: var(--wdg-node-zoom, 1);
 }
 
 .wdg-graph-node input,

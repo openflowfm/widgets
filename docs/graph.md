@@ -233,15 +233,63 @@ it is everywhere else in the module — 1 unit against 8.
 
 `Port` takes a `kind` string and puts it on `data-kind`; `GraphCord` does the same. That is
 the entire mechanism. The module ships no list of kinds, no colours for them, and no
-compatibility rule — a host names its own and styles them:
+compatibility rule — a host names its own and colours them. A cord with a kind strokes
+with `--wdg-cord-<kind>` where the host set that token (any character a custom property
+can't hold becomes `-`), and with `--wdg-cord` where it didn't:
 
 ```css
+.patch { --wdg-cord-note: #7aa2f7; }
 .patch .wdg-port[data-kind='note'] { --wdg-port-ink: #7aa2f7; }
-.patch .wdg-graph-cord[data-kind='note'] { stroke: #7aa2f7; }
 ```
 
 A port that knew audio from video would be a port that knew what it was plugged into, which
 is the same mistake as a knob that knew it was a filter cutoff.
+
+## Styling a graph from the host: tokens, not selectors
+
+A host styles its nodes by setting `--wdg-*` custom properties on the graph or on a wrapper
+around each node, never by overriding `.wdg-*` rules: the class names are internals and may
+change. Every one of these reads with a fallback that is the module's own look, so a host
+that sets none sees no change.
+
+| Token | Where a host sets it | What it does | Default |
+| --- | --- | --- | --- |
+| `--wdg-cord-<kind>` | the graph, or above it | stroke of every cord of that `kind` | `--wdg-cord` |
+| `--wdg-device-accent` | around a node (or on the `Device`) | a `--wdg-mark-width` bar on the head's leading edge, and the ink of that device's connected ports | none, and ports keep `--focus` |
+| `--wdg-device-edge` | around a node | the device border in every state, selected included — `var(--alarm)` for a node with a problem | `--wdg-edge`, `--wdg-edge-live` when selected |
+| `--wdg-device-width` | around a node | the device's width when unfolded | `auto` (its content) |
+| `--wdg-node-zoom` | the graph, or around a node | CSS `zoom` on the face inside each `GraphNode`, for a host that fits faces to a pane | `1` |
+
+The per-node tokens are deliberately not declared on `.wdg` in
+[`tokens.css`](../src/tokens.css): a `Device` is itself a `.wdg`, so a default declared there
+would reset whatever the host set on the wrapper around it. The width and the node zoom are
+applied at zero specificity, so a width a host already gives a device by class still wins.
+
+`--wdg-node-zoom` scales the face and not the node's position, so a host that shrinks faces
+spaces its node coordinates by the same factor. It is separate from the graph's own wheel
+zoom, which belongs to the user; a host that fits to a pane on resize can't drive that one.
+
+```tsx
+<div style={{ '--wdg-cord-audio': 'var(--blue)', '--wdg-cord-draw': 'var(--green)', '--wdg-node-zoom': fit }}>
+  <Graph cords={cords}>
+    {nodes.map((n) => (
+      <GraphNode key={n.id} id={n.id} x={n.x * fit} y={n.y * fit}>
+        <div
+          style={{
+            '--wdg-device-accent': n.ink,
+            '--wdg-device-width': n.small ? '88px' : '168px',
+            ...(n.problem ? { '--wdg-device-edge': 'var(--alarm)' } : {}),
+          }}
+        >
+          <Device name={n.name} … />
+        </div>
+      </GraphNode>
+    ))}
+  </Graph>
+</div>
+```
+
+The **Anatomy: host tokens** story is this, running.
 
 ## Folding, and why a node doesn't
 
