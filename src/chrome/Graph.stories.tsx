@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 import { Chain } from './Chain.tsx';
 import { Device, DevicePortRow } from './Device.tsx';
 import { Graph, GraphNode, type GraphCord, type GraphView } from './Graph.tsx';
@@ -881,6 +889,93 @@ function InChain() {
   );
 }
 
+/**
+ * A host styling its graph through tokens only. Nothing here reaches past a
+ * `--wdg-*` custom property into a `.wdg-*` selector: cords take their colour
+ * from `--wdg-cord-<kind>`, each node sets an accent (head bar and port ink) and
+ * a width, a node with a problem sets its edge to alarm, and every face is
+ * zoomed to 0.85 to stand for a host fitting faces to a pane.
+ */
+const TOKENED: readonly (Face & { accent: string; width: string; problem?: boolean })[] = [
+  { ...PATCH[0], accent: '#7aa2f7', width: '168px' },
+  { ...PATCH[1], accent: '#9ece6a', width: '168px' },
+  { ...PATCH[2], accent: '#9ece6a', width: '168px', problem: true },
+  { ...PATCH[3], accent: '#7aa2f7', width: '88px' },
+];
+
+const TOKENED_CORDS: readonly GraphCord[] = [
+  { from: 'source:notes', to: 'shape:pitch', kind: 'note' },
+  { from: 'source:level', to: 'blend:a', kind: 'signal' },
+  { from: 'shape:out', to: 'output:in', kind: 'signal' },
+];
+
+function HostTokens() {
+  const [at, setAt] = useState(() => spots(TOKENED));
+  const [cords, setCords] = useState<readonly GraphCord[]>(TOKENED_CORDS);
+  return (
+    <div
+      style={
+        {
+          height: 420,
+          '--wdg-cord-note': '#7aa2f7',
+          '--wdg-cord-signal': '#9ece6a',
+          '--wdg-node-zoom': 0.85,
+        } as CSSProperties
+      }
+    >
+      <Graph
+        cords={cords}
+        onConnect={(from, to) =>
+          setCords((all) => [...all.filter((cord) => cord.to !== to), { from, to }])
+        }
+        onMove={(id, x, y) => setAt((all) => ({ ...all, [id]: { x, y } }))}
+      >
+        {TOKENED.map((face) => (
+          <GraphNode key={face.id} id={face.id} x={at[face.id].x} y={at[face.id].y}>
+            <div
+              style={
+                {
+                  '--wdg-device-accent': face.accent,
+                  '--wdg-device-width': face.width,
+                  ...(face.problem ? { '--wdg-device-edge': 'var(--alarm, #ff8b8b)' } : {}),
+                } as CSSProperties
+              }
+            >
+              <Device
+                name={face.problem ? `${face.name} (problem)` : face.name}
+                on
+                onToggle={() => {}}
+                inlets={face.inlets.map((slot) => (
+                  <Port
+                    key={slot.id}
+                    id={slot.id}
+                    side="in"
+                    label={slot.label}
+                    kind={slot.kind}
+                    connected={cords.some((cord) => cord.to === slot.id)}
+                  />
+                ))}
+                outlets={face.outlets.map((slot) => (
+                  <Port
+                    key={slot.id}
+                    id={slot.id}
+                    side="out"
+                    label={slot.label}
+                    kind={slot.kind}
+                    connected={cords.some((cord) => cord.from === slot.id)}
+                  />
+                ))}
+              >
+                {face.width === '88px' ? null : <BareFace />}
+              </Device>
+            </div>
+          </GraphNode>
+        ))}
+      </Graph>
+    </div>
+  );
+}
+
 /** The patch face without an instrument behind it, for the cases that only look. */
 function BareFace() {
   const [freq, setFreq] = useState(FREQ.defaultValue);
@@ -972,6 +1067,12 @@ export const AnatomyLoosePorts = anatomy(
   'Anatomy: ports, no canvas',
   'A device with ports and no graph around it. The rails draw; nothing measures them and nothing connects, because the surface is what owns both.',
   LoosePorts,
+);
+
+export const AnatomyHostTokens = anatomy(
+  'Anatomy: host tokens',
+  'A host styling the graph with `--wdg-*` tokens alone: cord colour per kind, a per-node accent that draws the head bar and inks its ports, a per-node width, an alarm edge on the node with a problem, and every face zoomed to fit. Wheel-zoom in: the graph zooms with CSS `zoom`, so the faces stay sharp.',
+  HostTokens,
 );
 
 export const AnatomyInChain = anatomy(

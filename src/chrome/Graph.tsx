@@ -45,7 +45,11 @@ export interface GraphCord {
   from: string;
   /** An inlet's `Port` id. */
   to: string;
-  /** Surfaced as `data-kind` so a host can colour its own vocabulary. */
+  /**
+   * Surfaced as `data-kind`, and stroked with `--wdg-cord-<kind>` where a host
+   * sets that token, so a host can colour its own vocabulary. An empty string
+   * is the same as leaving it out.
+   */
   kind?: string;
 }
 
@@ -124,6 +128,27 @@ const IGNORES_ARROWS = 'input, [role="slider"], [role="radio"], .wdg-port';
 
 /** The end a cord still needs, given the end it already has. */
 const opposite = (side: PortSide): PortSide => (side === 'out' ? 'in' : 'out');
+
+/**
+ * A cord's colour by kind, as a token the host names: `kind: 'audio'` strokes
+ * with `--wdg-cord-audio` where a host set it, and `--wdg-cord` where it didn't.
+ * Characters a custom property name can't hold become `-`. An empty kind is no
+ * kind: it would otherwise name `--wdg-cord-`, a token nobody means to set.
+ */
+export function cordInk(kind: string | undefined): string {
+  if (!kind) return 'var(--wdg-cord)';
+  return `var(--wdg-cord-${kind.replace(/[^\w-]/g, '-')}, var(--wdg-cord))`;
+}
+
+/**
+ * The content box's style for a view. CSS `zoom` lays the nodes out again at
+ * the new size, so text and borders stay crisp where `scale()` magnified a
+ * bitmap. A translate on a zoomed box is in the box's own zoomed pixels, so the
+ * pan is divided by the zoom to land at `(x, y)` on screen.
+ */
+export function contentStyle(view: { x: number; y: number; k: number }): CSSProperties {
+  return { zoom: view.k, transform: `translate(${view.x / view.k}px, ${view.y / view.k}px)` };
+}
 
 function cordPath(a: Spot, b: Spot): string {
   const reach = Math.max(30, Math.abs(b.x - a.x) * 0.5);
@@ -424,6 +449,7 @@ export function Graph({
           '--wdg-graph-grid': `${grid * view.k}px`,
           '--wdg-graph-x': `${view.x}px`,
           '--wdg-graph-y': `${view.y}px`,
+          '--wdg-graph-zoom': view.k,
         } as CSSProperties
       }
       onPointerDown={(e) => {
@@ -462,7 +488,7 @@ export function Graph({
       <div
         ref={content}
         className="wdg-graph-content"
-        style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.k})` }}
+        style={contentStyle(view)}
       >
         <svg className="wdg-graph-cords" aria-hidden="true">
           {drawn.map(({ cord, d }) => (
@@ -470,7 +496,12 @@ export function Graph({
               key={`${cord.from} ${cord.to}`}
               className="wdg-graph-cord"
               d={d}
-              {...(cord.kind === undefined ? {} : { 'data-kind': cord.kind })}
+              {...(!cord.kind
+                ? {}
+                : {
+                    'data-kind': cord.kind,
+                    style: { '--wdg-cord-ink': cordInk(cord.kind) } as CSSProperties,
+                  })}
             />
           ))}
           {loose && <path className="wdg-graph-cord" data-pending="" d={loose} />}

@@ -16,8 +16,9 @@ jobs:
       - name: Verify version
         run: node --input-type=module -e 'import p from "./package.json" with { type:"json" }; if (process.env.GITHUB_REF_NAME !== `v${p.version}`) process.exit(1)'
       - run: npm ci
-      # The stories project renders every story in headless Chromium.
-      - run: npx playwright install --with-deps chromium
+      # The stories project renders every story in headless Chromium; the
+      # browser project runs the graph's coordinate tests in Chromium and WebKit.
+      - run: npx playwright install --with-deps chromium webkit
       - run: npm run typecheck
       - run: npm test
       - run: npm run build:storybook
