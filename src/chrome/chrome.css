@@ -606,17 +606,19 @@
   pointer-events: none;
 }
 
-/* `--wdg-cord-ink` is set inline per cord from its kind (see `cordInk` in Graph). */
+/* `--wdg-cord-ink` is set inline per cord from its kind (see `cordInk` in Graph).
+   `--wdg-graph-zoom` is the graph's zoom, set inline by Graph. The content is
+   scaled with CSS `zoom`, which scales strokes too, so dividing by it keeps a
+   cord the same width on screen at every zoom. */
 .wdg-graph-cord {
   fill: none;
   stroke: var(--wdg-cord-ink, var(--wdg-cord));
-  stroke-width: 1.5;
-  vector-effect: non-scaling-stroke;
+  stroke-width: calc(1.5px / var(--wdg-graph-zoom, 1));
 }
 
 .wdg-graph-cord[data-pending] {
   stroke: var(--wdg-fill);
-  stroke-dasharray: 4 3;
+  stroke-dasharray: calc(4px / var(--wdg-graph-zoom, 1)) calc(3px / var(--wdg-graph-zoom, 1));
 }
 
 .wdg-graph-node {

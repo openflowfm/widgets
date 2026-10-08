@@ -83,6 +83,7 @@
  *   --wdg-cord-<kind>    the stroke of every GraphCord whose `kind` is <kind>
  *                        (e.g. --wdg-cord-audio). Default: --wdg-cord.
  *
- * Set inline by `Graph` itself on each cord with a kind: --wdg-cord-ink. Not for
- * hosts; set --wdg-cord-<kind> instead.
+ * Set inline by `Graph` itself, not for hosts to set: --wdg-graph-zoom (the
+ * current zoom, which cord widths divide by) and, on each cord with a kind,
+ * --wdg-cord-ink (set --wdg-cord-<kind> instead).
  */

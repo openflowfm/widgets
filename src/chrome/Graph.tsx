@@ -137,6 +137,16 @@ export function cordInk(kind: string): string {
   return `var(--wdg-cord-${kind.replace(/[^\w-]/g, '-')}, var(--wdg-cord))`;
 }
 
+/**
+ * The content box's style for a view. CSS `zoom` lays the nodes out again at
+ * the new size, so text and borders stay crisp where `scale()` magnified a
+ * bitmap. A translate on a zoomed box is in the box's own zoomed pixels, so the
+ * pan is divided by the zoom to land at `(x, y)` on screen.
+ */
+export function contentStyle(view: { x: number; y: number; k: number }): CSSProperties {
+  return { zoom: view.k, transform: `translate(${view.x / view.k}px, ${view.y / view.k}px)` };
+}
+
 function cordPath(a: Spot, b: Spot): string {
   const reach = Math.max(30, Math.abs(b.x - a.x) * 0.5);
   return `M ${a.x} ${a.y} C ${a.x + reach} ${a.y}, ${b.x - reach} ${b.y}, ${b.x} ${b.y}`;
@@ -436,6 +446,7 @@ export function Graph({
           '--wdg-graph-grid': `${grid * view.k}px`,
           '--wdg-graph-x': `${view.x}px`,
           '--wdg-graph-y': `${view.y}px`,
+          '--wdg-graph-zoom': view.k,
         } as CSSProperties
       }
       onPointerDown={(e) => {
@@ -474,7 +485,7 @@ export function Graph({
       <div
         ref={content}
         className="wdg-graph-content"
-        style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.k})` }}
+        style={contentStyle(view)}
       >
         <svg className="wdg-graph-cords" aria-hidden="true">
           {drawn.map(({ cord, d }) => (

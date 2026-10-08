@@ -100,20 +100,32 @@ Three nested boxes, and the middle one is the trick.
 
 ```
 .wdg-graph          the viewport: overflow hidden, the dotted background, the pan cursor
-  .wdg-graph-content   0x0 at the origin, transform: translate(pan) scale(zoom)
+  .wdg-graph-content   0x0 at the origin, zoom: k; transform: translate(pan / k)
     <svg>              the cords, in graph units, pointer-events: none
     .wdg-graph-node    absolutely positioned at (x, y) in graph units
 ```
 
-The content element is deliberately **zero by zero**. It exists to be a transformed origin
+The zoom is CSS **`zoom`**, not `transform: scale()`. A scale transform magnifies what was
+already painted, so text and hairline borders went soft as you zoomed in; `zoom` lays the
+nodes out again at the new size, so they are as sharp at 3× as at 1×. One consequence: a
+translate on a zoomed box is in that box's own zoomed pixels, so the pan is divided by `k`
+to land at `(x, y)` on screen (`contentStyle` in `Graph.tsx`).
+
+The content element is deliberately **zero by zero**. It exists to be a moved, zoomed origin
 and nothing else: `getBoundingClientRect()` on it returns exactly the point graph (0, 0)
 currently sits at on screen, so every conversion is one subtraction and one divide by the
-scale. Give it a size and that stops being true the moment anything overflows it.
+zoom. That still holds under `zoom`, because `getBoundingClientRect()` on a zoomed element
+and its descendants reports screen pixels, the same as it did under a transform; pointer
+`clientX`/`clientY` are screen pixels too, so the maths in `measure`, `toGraph` and the
+wheel handler did not change. Give the box a size and the trick stops being true the
+moment anything overflows it.
 
-Cords take `vector-effect: non-scaling-stroke`, so zooming out thins the patch rather than
-turning it into a mat of lines. The dotted background is a `background-size` in scaled
-pixels and a `background-position` at the pan offset, which is why the grid moves with the
-content without being part of it.
+`zoom` scales stroke widths, and `non-scaling-stroke` only undoes transforms, so the graph
+publishes its zoom as `--wdg-graph-zoom` and a cord's width (and the dashes of the one in
+flight) is divided by it: zooming out thins the patch rather than turning it into a mat of
+lines. The dotted background is a `background-size` in zoomed pixels and a
+`background-position` at the pan offset, which is why the grid moves with the content
+without being part of it.
 
 Zoom is on a **native, non-passive wheel listener**, not React's `onWheel`. React registers
 wheel passively at the root, and a passive handler cannot stop the page scrolling behind

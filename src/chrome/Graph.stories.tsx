@@ -1071,7 +1071,7 @@ export const AnatomyLoosePorts = anatomy(
 
 export const AnatomyHostTokens = anatomy(
   'Anatomy: host tokens',
-  'A host styling the graph with `--wdg-*` tokens alone: cord colour per kind, a per-node accent that draws the head bar and inks its ports, a per-node width, an alarm edge on the node with a problem, and every face zoomed to fit.',
+  'A host styling the graph with `--wdg-*` tokens alone: cord colour per kind, a per-node accent that draws the head bar and inks its ports, a per-node width, an alarm edge on the node with a problem, and every face zoomed to fit. Wheel-zoom in: the graph zooms with CSS `zoom`, so the faces stay sharp.',
   HostTokens,
 );
 
