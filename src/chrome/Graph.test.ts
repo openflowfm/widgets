@@ -19,6 +19,11 @@ describe('cord colour by kind', () => {
     expect(cordInk('audio')).toBe('var(--wdg-cord-audio, var(--wdg-cord))');
   });
 
+  it('treats an empty kind like no kind, rather than naming --wdg-cord-', () => {
+    expect(cordInk('')).toBe('var(--wdg-cord)');
+    expect(cordInk(undefined)).toBe('var(--wdg-cord)');
+  });
+
   it('turns characters a custom property cannot hold into dashes', () => {
     expect(cordInk('mid side/2')).toBe('var(--wdg-cord-mid-side-2, var(--wdg-cord))');
   });

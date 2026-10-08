@@ -120,6 +120,17 @@ and its descendants reports screen pixels, the same as it did under a transform;
 wheel handler did not change. Give the box a size and the trick stops being true the
 moment anything overflows it.
 
+That claim is about the engine, and it holds in engines with the standardised CSS `zoom`:
+**Chromium 128+, Firefox 126+, and WebKit** (Safari, and the WKWebView the visuals app runs
+in on macOS). Older Chromium reported rectangles under `zoom` in the zoomed box's own
+pixels, and older Firefox had no `zoom` at all; the graph does not correct for either.
+`src/chrome/Graph.browser.test.tsx` pins it in Chromium and WebKit, through vitest's
+Playwright browser mode (the `browser` project): at a zoom of 2, with a node zoom inside
+it, cord ends land on port centres, a drag from one port released on another connects, a
+node drag moves by the pointer delta over the zoom, and wheel zoom holds the graph point
+under the pointer still. Every screen point it uses is checked against `elementFromPoint`,
+the engine's own hit test, rather than only against the rectangles the graph measures with.
+
 `zoom` scales stroke widths, and `non-scaling-stroke` only undoes transforms, so the graph
 publishes its zoom as `--wdg-graph-zoom` and a cord's width (and the dashes of the one in
 flight) is divided by it: zooming out thins the patch rather than turning it into a mat of

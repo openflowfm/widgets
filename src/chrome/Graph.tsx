@@ -47,7 +47,8 @@ export interface GraphCord {
   to: string;
   /**
    * Surfaced as `data-kind`, and stroked with `--wdg-cord-<kind>` where a host
-   * sets that token, so a host can colour its own vocabulary.
+   * sets that token, so a host can colour its own vocabulary. An empty string
+   * is the same as leaving it out.
    */
   kind?: string;
 }
@@ -131,9 +132,11 @@ const opposite = (side: PortSide): PortSide => (side === 'out' ? 'in' : 'out');
 /**
  * A cord's colour by kind, as a token the host names: `kind: 'audio'` strokes
  * with `--wdg-cord-audio` where a host set it, and `--wdg-cord` where it didn't.
- * Characters a custom property name can't hold become `-`.
+ * Characters a custom property name can't hold become `-`. An empty kind is no
+ * kind: it would otherwise name `--wdg-cord-`, a token nobody means to set.
  */
-export function cordInk(kind: string): string {
+export function cordInk(kind: string | undefined): string {
+  if (!kind) return 'var(--wdg-cord)';
   return `var(--wdg-cord-${kind.replace(/[^\w-]/g, '-')}, var(--wdg-cord))`;
 }
 
@@ -493,7 +496,7 @@ export function Graph({
               key={`${cord.from} ${cord.to}`}
               className="wdg-graph-cord"
               d={d}
-              {...(cord.kind === undefined
+              {...(!cord.kind
                 ? {}
                 : {
                     'data-kind': cord.kind,

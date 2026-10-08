@@ -15,8 +15,9 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      # The stories project renders every story in headless Chromium.
-      - run: npx playwright install --with-deps chromium
+      # The stories project renders every story in headless Chromium; the
+      # browser project runs the graph's coordinate tests in Chromium and WebKit.
+      - run: npx playwright install --with-deps chromium webkit
       - run: npm run typecheck
       - run: npm run test:coverage
       - run: npm run build
