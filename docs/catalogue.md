@@ -48,6 +48,11 @@ Optional small/medium sizes set 20/24px height without introducing a second visu
 Use Button or Toggle for their normal framed APIs, and ButtonFace when a composition
 owns the input lifetime or needs a bare surface without caption/readout regions.
 
+`Segmented` is a `radiogroup` of `radio` buttons named by `label` (else `name`); arrow
+keys move the choice. Each radio is named by its text, or by its entry in the optional
+`itemLabels` (by position) when the text is a glyph or abbreviation — `items={['s',
+'bar']}` with `itemLabels={['seconds', 'bars']}` reads as "seconds" and "bars".
+
 Joined toolbar controls use `className="wdg wdg-control-group"` with an accessible
 `role="group"` and label. Shared CSS gives them the ordinary widget face, one outer
 border and radius, internal dividers and square joined edges. Active fills remain

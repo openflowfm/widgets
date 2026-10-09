@@ -12,6 +12,13 @@ import './controls.css';
  */
 export interface SegmentedProps {
   items: readonly string[];
+  /**
+   * What a screen reader names each member, by position, for members that
+   * show only a glyph or an abbreviation (`'s'` → `'seconds'`).
+   *
+   * A member with no entry here (or an empty one) is named by its text.
+   */
+  itemLabels?: readonly (string | undefined)[];
   index: number;
   onChange(next: number): void;
   disabled?: boolean;
@@ -35,6 +42,7 @@ export function itemsOf(param: Param): readonly string[] {
 
 export function Segmented({
   items,
+  itemLabels,
   index,
   onChange,
   disabled = false,
@@ -75,6 +83,7 @@ export function Segmented({
             type="button"
             role="radio"
             aria-checked={at === index}
+            aria-label={itemLabels?.[at] || undefined}
             tabIndex={at === index ? 0 : -1}
             disabled={disabled}
             onClick={() => onChange(at)}
