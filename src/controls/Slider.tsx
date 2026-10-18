@@ -78,6 +78,7 @@ export function Slider({
   title,
   hint,
   ink,
+  driver,
 }: SliderProps) {
   const gesture = useParamGesture({
     param,
@@ -133,6 +134,7 @@ export function Slider({
       title={title}
       hint={hint}
       ink={ink}
+      driver={driver}
       vars={{
         '--wdg-slider-length': length === 'auto' ? 'auto' : `${length}px`,
         ...fillFrom(param, origin, gesture.fraction),

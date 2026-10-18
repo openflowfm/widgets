@@ -48,6 +48,7 @@ export function Knob({
   title,
   hint,
   ink,
+  driver,
 }: KnobProps) {
   const [pointerFocus, setPointerFocus] = useState(false);
   const gesture = useParamGesture({
@@ -81,6 +82,7 @@ export function Knob({
       title={title}
       hint={hint}
       ink={ink}
+      driver={driver}
     >
       <div className="wdg-knob-dial" {...gesture.props}
         data-pointer-focus={pointerFocus ? '' : undefined}

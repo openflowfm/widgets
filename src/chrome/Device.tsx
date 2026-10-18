@@ -91,6 +91,27 @@ export interface DeviceProps {
    * host needs node geometry to stay fixed across face changes.
    */
   portRows?: ReactNode;
+  /**
+   * Where the outlets stand on a row-aligned face.
+   *
+   * `band` is the anatomy the first host shipped with: a line of their own
+   * under the picture, which the inlet rows then share from the top down. That
+   * sharing is the problem it turned out to have. A node with five outlets and
+   * three inlets prints three of the outlets on the inlets' lines, where an
+   * `amount` slider and a `primary` port sit on one row and read as one
+   * thing — and they are not related at all.
+   *
+   * `screen` stands them beside the picture instead. That is where they
+   * belong on a node whose picture *is* what leaves it: the outlet a host is
+   * previewing is the one the picture shows, so the two are one control
+   * rather than a picture up top and a chooser five rows down. The inlet rows
+   * then hold nothing but inlets, and a line under the picture is exactly one
+   * inlet and its control.
+   *
+   * Only read with `screen`; a face without a picture has nothing to stand
+   * beside and keeps the band.
+   */
+  outletsAt?: 'band' | 'screen';
   /** The faceplate. */
   children?: ReactNode;
   /**
@@ -123,6 +144,7 @@ export function Device({
   screen,
   chooser,
   portRows,
+  outletsAt = 'band',
   children,
   vars,
   className,
@@ -210,8 +232,21 @@ export function Device({
         // chain's height and stretch chain is exactly what it always was.
         (rowAligned ? (
           <div className="wdg-device-row-face">
-            {screen !== undefined && <div className="wdg-device-screen">{screen}</div>}
-            {outlets !== undefined && <div className="wdg-device-outlets">{outlets}</div>}
+            {screen !== undefined && outletsAt === 'screen' ? (
+              <div className="wdg-device-screen-band">
+                <div className="wdg-device-screen">{screen}</div>
+                {outlets !== undefined && (
+                  <div className="wdg-device-outlets" data-beside="">
+                    {outlets}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                {screen !== undefined && <div className="wdg-device-screen">{screen}</div>}
+                {outlets !== undefined && <div className="wdg-device-outlets">{outlets}</div>}
+              </>
+            )}
             {chooser !== undefined && <div className="wdg-device-chooser">{chooser}</div>}
             {children !== undefined && <div className="wdg-device-body">{children}</div>}
             <div className="wdg-device-port-rows">{portRows}</div>
@@ -255,5 +290,53 @@ export function DevicePortRow({ inlet, outlet, children, className }: DevicePort
         {outlet}
       </div>
     </div>
+  );
+}
+
+export interface DeviceMoreProps {
+  /** Whether the rows this line stands for are showing. */
+  open: boolean;
+  onToggle(next: boolean): void;
+  /** The accessible name, for a line whose printed text is a count. */
+  label?: string;
+  /** What is folded away, said as a count or a list: `7 at default`. */
+  children?: ReactNode;
+  className?: string;
+}
+
+/**
+ * The one line on a face that stands for the rows it is not showing.
+ *
+ * A face that draws every inlet it has is a form by the time the node has
+ * ten of them, and most of those ten are sitting at the number they were
+ * born with. A face that draws only the rows that *matter* — the mode's own
+ * controls, and anything wired or turned — needs to say what it left out, or
+ * the rows it folded read as rows the node does not have. This is that
+ * sentence, at the height of a row, at the indent of a control, so it reads as
+ * the last line of the list rather than as a button under it.
+ *
+ * It says how many, never "advanced". Advanced is a judgement about the
+ * person; a count is a fact about the node, and a count that reads `7 at
+ * default` also tells you the seven have not been touched — which is the one
+ * thing worth knowing about them.
+ *
+ * What opening it does is the host's: a face may grow in place, or the host
+ * may open the rest somewhere with more room. Either way the line itself only
+ * reports the state, the way every control here does.
+ */
+export function DeviceMore({ open, onToggle, label, children, className }: DeviceMoreProps) {
+  return (
+    <button
+      type="button"
+      className={`wdg-device-more${className ? ` ${className}` : ''}`}
+      aria-expanded={open}
+      aria-label={label}
+      onClick={() => onToggle(!open)}
+    >
+      <svg viewBox="0 0 8 8" aria-hidden="true">
+        <path d="M1.5 2.75H6.5L4 6.25Z" />
+      </svg>
+      <span className="wdg-device-more-text">{children}</span>
+    </button>
   );
 }

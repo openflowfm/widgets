@@ -72,6 +72,18 @@ export interface WidgetProps {
    * wants until something on screen is *about* the colour.
    */
   ink?: string;
+  /**
+   * What is moving this control, named after the thing on the other end of
+   * the cord — `sine`, `Bass meter` — printed after the caption in the fill.
+   *
+   * A driven row already draws a span and a trail, and they say *that* the
+   * control is being carried and *how far*. What they cannot say is by whom,
+   * and on a canvas that is the question a cord answers only if you follow it
+   * with your eye. The name goes on the row, in the one colour the row reserves
+   * for the number you set, so the line reads as `depth ← sine` and the cord
+   * does not have to be traced to be understood.
+   */
+  driver?: string;
 }
 
 export interface WidgetSlots extends WidgetProps {
@@ -114,6 +126,7 @@ export function Widget({
   title,
   hint,
   ink,
+  driver,
   children,
 }: WidgetSlots) {
   const reserved = useReserved(param);
@@ -129,7 +142,12 @@ export function Widget({
       {...(disabled ? { 'data-disabled': '' } : {})}
       style={{ ...reserved, ...inked, ...vars } as CSSProperties}
     >
-      {name && <span className="wdg-caption">{name}</span>}
+      {name && (
+        <span className="wdg-caption">
+          {name}
+          {driver && <span className="wdg-driver">← {driver}</span>}
+        </span>
+      )}
       <div className="wdg-body" title={title}>
         {children}
       </div>
