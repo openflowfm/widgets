@@ -277,6 +277,15 @@
 
 
 
+/*
+ * Who is moving the row, in the fill: the one colour a row keeps for the
+ * number you set, because the driver is now the thing setting it.
+ */
+.wdg-driver {
+  margin-left: 4px;
+  color: var(--wdg-fill);
+}
+
 .wdg-widget[data-layout='inside'][data-disabled] > .wdg-caption,
 .wdg-widget[data-layout='inside'][data-disabled] > .wdg-readout {
   color: var(--wdg-text);
