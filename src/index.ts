@@ -57,6 +57,8 @@ export {
   Device,
   DevicePortRow,
   type DevicePortRowProps,
+  DeviceMore,
+  type DeviceMoreProps,
   type DeviceProps,
 } from './chrome/Device.tsx';
 export {
@@ -78,6 +80,7 @@ export {
   type PopupProps,
 } from './chrome/Popup.tsx';
 export { Port, type PortProps } from './chrome/Port.tsx';
+export { Sheet, SheetRow, SheetSection, type SheetProps, type SheetRowProps, type SheetSectionProps } from './chrome/Sheet.tsx';
 export { Rack, type RackProps } from './chrome/Rack.tsx';
 export { Row, type RowProps } from './chrome/Row.tsx';
 export { Transport, clockText, positionText, type TransportProps, type TransportLoop, type TransportTempo, type TransportNormalSpeed, type TransportPosition } from './music/Transport.tsx';

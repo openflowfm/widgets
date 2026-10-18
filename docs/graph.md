@@ -204,6 +204,21 @@ with `--wdg-device-outlet-rows` and `--wdg-device-port-rows`, passed through `va
 `--wdg-port-row-height`, which defaults to the field height. The widgets module cannot pick
 those counts because it does not know a host's vocabulary.
 
+**Outlets can stand beside the picture instead of under it.** `outletsAt="screen"` lays the
+`screen` and the `outlets` in one band, the outlets stacked against the bottom of the picture
+on the same margin line every other port keeps. It exists because the band under the picture
+shares its lines with the inlet rows below it, and on a node with more outlets than inlets
+that puts an outlet's dot on the row of an inlet it has nothing to do with — a `colorway`'s
+`primary` on the line of its `amount` fader. Beside the picture, the rows hold nothing but
+inlets, and on a node whose picture *is* what leaves it the outlet being previewed and the
+picture are visibly one thing. Only read with a `screen`; a face without one keeps the band.
+
+[`DeviceMore`](../src/chrome/Device.tsx) is the one line that stands for rows a face is not
+drawing — `7 at default` — at the height of a row and the indent of a control, so it reads
+as the last line of the list. It reports the fold through `aria-expanded` and does nothing
+else; whether opening it grows the face in place or opens the rest somewhere with more room
+is the host's. See *The face, and what it shows* below.
+
 `screen` is a picture at the top of the face, above the outlets, inside the frame. It is
 not a row: the host owns its content and its size, and `Device` owns only where it sits.
 It exists for a graph preview whose dimensions must not become a function of the controls
@@ -221,6 +236,36 @@ the observer redraw its cords.
 
 **A cord naming a port that isn't mounted is skipped, not dropped.** Nodes mount in their
 own time, and a host shouldn't have to sequence its state against React's.
+
+## The face, and what it shows
+
+The row face grew a problem its first host met at ten inlets: a `fractal` with three colours
+and seven numbers is a form, `secondary` truncates at the width every face shares, a driven
+number looks like one you can drag, and a `colorway`'s five outlets sit on the rows of three
+inlets that have nothing to do with them. **Graph / Proposals** in Storybook is one flow
+drawn four ways so that question can be settled with a hand on it — the face as it is, a
+fixed inspector, a face that grows in place, a device strip under the canvas, and the
+recommendation the three argued for. The parts that recommendation needed from this module
+are the ones above and the two below; the rule for *which rows a face shows* stays the
+host's, because only the host knows what a mode's own controls are.
+
+The recommended face draws the mode's own controls always, and any other row a cord has
+landed on or a number has been turned off its default; the rest is a `DeviceMore` count.
+A cord in hand opens every inlet on every face — a row you cannot see is a row you cannot
+wire to — which a host reads off `GraphContext.cordWants`. Selecting the node opens a
+**[`Sheet`](../src/chrome/Sheet.tsx)**: the whole face, hung beside the node in the top
+layer at screen scale, in `SheetSection`s of `SheetRow`s — caption in a column of its own,
+the control, and whatever spells the value at the end. It follows the node on a frame clock
+(a canvas transform fires neither `scroll` nor `resize`), and dragging its head parks it
+where it was put, reported through `onPark`, so a person adjusting six nodes in a row gets
+the stable panel of an inspector by choosing it rather than being given it. Escape reaches
+the host through `onDismiss`; every other dismissal is the host's, since the sheet is up
+while a node is selected and the canvas already clears a selection on an empty press.
+
+A driven row says who is driving it: `driver` on any control that goes through `Widget`
+prints the source's name after the caption in the fill ink, so a line reads `depth ← sine`
+without the cord having to be traced. The span and the trail said *that* and *how far*; this
+is *by whom*, which was the one thing only the cord said.
 
 ## Dragging a node, without a handle
 
@@ -353,6 +398,12 @@ a port with whether a connection followed.
 | **Anatomy: row face** | the aligned rows a face opts into, with its picture and its reserved bands |
 | **Anatomy: ports, no canvas** | the rails a device carries by default, with nothing measuring them |
 | **Anatomy: in a chain** | the same shell where adjacency is the connection and there is nothing to draw |
+
+**Graph / Proposals** is the other page: **Today**, **A · Compact face, fixed inspector**,
+**B · Progressive detail, in place**, **C · The chain strip**, **Recommended · Compact face,
+open sheet** and **Recommended · At scale**, each the same flow — a ripple driven by an
+oscillator, or a dense fractal fed one colour by the colourway — in one host's real
+vocabulary, `stories/flow.ts`. Nothing of that host is imported.
 
 The numbers that are about *this module* rather than about the instrument:
 

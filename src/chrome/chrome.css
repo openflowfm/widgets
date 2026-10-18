@@ -735,3 +735,256 @@
   flex: none;
   gap: var(--wdg-space);
 }
+
+/*
+ * Outlets beside the picture, for a face whose picture is what leaves it.
+ *
+ * The band under the picture stays the default. Beside it, the outlets stack
+ * against the bottom of the picture on the same margin line every other port
+ * keeps — the band's inset moves to the picture's left and the outlets' right,
+ * so nothing about where a cord ends has changed, only what shares its line.
+ */
+.wdg-device-screen-band {
+  display: flex;
+  flex: none;
+  align-items: stretch;
+  gap: 6px;
+  padding: var(--wdg-space) 0 0 var(--wdg-space);
+}
+
+.wdg-device-screen-band > .wdg-device-screen {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+}
+
+.wdg-device-outlets[data-beside] {
+  justify-content: flex-end;
+  gap: var(--wdg-port-gap);
+  min-height: 0;
+  padding: 0 var(--wdg-port-inset) 0 0;
+}
+
+/*
+ * The line that stands for the rows a face is not showing. At the height of a
+ * row and the indent of a control, so it reads as the last line of the list.
+ */
+.wdg-device-more {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: var(--wdg-port-row-height);
+  margin: 0;
+  padding: 0 var(--wdg-port-inset) 0 calc(var(--wdg-port-inset) + var(--wdg-port-size) + 2px);
+  border: 0;
+  background: none;
+  color: var(--wdg-caption);
+  font-family: var(--wdg-sans);
+  font-variation-settings: var(--wdg-sans-axes);
+  font-size: var(--text-label);
+  line-height: 1;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wdg-device-more:hover {
+  color: var(--wdg-text-strong);
+}
+
+.wdg-device-more:focus-visible {
+  outline: 1px solid var(--wdg-focus);
+  outline-offset: -1px;
+}
+
+.wdg-device-more svg {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  fill: currentColor;
+  transform: rotate(-90deg);
+}
+
+.wdg-device-more[aria-expanded='true'] svg {
+  transform: none;
+}
+
+.wdg-device-more-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/*
+ * The sheet: a node's whole face, hung beside the node, in the top layer.
+ *
+ * The same plate and head a device has, so it reads as that node opened out
+ * rather than as a second kind of panel; the live edge and the menu's shadow
+ * because it floats over the canvas the way a menu floats over a page.
+ */
+.wdg-sheet {
+  position: fixed;
+  inset: auto;
+  display: flex;
+  flex-direction: column;
+  width: var(--wdg-sheet-width, 300px);
+  max-height: calc(100vh - 8px);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--wdg-edge-live);
+  border-radius: var(--wdg-plate-radius);
+  background: var(--wdg-plate);
+  color: var(--wdg-text);
+  font-family: var(--wdg-sans);
+  font-variation-settings: var(--wdg-sans-axes);
+  box-shadow: var(--shadow-menu, 0 8px 24px rgba(0, 0, 0, 0.55));
+}
+
+.wdg-sheet-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: var(--wdg-height);
+  padding: 0 6px;
+  border-bottom: 1px solid var(--wdg-edge);
+  background: var(--wdg-plate-selected);
+  touch-action: none;
+}
+
+.wdg-sheet[data-parkable] .wdg-sheet-head {
+  cursor: grab;
+}
+
+.wdg-sheet[data-dragging] .wdg-sheet-head {
+  cursor: grabbing;
+}
+
+.wdg-sheet-name {
+  overflow: hidden;
+  color: var(--wdg-text-strong);
+  font-size: var(--text-control);
+  line-height: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.wdg-sheet-about {
+  overflow: hidden;
+  color: var(--wdg-caption);
+  font-size: var(--text-label);
+  line-height: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.wdg-sheet-head-end {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  margin-left: auto;
+}
+
+.wdg-sheet-hang {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--wdg-radius);
+  background: none;
+  color: var(--wdg-caption);
+  font-family: inherit;
+  font-size: var(--text-control);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.wdg-sheet-hang:hover {
+  color: var(--wdg-text-strong);
+}
+
+.wdg-sheet-hang:focus-visible {
+  outline: 1px solid var(--wdg-focus);
+}
+
+.wdg-sheet-body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--wdg-space) + 2px);
+  min-height: 0;
+  padding: var(--wdg-space);
+  overflow-y: auto;
+}
+
+.wdg-sheet-section {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wdg-sheet-section > .wdg-label-heading {
+  padding: 0 0 2px;
+  color: var(--wdg-caption);
+  font-size: var(--text-label);
+  text-align: left;
+}
+
+/*
+ * A row on the sheet: the caption in its own column, the control in the
+ * middle, and whatever spells the value at the end. Three regions again, laid
+ * `inline` rather than `inside`, because here there is room to print the
+ * caption beside the track instead of over it — which is the whole of what
+ * the sheet buys over the face.
+ */
+.wdg-sheet-row {
+  display: grid;
+  grid-template-columns: var(--wdg-sheet-caption, 84px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--wdg-field-height);
+}
+
+.wdg-sheet-caption {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--wdg-text);
+  font-size: var(--text-label);
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.wdg-sheet-caption > .wdg-driver {
+  margin-left: 0;
+}
+
+.wdg-sheet-control {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.wdg-sheet-control > .wdg {
+  width: 100%;
+}
+
+.wdg-sheet-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  min-width: 0;
+  color: var(--wdg-text);
+  font-size: var(--text-label);
+}
+
+.wdg-sheet-end:empty {
+  display: none;
+}

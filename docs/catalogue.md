@@ -74,6 +74,12 @@ is its own label and one line says the whole parameter. A horizontal `Slider` fi
 available width in that layout rather than taking its ordinary fixed length. It is a layout
 of the shared frame, not a node-specific control, and `stacked` and `inline` remain unchanged.
 
+**A driven control names its driver.** `driver` on any control that goes through `Widget`
+prints the name of what is moving it after the caption, in the fill: `depth ← sine`. The
+span and the trail a row draws say *that* it is being carried and *how far*; the name says by
+whom, which on a canvas the cord alone answered only if you followed it with your eye. The
+host supplies the name — the module has no idea what is on the other end of a cord.
+
 **The pad is one pointer and two gestures**, not a new drag. It calls `useParamGesture`
 once per axis and hands both the same pointer events, so each keeps its own component of
 the movement and the fine modifier, the write rate and double-click-to-reset are the ones

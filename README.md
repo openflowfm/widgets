@@ -62,6 +62,7 @@ src/
     Chain.tsx       the run it sits in — children, so it never owns the order
     Graph.tsx       the canvas it sits on instead — the sibling layout, and the cords
     Port.tsx        where a cord ends. Two slots on Device, and nothing in a chain
+    Sheet.tsx       a node's whole face, hung beside the node at screen scale; parks where it is put
     HintFooter.tsx  the strip along the bottom that says what you are pointing at
     graphContext.ts what a port and a node need from the surface under them
     Rack.tsx        a device holding chains: the macro face and the chain list

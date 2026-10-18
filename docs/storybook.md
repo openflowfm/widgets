@@ -55,7 +55,7 @@ The sidebar is grouped by what you came to look at rather than by what the file 
 |---|---|
 | **Controls** | things you put a hand on — a story per state of each control |
 | **Chrome** | what a window is built out of: text, rows, device shells, chains, the modal |
-| **Graph** | the canvas, and whether it behaves — an instrument, not a page of cases |
+| **Graph** | the canvas, and whether it behaves — an instrument, not a page of cases; and **Proposals**, one flow drawn four ways to settle what a node's face should be at ten inlets |
 | **Music** | what you play music with: the transport, the meter, the waveform, and the four-deck mixer on a silent simulation |
 | **Debug** | the harness module: a component per story file, with a prop table each, and then all together |
 | **Param** | the model playground |
